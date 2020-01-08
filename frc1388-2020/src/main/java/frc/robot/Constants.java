@@ -16,4 +16,16 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+    /**
+     * 
+     * CAN IDs for (Not Known)
+     * 
+     */
+
+     public static final int driveLFCANID = 0;
+     public static final int driveRFCANID = 0;
+     public static final int driveLBCANID = 0;
+     public static final int driveRBCANID = 0;
+
 }
