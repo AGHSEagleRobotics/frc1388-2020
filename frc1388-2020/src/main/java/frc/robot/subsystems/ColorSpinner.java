@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems;
 
+import javax.lang.model.util.ElementScanner6;
+
 import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.SpeedController;
@@ -20,18 +22,44 @@ public class ColorSpinner extends SubsystemBase {
 
   private final SpeedController spinnerMotor;
 
+  public enum CheckColor{
+      RED, GREEN, BLUE, YELLOW;
+  }
+
+
   /**
    * Creates a new ColorSpinner.
    */
   public ColorSpinner(ColorSensorV3 sensor, SpeedController motor) {
-      // colorSensor = new ColorSensorV3(0);
       colorSensor = sensor;
       spinnerMotor = motor;
   }
 
-  public Color readColor() {
-    return colorSensor.getColor();
+  public CheckColor checkColor() {
+    Color color = colorSensor.getColor();
+    CheckColor c1;
+      if ( color.equals( Color.kRed ) ) {
+        c1 = CheckColor.RED;
+     }
+      else if ( color.equals( Color.kGreen ) ) {
+        c1 = CheckColor.GREEN;
+      }
+      else if ( color.equals( Color.kBlue ) ) {
+       c1 = CheckColor.BLUE;
+     }
+     else {
+       c1 = CheckColor.YELLOW;
+     }
+      return c1;
   }
+
+    // public boolean isColor (Color colorToCheck) {
+
+       // get the current color from the color sensor
+
+       // check if current color equals the color to Check and return true or false
+
+  } 
 
   @Override
   public void periodic() {
