@@ -7,38 +7,48 @@
 
 package frc.robot.subsystems;
 
-import javax.lang.model.util.ElementScanner6;
-
 import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ColorSpinner extends SubsystemBase {
   
+  //======================================================
+  // Instance Variables
+  //======================================================
+
   private final ColorSensorV3 colorSensor;
 
-  private final SpeedController spinnerMotor;
+  private SpeedController spinnerMotor;
+
+  private CheckColor c1;
 
   public enum CheckColor{
       RED, GREEN, BLUE, YELLOW;
   }
 
+  //======================================================
+  // Constructors
+  //======================================================
 
-  /**
-   * Creates a new ColorSpinner.
-   */
   public ColorSpinner(ColorSensorV3 sensor, SpeedController motor) {
       colorSensor = sensor;
-      spinnerMotor = motor;
+      //spinnerMotor = motor;
   }
+  public ColorSpinner(ColorSensorV3 sensor) {
+    colorSensor = sensor;
+    
+  }
+
+  //======================================================
+  // Color Sensor Checking
+  //======================================================
 
   public CheckColor checkColor() {
     Color color = colorSensor.getColor();
-    CheckColor c1;
-      if ( color.equals( Color.kRed ) ) {
+    if ( color.equals( Color.kRed ) ) {
         c1 = CheckColor.RED;
      }
       else if ( color.equals( Color.kGreen ) ) {
@@ -53,13 +63,10 @@ public class ColorSpinner extends SubsystemBase {
       return c1;
   }
 
-    // public boolean isColor (Color colorToCheck) {
+  //======================================================
+  // Motor Spinner ( Unknown data )
+  //======================================================
 
-       // get the current color from the color sensor
-
-       // check if current color equals the color to Check and return true or false
-
-  } 
 
   @Override
   public void periodic() {
