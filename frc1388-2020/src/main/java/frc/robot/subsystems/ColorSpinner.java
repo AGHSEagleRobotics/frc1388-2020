@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.SpeedController;
@@ -21,17 +23,19 @@ public class ColorSpinner extends SubsystemBase {
 
   private final ColorSensorV3 colorSensor;
 
-  private SpeedController spinnerMotor;
+  //private SpeedController spinnerMotor;
 
   private CheckColor c1;
 
   public enum CheckColor{
-      RED, GREEN, BLUE, YELLOW;
+      RED, GREEN, BLUE, YELLOW, UNKNOWN;
   }
+  private ColorMatch colorMatch = new ColorMatch();
 
   //======================================================
   // Constructors
   //======================================================
+
 
   public ColorSpinner(ColorSensorV3 sensor, SpeedController motor) {
       colorSensor = sensor;
@@ -39,7 +43,10 @@ public class ColorSpinner extends SubsystemBase {
   }
   public ColorSpinner(ColorSensorV3 sensor) {
     colorSensor = sensor;
-    
+    colorMatch.addColorMatch(Color.kRed);
+    colorMatch.addColorMatch(Color.kGreen);
+    colorMatch.addColorMatch(Color.kBlue);    
+    colorMatch.addColorMatch(Color.kYellow);
   }
 
   //======================================================
@@ -48,18 +55,24 @@ public class ColorSpinner extends SubsystemBase {
 
   public CheckColor checkColor() {
     Color color = colorSensor.getColor();
-    if ( color.equals( Color.kRed ) ) {
-        c1 = CheckColor.RED;
-     }
-      else if ( color.equals( Color.kGreen ) ) {
-        c1 = CheckColor.GREEN;
-      }
-      else if ( color.equals( Color.kBlue ) ) {
-       c1 = CheckColor.BLUE;
-     }
-     else {
-       c1 = CheckColor.YELLOW;
-     }
+    System.out.println( color);
+    ColorMatchResult result = colorMatch.matchClosestColor(color);
+    System.out.println( result.color);
+    // if ( color.equals( Color.kRed ) ) {
+    //     c1 = CheckColor.RED;
+    //  }
+    //   else if ( color.equals( Color.kGreen ) ) {
+    //     c1 = CheckColor.GREEN;
+    //   }
+    //   else if ( color.equals( Color.kMediumAquamarine ) ) {
+    //    c1 = CheckColor.BLUE;
+    //  }
+    //  else if ( color.equals( Color.kYellow)) {
+    //    c1 = CheckColor.YELLOW;
+    //  }
+    //  else {
+    //    c1 = CheckColor.UNKNOWN;
+    //  }
       return c1;
   }
 
@@ -71,5 +84,8 @@ public class ColorSpinner extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    // Check Color 
+    checkColor();
+    // System.out.println ( c1);
   }
 }
