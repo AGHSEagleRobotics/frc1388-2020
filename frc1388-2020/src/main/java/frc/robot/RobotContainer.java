@@ -9,6 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -43,6 +44,28 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+  }
+
+  public static XboxController driveController = new XboxController(Constants.driveControllerInput);
+
+  private static double deadBand(double input) {
+    if (input < 0.2 && input > -0.2) {
+      return 0.0;
+    } else {
+      return input;
+    }
+  }
+
+  public static double getDriveRightXAxis() {
+    return deadBand(driveController.getX(Hand.kRight));
+  }
+
+  public static double getDriveLeftYAxis() {
+    return deadBand(driveController.getY(Hand.kLeft));
+  }
+
+  public static boolean getAButton() {
+    return driveController.getAButton();
   }
 
 

@@ -34,15 +34,24 @@ public class DriveTrain extends SubsystemBase {
     leftBack = new WPI_TalonSRX( Constants.driveLBCANID);
     rightBack = new WPI_TalonSRX( Constants.driveRBCANID);
 
-    neutralbrake();
+    // neutralCoast();
+    neutralBrake();
+    
     followMode();
   }
 
-  public void neutralbrake() {
+  public void neutralBrake() {
     leftFront.setNeutralMode( NeutralMode.Brake);
     rightFront.setNeutralMode( NeutralMode.Brake);
     leftBack.setNeutralMode( NeutralMode.Brake);
     rightBack.setNeutralMode( NeutralMode.Brake);
+  }
+
+  public void neutralCoast() {
+    leftFront.setNeutralMode( NeutralMode.Coast);
+    rightFront.setNeutralMode( NeutralMode.Coast);
+    leftBack.setNeutralMode( NeutralMode.Coast);
+    rightBack.setNeutralMode( NeutralMode.Coast);
   }
 
   // Creates Options for drive method
