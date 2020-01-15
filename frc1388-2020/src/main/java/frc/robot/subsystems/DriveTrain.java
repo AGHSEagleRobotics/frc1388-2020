@@ -38,6 +38,8 @@ public class DriveTrain extends SubsystemBase {
     neutralBrake();
     
     followMode();
+
+    addChild("DifferentialDrive", differentialDrive);
   }
 
   public void neutralBrake() {

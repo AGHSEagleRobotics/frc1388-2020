@@ -47,6 +47,7 @@ public class RobotContainer {
   }
 
   public static XboxController driveController = new XboxController(Constants.driveControllerInput);
+  public static XboxController opController = new XboxController(Constants.opControllerInput);
 
   private static double deadBand(double input) {
     if (input < 0.2 && input > -0.2) {
@@ -66,6 +67,10 @@ public class RobotContainer {
 
   public static boolean getAButton() {
     return driveController.getAButton();
+  }
+
+  public static boolean getLeftStickButton() {
+    return driveController.getStickButton(Hand.kLeft);
   }
 
 

@@ -14,7 +14,7 @@ import frc.robot.subsystems.DriveTrain;
 public class Drive extends CommandBase {
 
   private boolean precisionMode = false;
-  private boolean lastAButton = false;
+  private boolean lastLeftStickButton = false;
   private DriveTrain m_subsystem;
   
   /**
@@ -34,19 +34,24 @@ public class Drive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    // retrives the nessesary inputs from the Controller
     double leftYAxis = RobotContainer.getDriveLeftYAxis();
     double rightXAxis = RobotContainer.getDriveRightXAxis();
-    boolean AButton = RobotContainer.getAButton();
+    boolean leftStickButton = RobotContainer.getLeftStickButton();
 
-    if(AButton && !lastAButton) {
+    // checks to see if the button has been pressed and then flags the precision mode
+    if(leftStickButton && !lastLeftStickButton) {
       precisionMode = !precisionMode;
     }
-    lastAButton = AButton;
+    lastLeftStickButton = leftStickButton;
 
+    // scales the Axises
     leftYAxis *= 0.7;
-    rightXAxis *= -0.7;
+    rightXAxis *= 0.7;
 
-    m_subsystem.curvatureDrive( leftYAxis, rightXAxis, precisionMode);
+    // adds the curvature differential drive and allows the precision mode to be toggled
+    m_subsystem.curvatureDrive( leftYAxis, -rightXAxis, precisionMode);
     
   }
 

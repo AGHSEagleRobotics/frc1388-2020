@@ -29,5 +29,6 @@ public final class Constants {
      public static final int driveRBCANID = 0; // don't know any of the CAN IDs
 
      public static final int driveControllerInput = 0;
+     public static final int opControllerInput = 1; // op Controller not specifically assigned
 
 }
