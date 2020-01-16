@@ -57,6 +57,10 @@ dependencies {
     // Enable simulation gui support. Must check the box in vscode to enable support
     // upon debugging
     simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
+
+     exec {
+        commandLine "GitJavaVersion.cmd", ">src/main/java/frc/robot/BuildInfo.java"
+    }
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
