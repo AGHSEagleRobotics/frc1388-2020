@@ -40,6 +40,10 @@ public class DriveTrain extends SubsystemBase {
     followMode();
 
     addChild("DifferentialDrive", differentialDrive);
+    differentialDrive.setSafetyEnabled(true);
+    differentialDrive.setExpiration(0.1);
+    differentialDrive.setMaxOutput(1.0);
+    differentialDrive.setDeadband( 0.2 );
   }
 
   public void neutralBrake() {
