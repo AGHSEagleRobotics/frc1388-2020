@@ -10,7 +10,10 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -28,11 +31,25 @@ public class DriveTrain extends SubsystemBase {
 
   private DifferentialDrive differentialDrive;
 
+  private ADXRS450_Gyro m_gyro;
+  private DifferentialDriveOdometry m_odometry;
+  private Rotation2d angle;
+
+  private Object leftEncoder;
+  private Object rightEncoder;
+
   public DriveTrain() {
+    m_gyro = new ADXRS450_Gyro();
+    m_odometry = new DifferentialDriveOdometry(angle);
+
     leftFront = new WPI_TalonSRX( Constants.driveLFCANID);
     rightFront = new WPI_TalonSRX( Constants.driveRFCANID);
     leftBack = new WPI_TalonSRX( Constants.driveLBCANID);
     rightBack = new WPI_TalonSRX( Constants.driveRBCANID);
+
+    leftEncoder = new Object( );
+    rightEncoder = new Object( );
+
 
     // neutralCoast();
     neutralBrake();
@@ -82,6 +99,10 @@ public class DriveTrain extends SubsystemBase {
   // to be used in the future for uses like checking the gyro
   @Override
   public void periodic() {
-
+    double leftEncoderDistance = (double) leftEncoder;
+    double rightEncoderDistance = (double) rightEncoder;
+    angle = Rotation2d.fromDegrees( m_gyro.getAngle() );
+    m_odometry.update( angle, leftEncoderDistance, rightEncoderDistance );
+    
   }
 }
