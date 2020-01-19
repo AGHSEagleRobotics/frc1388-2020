@@ -78,6 +78,14 @@ public class RobotContainer {
     return driveController.getAButton();
   }
 
+  public static boolean getBButton() {
+    return driveController.getBButton();
+  }
+
+  public static boolean getXButton() {
+    return driveController.getXButton();
+  }
+
   public static boolean getLeftStickButton() {
     return driveController.getStickButton(Hand.kLeft);
   }
