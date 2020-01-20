@@ -17,24 +17,36 @@ public class Targeting extends CommandBase {
   /************* Constants ***************/
 
   // constant of rotation to be implemented for scaling
-  private final double K_ROTATION;  // unknown value
+  private final double K_ROTATION = 1.0;  // TODO unknown value
 
   // constant of drive speed proportion for scaling
-  private final double K_DRIVE; // unknown value
+  private final double K_DRIVE = 1.0; // TODO unknown value
 
   // area of the target we want
   // really I'm hesitant to put this because we could do the math to have the 
   // shooter change its velocity to match the distance and arch required to score
-  private final double TARGET_AREA; // unknown value
+  private final double TARGET_AREA = 0.0; // TODO unknown value
 
   // saw some examples of a max speed on the targeting function some pros some cons
-  private final double MAX_SPEED = 0.7; // undecided value
+  private final double MAX_SPEED = 0.7; // TODO undecided value
 
   // seeking turn rate
-  private final double TURN_ROTATION = 0.3; // undecided value
+  private final double TURN_ROTATION = 0.3; // TODO undecided value
 
   // constant for minimum valid target amount
-  private final double MIN_VALID_TARGET = 0.1; // undecided value
+  private final double MIN_VALID_TARGET = 0.1; // TODO undecided value
+
+  // height of the mount in units //TODO decide units
+  private final double MOUNT_HEIGHT = 0.0; // TODO find out the height
+
+  // angle of the mount in units // TODO decide units
+  private final double MOUNT_ANGLE = 0.0; // TODO find out angle of mount
+
+  // height of the target // TODO decide units
+  private final double TARGET_HEIGHT = 0.0; // TODO find out height of target
+
+  // Maximum distance to shoot the ball
+  private final double MAX_DISTANCE = 0.0;
 
   /************* Changing Variables  ***************/
 
@@ -76,6 +88,9 @@ public class Targeting extends CommandBase {
   // aka ta
   private double area = 0.0;
 
+  // distance from the target base // TODO decide units
+  private double distanceFromTarget = 0.0;
+
   /* notatble that there is also a skew of image return and many others
     the, in my opinion poorly documented, 
     documentation is here (http://docs.limelightvision.io/en/latest/networktables_api.html)
@@ -83,7 +98,6 @@ public class Targeting extends CommandBase {
 
   // flag for targeting to be running or not
   private boolean targetingOn = false;
-  // flag for the 
 
   /**
    * Creates a new Targeting.
@@ -106,6 +120,8 @@ public class Targeting extends CommandBase {
 
     // area where we can add values to shuffle board as the if will exit the execute
     
+    // retreives the full drive function button cue
+    fullDriveFunction = RobotContainer.getXButton(); // TODO change this to a toggle function
     // checks to see if targeting is enabled if not then will exit execute but not close the command
     targetingOn = RobotContainer.getBButton(); // TODO change this to toggle function
     if( !targetingOn ){
@@ -134,7 +150,6 @@ public class Targeting extends CommandBase {
     // not sold on the idea but thought it added to reenforcing the tolerances
     if( !distanceFlag || !angleFlag ){
 
-      fullDriveFunction = RobotContainer.getXButton(); // TODO change this to a toggle function
       // if statement checking whether to turn or to drive or full drive function
       // I personally think is advantageous because it will be a beeline and have faster momentum towards the target
       if( fullDriveFunction ){
@@ -147,16 +162,19 @@ public class Targeting extends CommandBase {
       
     }
 
-
-
   }
 
   private void distanceMath(){
     // place to put math for computing distance from the target so that the distance flag can be triggered 
     // also a good place for calculating velocity to change for the shooter
+    distanceFromTarget = (TARGET_HEIGHT - MOUNT_HEIGHT ) / Math.tan( MOUNT_ANGLE + verticalOffset );
+    distanceFlag = distanceFromTarget < MAX_DISTANCE;
+
+    // to calculate the positition editting the following formula is needed
+    // other factors like air resistance, mass and degree angle of launch, gravity, Spin
+    // position = initial position + initial velocity * time + 1/2 * acceleration * (time)^2
+    // velocity = ((distanceFromTarget) + .5 * acceleration * ( time * time )
   }
-
-
 
   private void updateLimeLight() {
     validTarget = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
