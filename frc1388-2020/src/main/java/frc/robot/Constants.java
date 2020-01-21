@@ -31,6 +31,6 @@ public final class Constants {
      public static final int driveControllerInput = 0;
      public static final int opControllerInput = 1; // op Controller not specifically assigned
 
-     public static final int gyroAnalog = 0; // not known
+     public static final int gyro = 0; // not known
 
 }

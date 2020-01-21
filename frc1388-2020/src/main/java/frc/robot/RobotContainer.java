@@ -7,9 +7,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import frc.robot.commands.Drive;
 import frc.robot.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,14 +24,19 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private DriveTrain m_driveTrain = new DriveTrain(); 
-  private Drive m_autoCommand = new Drive(m_driveTrain);
-
+  private DriveTrain m_driveTrain; 
+  private ADXRS450_Gyro m_gyro;
+  // private Command m_autoCommand = new Command();
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    m_gyro = new ADXRS450_Gyro();
+    m_driveTrain = new DriveTrain(m_gyro);
+    // set default commands here
+    // TODO change and get rid of drive command and replace it with a new inside the command
+    m_driveTrain.setDefaultCommand(new Drive(m_driveTrain));
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -52,6 +59,7 @@ public class RobotContainer {
     } else {
       return input;
     }
+
   }
 
   public static double getDriveRightXAxis() {
@@ -78,6 +86,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An Drive will run in autonomous
-    return m_autoCommand;
+    return null; //m_autoCommand; // for the time being no Autonomous Command
   }
 }

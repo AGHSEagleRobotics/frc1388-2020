@@ -24,37 +24,36 @@ public class DriveTrain extends SubsystemBase {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  private WPI_TalonSRX leftFront;
-  private WPI_TalonSRX rightFront;
-  private WPI_TalonSRX leftBack;
-  private WPI_TalonSRX rightBack;
+  private WPI_TalonSRX m_leftFront;
+  private WPI_TalonSRX m_rightFront;
+  private WPI_TalonSRX m_leftBack;
+  private WPI_TalonSRX m_rightBack;
 
+  // need to instantiate the differenetail drive
   private DifferentialDrive differentialDrive;
 
   private ADXRS450_Gyro m_gyro;
   private DifferentialDriveOdometry m_odometry;
   private Rotation2d angle;
 
-  private Object leftEncoder;
-  private Object rightEncoder;
+  public DriveTrain( ADXRS450_Gyro gyro ) {
+    m_leftFront = new WPI_TalonSRX( Constants.driveLFCANID);
+    m_rightFront = new WPI_TalonSRX( Constants.driveRFCANID);
+    m_leftBack = new WPI_TalonSRX( Constants.driveLBCANID);
+    m_rightBack = new WPI_TalonSRX( Constants.driveRBCANID);
 
-  public DriveTrain() {
-    m_gyro = new ADXRS450_Gyro();
-    m_odometry = new DifferentialDriveOdometry(angle);
+    followMode();
+    
+    differentialDrive = new DifferentialDrive(m_leftFront, m_rightFront);
 
-    leftFront = new WPI_TalonSRX( Constants.driveLFCANID);
-    rightFront = new WPI_TalonSRX( Constants.driveRFCANID);
-    leftBack = new WPI_TalonSRX( Constants.driveLBCANID);
-    rightBack = new WPI_TalonSRX( Constants.driveRBCANID);
+    m_gyro = gyro;
+    m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(m_gyro.getAngle()));
+    angle = Rotation2d.fromDegrees(m_gyro.getAngle());
 
-    leftEncoder = new Object( );
-    rightEncoder = new Object( );
-
-
+    // uncomment which nuetral mode desired
     // neutralCoast();
     neutralBrake();
     
-    followMode();
 
     addChild("DifferentialDrive", differentialDrive);
     differentialDrive.setSafetyEnabled(true);
@@ -64,17 +63,17 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void neutralBrake() {
-    leftFront.setNeutralMode( NeutralMode.Brake);
-    rightFront.setNeutralMode( NeutralMode.Brake);
-    leftBack.setNeutralMode( NeutralMode.Brake);
-    rightBack.setNeutralMode( NeutralMode.Brake);
+    m_leftFront.setNeutralMode( NeutralMode.Brake);
+    m_rightFront.setNeutralMode( NeutralMode.Brake);
+    m_leftBack.setNeutralMode( NeutralMode.Brake);
+    m_rightBack.setNeutralMode( NeutralMode.Brake);
   }
 
   public void neutralCoast() {
-    leftFront.setNeutralMode( NeutralMode.Coast);
-    rightFront.setNeutralMode( NeutralMode.Coast);
-    leftBack.setNeutralMode( NeutralMode.Coast);
-    rightBack.setNeutralMode( NeutralMode.Coast);
+    m_leftFront.setNeutralMode( NeutralMode.Coast);
+    m_rightFront.setNeutralMode( NeutralMode.Coast);
+    m_leftBack.setNeutralMode( NeutralMode.Coast);
+    m_rightBack.setNeutralMode( NeutralMode.Coast);
   }
 
   // Creates Options for drive method
@@ -92,17 +91,18 @@ public class DriveTrain extends SubsystemBase {
   // motor controllers would follow the other
   
   public void followMode() {
-    leftBack.follow( leftFront );
-    rightBack.follow( rightFront );
+    m_leftBack.follow( m_leftFront );
+    m_rightBack.follow( m_rightFront );
   }
 
   // to be used in the future for uses like checking the gyro
   @Override
   public void periodic() {
-    double leftEncoderDistance = (double) leftEncoder;
-    double rightEncoderDistance = (double) rightEncoder;
-    angle = Rotation2d.fromDegrees( m_gyro.getAngle() );
-    m_odometry.update( angle, leftEncoderDistance, rightEncoderDistance );
-    
+    // refer to getSelectedSensorPosition() and configSelectedFeedbackSensor (FeedbackDevice feedbackDevice)
+    // double leftEncoderDistance = m_leftFront.getDistance();
+    // double rightEncoderDistance = m_rightFront.getDistance();
+    // angle = Rotation2d.fromDegrees( m_gyro.getAngle() );
+    // m_odometry.update( angle, leftEncoderDistance, rightEncoderDistance );
+
   }
 }

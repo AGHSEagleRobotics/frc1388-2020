@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;  
@@ -22,11 +23,13 @@ import frc.robot.USBLogging.Level;
  * project.
  */
 public class Robot extends TimedRobot {
-  
+
   private Command m_autonomousCommand;
 
+  // TODO get rid of all the drive command and drive subsystem
   private Drive m_driveCommand;
   private DriveTrain m_driveTrain;
+  private ADXRS450_Gyro m_Gyro;
 
   private RobotContainer m_robotContainer;
 
@@ -117,8 +120,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_driveTrain = new DriveTrain();
-    m_driveCommand = new Drive(m_driveTrain);
+
     
     if(m_driveCommand != null){
       m_driveCommand.schedule();
