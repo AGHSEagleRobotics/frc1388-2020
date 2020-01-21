@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -24,19 +26,20 @@ public class DriveTrain extends SubsystemBase {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  private WPI_TalonSRX m_leftFront;
-  private WPI_TalonSRX m_rightFront;
-  private WPI_TalonSRX m_leftBack;
-  private WPI_TalonSRX m_rightBack;
+  private final WPI_TalonSRX m_leftFront;
+  private final WPI_TalonSRX m_rightFront;
+  private final WPI_TalonSRX m_leftBack;
+  private final WPI_TalonSRX m_rightBack;
 
   // need to instantiate the differenetail drive
-  private DifferentialDrive differentialDrive;
+  private final DifferentialDrive differentialDrive;
 
-  private ADXRS450_Gyro m_gyro;
-  private DifferentialDriveOdometry m_odometry;
+  private final DifferentialDriveOdometry m_odometry;
   private Rotation2d angle;
+  private final Supplier<Rotation2d> m_angleSupplier;
 
-  public DriveTrain( ADXRS450_Gyro gyro ) {
+
+  public DriveTrain( Supplier<Rotation2d> angleSupplier ) {
     m_leftFront = new WPI_TalonSRX( Constants.driveLFCANID);
     m_rightFront = new WPI_TalonSRX( Constants.driveRFCANID);
     m_leftBack = new WPI_TalonSRX( Constants.driveLBCANID);
@@ -45,10 +48,11 @@ public class DriveTrain extends SubsystemBase {
     followMode();
     
     differentialDrive = new DifferentialDrive(m_leftFront, m_rightFront);
+    
+    m_angleSupplier = angleSupplier;
 
-    m_gyro = gyro;
-    m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(m_gyro.getAngle()));
-    angle = Rotation2d.fromDegrees(m_gyro.getAngle());
+    m_odometry = new DifferentialDriveOdometry(m_angleSupplier.get());
+    angle = m_angleSupplier.get();
 
     // uncomment which nuetral mode desired
     // neutralCoast();

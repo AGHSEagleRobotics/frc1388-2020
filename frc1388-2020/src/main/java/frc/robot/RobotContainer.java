@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import frc.robot.commands.Drive;
 import frc.robot.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,7 +33,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     m_gyro = new ADXRS450_Gyro();
-    m_driveTrain = new DriveTrain(m_gyro);
+    m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
+    
     // set default commands here
     // TODO change and get rid of drive command and replace it with a new inside the command
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain));
