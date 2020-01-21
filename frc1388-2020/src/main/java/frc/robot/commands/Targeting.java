@@ -8,10 +8,12 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.DriveTrain;
 import edu.wpi.first.networktables.*;
 
 public class Targeting extends CommandBase {
-  private SubsystemBase m_subsystem;
+  private DriveTrain m_subsystem;
 
 
   /************* Constants ***************/
@@ -102,7 +104,7 @@ public class Targeting extends CommandBase {
   /**
    * Creates a new Targeting.
    */
-  public Targeting( SubsystemBase subsystem ) {
+  public Targeting( DriveTrain subsystem ) {
     m_subsystem = subsystem;
     addRequirements(subsystem);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -117,11 +119,12 @@ public class Targeting extends CommandBase {
   @Override
   public void execute() {
     updateLimeLight();
+    distanceMath();
 
     // area where we can add values to shuffle board as the if will exit the execute
     
     // retreives the full drive function button cue
-    fullDriveFunction = RobotContainer.getXButton(); // TODO change this to a toggle function
+    boolean fullDriveFunction = RobotContainer.getXButton(); // TODO change this to a toggle function
     // checks to see if targeting is enabled if not then will exit execute but not close the command
     targetingOn = RobotContainer.getBButton(); // TODO change this to toggle function
     if( !targetingOn ){
@@ -139,9 +142,15 @@ public class Targeting extends CommandBase {
         double seekRotation;
         if( horizontalOffset < 0.0 ) {
           seekRotation = -TURN_ROTATION;
-        }else{
+        }else {
           seekRotation = TURN_ROTATION;
         }
+
+        if(previousValidTarget > validTarget){
+          seekRotation *= -1;
+        }
+        
+        previousValidTarget = validTarget;
         m_subsystem.arcadeDrive( seekRotation, 0.0 );
       }
     }
@@ -181,9 +190,8 @@ public class Targeting extends CommandBase {
     horizontalOffset = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
     verticalOffset = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
     area = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
-
     
-    if( tv < 1.0 ){
+    if( validTarget < 1.0 ){
       hasValidTarget = false;
       driveSpeed = 0.0;
       driveRotation = 0.0;
