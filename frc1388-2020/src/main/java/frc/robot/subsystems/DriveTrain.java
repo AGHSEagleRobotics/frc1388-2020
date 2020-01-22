@@ -11,8 +11,8 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
@@ -26,8 +26,8 @@ public class DriveTrain extends SubsystemBase {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  private final WPI_TalonSRX m_leftFront;
-  private final WPI_TalonSRX m_rightFront;
+  private final WPI_VictorSPX m_leftFront;
+  private final WPI_VictorSPX m_rightFront;
   private final WPI_TalonSRX m_leftBack;
   private final WPI_TalonSRX m_rightBack;
 
@@ -40,8 +40,9 @@ public class DriveTrain extends SubsystemBase {
 
 
   public DriveTrain( Supplier<Rotation2d> angleSupplier ) {
-    m_leftFront = new WPI_TalonSRX( Constants.driveLFCANID);
-    m_rightFront = new WPI_TalonSRX( Constants.driveRFCANID);
+    
+    m_leftFront = new WPI_VictorSPX( Constants.driveLFCANID);
+    m_rightFront = new WPI_VictorSPX( Constants.driveRFCANID);
     m_leftBack = new WPI_TalonSRX( Constants.driveLBCANID);
     m_rightBack = new WPI_TalonSRX( Constants.driveRBCANID);
 

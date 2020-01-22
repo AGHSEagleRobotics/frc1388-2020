@@ -23,10 +23,10 @@ public final class Constants {
      * 
      */
 
-     public static final int driveLFCANID = 0;
-     public static final int driveRFCANID = 0;
-     public static final int driveLBCANID = 0;
-     public static final int driveRBCANID = 0; // don't know any of the CAN IDs
+     public static final int driveLFCANID = 4;
+     public static final int driveRFCANID = 1;
+     public static final int driveLBCANID = 3;
+     public static final int driveRBCANID = 2; // don't know any of the CAN IDs
 
      public static final int driveControllerInput = 0;
      public static final int opControllerInput = 1; // op Controller not specifically assigned

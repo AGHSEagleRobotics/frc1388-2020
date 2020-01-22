@@ -33,10 +33,10 @@ public class RobotContainer {
    */
   public RobotContainer() {
     m_gyro = new ADXRS450_Gyro();
-    m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
-    
+
+    m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( 0 )  );
+
     // set default commands here
-    // TODO change and get rid of drive command and replace it with a new inside the command
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain));
     // Configure the button bindings
     configureButtonBindings();
