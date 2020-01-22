@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveTrain;
@@ -40,7 +41,6 @@ public class Drive extends CommandBase {
     double rightXAxis = RobotContainer.getDriveRightXAxis();
     boolean leftStickButton = RobotContainer.getLeftStickButton();
 
-    // TODO evalute if should change to a when pressed and add that tot robot container
     // checks to see if the button has been pressed and then flags the precision mode
     if(leftStickButton && !m_lastLeftStickButton) {
       m_precisionMode = !m_precisionMode;
@@ -50,7 +50,7 @@ public class Drive extends CommandBase {
     // the deadband is placed in the subsystem
     // adds the curvature differential drive and allows the precision mode to be toggled
     m_subsystem.curvatureDrive( leftYAxis, -rightXAxis, m_precisionMode);
-    
+
   }
 
   // Called once the command ends or is interrupted.

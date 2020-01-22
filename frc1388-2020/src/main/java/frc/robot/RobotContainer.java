@@ -7,8 +7,11 @@
 
 package frc.robot;
 
+import com.analog.adis16448.frc.ADIS16448_IMU;
+
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -25,16 +28,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private DriveTrain m_driveTrain; 
-  private ADXRS450_Gyro m_gyro;
+  private ADIS16448_IMU m_gyro;
   // private Command m_autoCommand = new Command();
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    m_gyro = new ADXRS450_Gyro();
+    m_gyro = new ADIS16448_IMU();
 
-    m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( 0 )  );
+    m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain));
@@ -51,24 +54,19 @@ public class RobotContainer {
   private void configureButtonBindings() {
   }
 
+  public static void updateGyro(){
+    
+  }
+
   public static XboxController driveController = new XboxController(Constants.driveControllerInput);
   public static XboxController opController = new XboxController(Constants.opControllerInput);
 
-  private static double deadBand(double input) {
-    if (input < 0.2 && input > -0.2) {
-      return 0.0;
-    } else {
-      return input;
-    }
-
-  }
-
   public static double getDriveRightXAxis() {
-    return deadBand(driveController.getX(Hand.kRight));
+    return driveController.getX(Hand.kRight);
   }
 
   public static double getDriveLeftYAxis() {
-    return deadBand(driveController.getY(Hand.kLeft));
+    return driveController.getY(Hand.kLeft);
   }
 
   public static boolean getAButton() {

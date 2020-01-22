@@ -9,9 +9,9 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -26,10 +26,10 @@ public class DriveTrain extends SubsystemBase {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  private final WPI_VictorSPX m_leftFront;
-  private final WPI_VictorSPX m_rightFront;
-  private final WPI_TalonSRX m_leftBack;
-  private final WPI_TalonSRX m_rightBack;
+  private final WPI_TalonFX m_leftFront;
+  private final WPI_TalonFX m_rightFront;
+  private final WPI_TalonFX m_leftBack;
+  private final WPI_TalonFX m_rightBack;
 
   // need to instantiate the differenetail drive
   private final DifferentialDrive differentialDrive;
@@ -38,15 +38,18 @@ public class DriveTrain extends SubsystemBase {
   private Rotation2d angle;
   private final Supplier<Rotation2d> m_angleSupplier;
 
+  private final double K_CPR_TO_FT = 1 / 216; // don't know this value
+
 
   public DriveTrain( Supplier<Rotation2d> angleSupplier ) {
     
-    m_leftFront = new WPI_VictorSPX( Constants.driveLFCANID);
-    m_rightFront = new WPI_VictorSPX( Constants.driveRFCANID);
-    m_leftBack = new WPI_TalonSRX( Constants.driveLBCANID);
-    m_rightBack = new WPI_TalonSRX( Constants.driveRBCANID);
+    m_leftFront = new WPI_TalonFX( Constants.driveLFCANID);
+    m_rightFront = new WPI_TalonFX( Constants.driveRFCANID);
+    m_leftBack = new WPI_TalonFX( Constants.driveLBCANID);
+    m_rightBack = new WPI_TalonFX( Constants.driveRBCANID);
 
     followMode();
+    configFalconFX();
     
     differentialDrive = new DifferentialDrive(m_leftFront, m_rightFront);
     
@@ -81,6 +84,11 @@ public class DriveTrain extends SubsystemBase {
     m_rightBack.setNeutralMode( NeutralMode.Coast);
   }
 
+  public void configFalconFX(){
+    m_leftFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    m_rightFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+  }
+
   // Creates Options for drive method
   public void arcadeDrive( double speed, double rotation ) {
     differentialDrive.arcadeDrive( speed, rotation);
@@ -104,10 +112,10 @@ public class DriveTrain extends SubsystemBase {
   @Override
   public void periodic() {
     // refer to getSelectedSensorPosition() and configSelectedFeedbackSensor (FeedbackDevice feedbackDevice)
-    // double leftEncoderDistance = m_leftFront.getDistance();
-    // double rightEncoderDistance = m_rightFront.getDistance();
-    // angle = Rotation2d.fromDegrees( m_gyro.getAngle() );
-    // m_odometry.update( angle, leftEncoderDistance, rightEncoderDistance );
+    double leftEncoderDistance = m_leftFront.getSelectedSensorPosition() * K_CPR_TO_FT;
+    double rightEncoderDistance = m_rightFront.getSelectedSensorPosition() * K_CPR_TO_FT;
+    angle =  m_angleSupplier.get();
+    m_odometry.update( angle, leftEncoderDistance, rightEncoderDistance );
 
   }
 }

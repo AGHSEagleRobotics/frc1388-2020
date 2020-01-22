@@ -7,12 +7,9 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;  
-import frc.robot.commands.Drive;
-import frc.robot.subsystems.DriveTrain;
 import frc.robot.USBLogging.Level;
 
 /**
@@ -25,11 +22,6 @@ import frc.robot.USBLogging.Level;
 public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;
-
-  // TODO get rid of all the drive command and drive subsystem
-  private Drive m_driveCommand;
-  private DriveTrain m_driveTrain;
-  private ADXRS450_Gyro m_Gyro;
 
   private RobotContainer m_robotContainer;
 
@@ -121,11 +113,6 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    
-    if(m_driveCommand != null){
-      m_driveCommand.schedule();
-    }
-
   }
 
   /**
@@ -134,8 +121,6 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     
-    
-
   }
 
   @Override
