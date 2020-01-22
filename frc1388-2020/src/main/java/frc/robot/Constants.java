@@ -31,4 +31,7 @@ public final class Constants {
      public static final int driveControllerInput = 0;
      public static final int opControllerInput = 1; // op Controller not specifically assigned
 
+     public static final int intakeShaftMotorCANID = 0;
+     public static final int intakeArmMotorCANID = 0;
+
 }

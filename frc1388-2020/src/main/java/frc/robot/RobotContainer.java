@@ -53,6 +53,10 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    //new Joystick(driveController, XboxController.Button.kA.value).whenPressed(intakeShaftCommandName);
+    //new Joystick(driveController, XboxController.Button.kB.value).whenPressed(intakeDownArmCommandName.withTimeout(double));
+    //new Joystick(driveController, XboxController.Button.kX.value).whenPressed(intakeUpArmCommandName.withTimeout(double));
+
   }
 
   public static XboxController driveController = new XboxController(Constants.driveControllerInput);

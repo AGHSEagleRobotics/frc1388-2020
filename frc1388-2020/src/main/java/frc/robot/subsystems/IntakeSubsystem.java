@@ -10,18 +10,21 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
   /**
    * Creates a new IntakeSubsystem.
    */
+
+   // Instance fields of the shaft motor and the arm motor.
   private final WPI_TalonFX m_intakeShaftMotor;
   private final WPI_TalonFX m_intakeArmMotor;
   
+  // Variables for the motor speeds.
   private static final double intakeShaftSpeed = 1;
-  private static final double intakeArmSpeed = 1;
-  
+  private static final double intakeDownArmSpeed = 1; 
+  private static final double intakeUpArmSpeed = -1;
+
   public IntakeSubsystem( WPI_TalonFX intakeShaftMotor, WPI_TalonFX intakeArmMotor) {
     m_intakeShaftMotor = intakeShaftMotor;
     m_intakeArmMotor = intakeArmMotor;
@@ -30,9 +33,10 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setIntakeShaftMotor(double speed){
     m_intakeShaftMotor.set(speed);
   }
-
+// The else statement could be changed to the intakeShaftSpeed if people want
+// to raise the arm to stop ball intake when the robot has reached maximum capacity(5 balls).
   public void setIntakeShaftMotor(boolean isOn) {
-    if (isOn){
+      if (isOn){
       m_intakeShaftMotor.set(intakeShaftSpeed);
     } else{
       m_intakeShaftMotor.set(0);
@@ -49,9 +53,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setIntakeArmMotor(boolean isOn) {
     if (isOn){
-      m_intakeArmMotor.set(intakeArmSpeed);
+      m_intakeArmMotor.set(intakeDownArmSpeed);
     } else{
-      m_intakeArmMotor.set(0);
+      m_intakeArmMotor.set(intakeUpArmSpeed);
     }
   }
 
