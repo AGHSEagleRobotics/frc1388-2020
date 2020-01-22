@@ -7,6 +7,9 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
@@ -20,9 +23,10 @@ public class ColorSpinner extends SubsystemBase {
   // Instance Variables
   // ======================================================
 
-  private final ColorSensorV3 colorSensor;
+  private final ColorSensorV3 m_colorSensor;
+  private final SpeedController m_spinnerMotor;
+  private final WPI_VictorSPX m_armMotor;
 
-  // private SpeedController spinnerMotor;
   // color address for sensor w/o the LED light
   // private final Color kRedTarget = ColorMatch.makeColor( 0.641845703125,
   // 0.29248046875, 0.0654296875);
@@ -31,12 +35,11 @@ public class ColorSpinner extends SubsystemBase {
   // private final Color kYellowTarget = ColorMatch.makeColor(0.411, 0.516,
   // 0.072);
   // color address for sensor with the LED light
+
   private final Color kRedTarget = ColorMatch.makeColor(0.532, 0.341, 0.126);
   private final Color kBlueTarget = ColorMatch.makeColor(0.157, 0.452, 0.389);
   private final Color kGreenTarget = ColorMatch.makeColor(0.212, 0.577, 0.210);
   private final Color kYellowTarget = ColorMatch.makeColor(0.329, 0.556, 0.072);
-
-  // private String c1;
 
   private final ColorMatch colorMatch = new ColorMatch();
 
@@ -44,13 +47,10 @@ public class ColorSpinner extends SubsystemBase {
   // Constructors
   // ======================================================
 
-  public ColorSpinner(final ColorSensorV3 sensor, final SpeedController motor) {
-    colorSensor = sensor;
-    // spinnerMotor = motor;
-  }
-
-  public ColorSpinner(final ColorSensorV3 sensor) {
-    colorSensor = sensor;
+  public ColorSpinner(final ColorSensorV3 sensor, final SpeedController motor, final WPI_VictorSPX arm) {
+    m_colorSensor = sensor;
+    m_spinnerMotor = motor;
+    m_armMotor = arm;
 
     colorMatch.addColorMatch(kRedTarget);
     colorMatch.addColorMatch(kGreenTarget);
@@ -62,9 +62,9 @@ public class ColorSpinner extends SubsystemBase {
   // Color Sensor Checking
   // ======================================================
 
-  private String checkColor() {
+  public String checkColor() {
     String c1;
-    final Color color = colorSensor.getColor();
+    final Color color = m_colorSensor.getColor();
     System.out.println("R = " + color.red + "  G = " + color.green + "  B = " + color.blue);
     // Print lines are temporary
     final ColorMatchResult result = colorMatch.matchClosestColor(color);
@@ -88,14 +88,33 @@ public class ColorSpinner extends SubsystemBase {
   }
 
   // ======================================================
-  // Motor Spinner ( Unknown data )
+  // Color Sensor print out
   // ======================================================
 
-  // end cheat
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     System.out.println(checkColor());
     // checkColor();
   }
+
+  // ======================================================
+  // Motor Spinner
+  // ======================================================
+
+  public void spinMotor( double speed )
+  {
+    m_spinnerMotor.set(speed);
+  }
+
+  // ======================================================
+  // Arm Motor
+  // ======================================================
+
+  public void armMotor( double speed )
+  {
+    m_armMotor.set(ControlMode.PercentOutput, speed );
+  }
+
+
 }
