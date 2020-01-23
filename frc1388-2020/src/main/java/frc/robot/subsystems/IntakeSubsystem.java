@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
   /**
@@ -25,9 +26,9 @@ public class IntakeSubsystem extends SubsystemBase {
   private static final double intakeDownArmSpeed = 1; 
   private static final double intakeUpArmSpeed = -1;
 
-  public IntakeSubsystem( WPI_TalonFX intakeShaftMotor, WPI_TalonFX intakeArmMotor) {
-    m_intakeShaftMotor = intakeShaftMotor;
-    m_intakeArmMotor = intakeArmMotor;
+  public IntakeSubsystem() {
+    m_intakeShaftMotor = new WPI_TalonFX(Constants.intakeShaftMotorCANID);
+    m_intakeArmMotor = new WPI_TalonFX(Constants.intakeArmMotorCANID);
   }
 
   public void setIntakeShaftMotor(double speed){
