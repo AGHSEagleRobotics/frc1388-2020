@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -39,6 +40,8 @@ public class DriveTrain extends SubsystemBase {
   private final Supplier<Rotation2d> m_angleSupplier;
 
   private final double K_CPR_TO_FT = 1 / 216; // don't know this value
+
+  private Pose2d m_newPosition;
 
 
   public DriveTrain( Supplier<Rotation2d> angleSupplier ) {
@@ -112,10 +115,10 @@ public class DriveTrain extends SubsystemBase {
   @Override
   public void periodic() {
     // refer to getSelectedSensorPosition() and configSelectedFeedbackSensor (FeedbackDevice feedbackDevice)
-    double leftEncoderDistance = m_leftFront.getSelectedSensorPosition() * K_CPR_TO_FT;
-    double rightEncoderDistance = m_rightFront.getSelectedSensorPosition() * K_CPR_TO_FT;
+    double leftEncoderDistance = m_leftFront.getSelectedSensorPosition();
+    double rightEncoderDistance = m_rightFront.getSelectedSensorPosition();
     angle =  m_angleSupplier.get();
-    m_odometry.update( angle, leftEncoderDistance, rightEncoderDistance );
+    m_newPosition = m_odometry.update( angle, leftEncoderDistance, rightEncoderDistance );
 
   }
 }
