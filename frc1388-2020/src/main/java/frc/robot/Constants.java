@@ -42,6 +42,9 @@ public final class Constants {
     public static final int driveLBCANID = 0;
     public static final int driveRBCANID = 0; // don't know any of the CAN IDs
 
+    // ShooterSubsystem motors
+    public static final int CANID_shootMotor = 0;
+    public static final int CANID_feedMotor = 0;
     /**
      * TalonSRX Can IDs
      */
