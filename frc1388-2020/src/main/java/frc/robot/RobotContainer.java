@@ -7,10 +7,11 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.revrobotics.ColorSensorV3;
 
-
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ColorSpinner;
@@ -31,7 +32,12 @@ public class RobotContainer {
 
   private final ColorSensorV3 m_colorSensor = new ColorSensorV3(Constants.I2C_Port_ColorSensor);
 
-  private final ColorSpinner m_colorSpinner = new ColorSpinner(m_colorSensor);
+  // FIXME figure out what motors are on here
+  private final WPI_VictorSPX m_spinnermotor = new WPI_VictorSPX(2) ;
+ 
+  private final WPI_VictorSPX m_armMotor = new WPI_VictorSPX(0);
+
+  private final ColorSpinner m_colorSpinner = new ColorSpinner(m_colorSensor, m_spinnermotor, m_armMotor);
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */

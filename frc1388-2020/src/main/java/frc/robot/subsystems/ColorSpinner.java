@@ -24,8 +24,10 @@ public class ColorSpinner extends SubsystemBase {
   // ======================================================
 
   private final ColorSensorV3 m_colorSensor;
-  private final SpeedController m_spinnerMotor;
-  private final WPI_VictorSPX m_armMotor;
+  private final WPI_VictorSPX m_spinnerMotor;
+  private final WPI_VictorSPX m_armMotor;  
+
+  private boolean m_colorArmDown = false;
 
   // color address for sensor w/o the LED light
   // private final Color kRedTarget = ColorMatch.makeColor( 0.641845703125,
@@ -47,10 +49,11 @@ public class ColorSpinner extends SubsystemBase {
   // Constructors
   // ======================================================
 
-  public ColorSpinner(final ColorSensorV3 sensor, final SpeedController motor, final WPI_VictorSPX arm) {
+  public ColorSpinner(final ColorSensorV3 sensor, final WPI_VictorSPX motor, final WPI_VictorSPX arm ) {
     m_colorSensor = sensor;
     m_spinnerMotor = motor;
     m_armMotor = arm;
+    m_colorArmDown = false;
 
     colorMatch.addColorMatch(kRedTarget);
     colorMatch.addColorMatch(kGreenTarget);
@@ -62,7 +65,7 @@ public class ColorSpinner extends SubsystemBase {
   // Color Sensor Checking
   // ======================================================
 
-  public String checkColor() {
+public String checkColor() {
     String c1;
     final Color color = m_colorSensor.getColor();
     System.out.println("R = " + color.red + "  G = " + color.green + "  B = " + color.blue);
@@ -85,7 +88,7 @@ public class ColorSpinner extends SubsystemBase {
       c1 = "Unknown";
     }
     return c1;
-  }
+}
 
   // ======================================================
   // Color Sensor print out
@@ -97,23 +100,38 @@ public class ColorSpinner extends SubsystemBase {
     System.out.println(checkColor());
     // checkColor();
   }
-
+ 
   // ======================================================
   // Motor Spinner
   // ======================================================
 
-  public void spinMotor( double speed )
-  {
-    m_spinnerMotor.set(speed);
+  public void spinMotor( final double speed) {
+    if( m_colorArmDown ) {
+      m_spinnerMotor.set(speed);
+    }
   }
 
   // ======================================================
   // Arm Motor
   // ======================================================
 
-  public void armMotor( double speed )
+  
+  public void engageArm()
   {
-    m_armMotor.set(ControlMode.PercentOutput, speed );
+    if( !m_colorArmDown )
+    {
+      //TODO: engage the arm
+      m_colorArmDown = true;
+    }
+  }
+
+  public void disengageArm()
+  {
+    if( m_colorArmDown )
+    {
+    //TODO: disengage the arm
+    m_colorArmDown = false;
+    }
   }
 
 
