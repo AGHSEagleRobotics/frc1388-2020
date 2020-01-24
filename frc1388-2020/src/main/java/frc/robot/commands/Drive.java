@@ -16,6 +16,7 @@ public class Drive extends CommandBase {
   private boolean m_precisionMode = false;
   private boolean m_lastLeftStickButton = false; 
   private DriveTrain m_subsystem;
+  private int ctr;
 
   /**
    * Creates a new DriveCommand.
@@ -50,6 +51,10 @@ public class Drive extends CommandBase {
     // adds the curvature differential drive and allows the precision mode to be toggled
     m_subsystem.curvatureDrive( leftYAxis, -rightXAxis, m_precisionMode);
 
+
+    if( ctr%50 == 0 ){
+      System.out.println( m_subsystem.testToString() );
+    }
   }
 
   // Called once the command ends or is interrupted.

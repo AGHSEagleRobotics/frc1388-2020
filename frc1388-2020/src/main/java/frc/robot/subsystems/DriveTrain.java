@@ -43,6 +43,9 @@ public class DriveTrain extends SubsystemBase {
 
   private Pose2d m_newPosition;
 
+  private double leftEncoderDistance;
+  private double rightEncoderDistance;
+
 
   public DriveTrain( Supplier<Rotation2d> angleSupplier ) {
     
@@ -111,12 +114,17 @@ public class DriveTrain extends SubsystemBase {
     m_rightBack.follow( m_rightFront );
   }
 
+  public String testToString(){
+    return "Angle" + angle + "\nLeft Encoder" + leftEncoderDistance + 
+    "\nRight Encoder" + rightEncoderDistance + "\nPostition" + m_odometry.getPoseMeters();
+  }
+
   // to be used in the future for uses like checking the gyro
   @Override
   public void periodic() {
     // refer to getSelectedSensorPosition() and configSelectedFeedbackSensor (FeedbackDevice feedbackDevice)
-    double leftEncoderDistance = m_leftFront.getSelectedSensorPosition();
-    double rightEncoderDistance = m_rightFront.getSelectedSensorPosition();
+    leftEncoderDistance = m_leftFront.getSelectedSensorPosition();
+    rightEncoderDistance = m_rightFront.getSelectedSensorPosition();
     angle =  m_angleSupplier.get();
     m_newPosition = m_odometry.update( angle, leftEncoderDistance, rightEncoderDistance );
 
