@@ -25,7 +25,10 @@ public class IntakeSubsystem extends SubsystemBase {
   private final DigitalInput m_intakeLimitSwitchTop;
   private final DigitalInput m_intakeLimitSwitchBottom;
 
-  // Variables for the motor speeds.
+  // Variables for the motor speeds. The variable values can change based on the 
+  // direction in which negative and positive values spin the motors and what speed
+  // is required to efficiently run the mechanisms.
+
   private static final double intakeShaftSpeed = 1;
   private static final double intakeDownArmSpeed = 1; 
   private static final double intakeUpArmSpeed = -1;
@@ -41,7 +44,9 @@ public class IntakeSubsystem extends SubsystemBase {
     m_intakeShaftMotor.set(speed);
   }
 // The else statement could be changed to the intakeShaftSpeed if people want
-// to raise the arm to stop ball intake when the robot has reached maximum capacity(5 balls).
+// to raise the arm to stop ball intake when the robot has reached maximum capacity
+// (5 balls) and keep the shaft moving
+
   public void setIntakeShaftMotor(boolean isOn) {
       if (isOn){
       m_intakeShaftMotor.set(intakeShaftSpeed);
@@ -53,10 +58,10 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setIntakeArmMotor(double speed) {
     m_intakeArmMotor.set(speed);
   }
- // The speed of the intake arm motor, the time it takes for the 
- // arm to lower itself to the correct angle, and when the command times out
+ // The speed of the intake arm motor and the time it takes for the 
+ // arm to lower itself to the correct angle
  // are interdependent and need to be changed so that the intake arm lowers
- // to the correct angle.
+ // the correct amount.
 
   public void setIntakeArmMotor(boolean isOn) {
     if (isOn){

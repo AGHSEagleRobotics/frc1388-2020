@@ -17,6 +17,7 @@ import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -58,9 +59,9 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    //new Joystick(driveController, XboxController.Button.kA.value).whenPressed(intakeShaftCommandName);
-    //new Joystick(driveController, XboxController.Button.kB.value).whenPressed(intakeDownArmCommandName.withTimeout(double));
-    //new Joystick(driveController, XboxController.Button.kX.value).whenPressed(intakeUpArmCommandName.withTimeout(double));
+    //new JoystickButton(driveController, XboxController.Button.kA.value).whenPressed(m_intakeShaftCommand);
+    //new JoystickButton(driveController, XboxController.Button.kB.value).whenPressed(m_intakeArmCommand);
+    //new JoystickButton(driveController, XboxController.Button.kX.value).whenPressed(m_intakeArmCommand);
 
   }
 

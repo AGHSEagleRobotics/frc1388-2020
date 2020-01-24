@@ -14,7 +14,6 @@ public class IntakeArmCommand extends CommandBase {
   /**
    * Creates a new IntakeArmCommand.
    */
-
   private IntakeSubsystem m_intakeSubsystem;
 
   public IntakeArmCommand(IntakeSubsystem intakeSubsystem) {
