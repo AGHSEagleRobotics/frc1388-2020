@@ -43,6 +43,9 @@ public class DriveTrain extends SubsystemBase {
 
   private Pose2d m_newPosition;
 
+  private double leftEncoderDistance;
+  private double rightEncoderDistance;
+
 
   public DriveTrain( Supplier<Rotation2d> angleSupplier ) {
     
@@ -104,7 +107,7 @@ public class DriveTrain extends SubsystemBase {
   }
 
   // establishes the follow method in which the sides of 
-  // motor controllers would follow the other
+  // motor controllers would follow the other 
   
   public void followMode() {
     m_leftBack.follow( m_leftFront );
@@ -114,11 +117,12 @@ public class DriveTrain extends SubsystemBase {
   // to be used in the future for uses like checking the gyro
   @Override
   public void periodic() {
-    // refer to getSelectedSensorPosition() and configSelectedFeedbackSensor (FeedbackDevice feedbackDevice)
-    double leftEncoderDistance = m_leftFront.getSelectedSensorPosition();
-    double rightEncoderDistance = m_rightFront.getSelectedSensorPosition();
-    angle =  m_angleSupplier.get();
-    m_newPosition = m_odometry.update( angle, leftEncoderDistance, rightEncoderDistance );
+    // // refer to getSelectedSensorPosition() and configSelectedFeedbackSensor (FeedbackDevice feedbackDevice)
+    // leftEncoderDistance = m_leftFront.getSelectedSensorPosition();
+    // rightEncoderDistance = m_rightFront.getSelectedSensorPosition();
+    // angle =  m_angleSupplier.get();
+    // m_newPosition = m_odometry.getPoseMeters();
+    // m_odometry.update( angle, leftEncoderDistance, rightEncoderDistance );
 
   }
 }
