@@ -14,20 +14,28 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import frc.robot.commands.Drive;
+import frc.robot.commands.IntakeArmCommand;
+import frc.robot.commands.IntakeShaftCommand;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
- * This class is where the bulk of the robot should be declared.  Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls).  Instead, the structure of the robot
- * (including subsystems, commands, and button mappings) should be declared here.
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a "declarative" paradigm, very little robot logic should
+ * actually be handled in the {@link Robot} periodic methods (other than the
+ * scheduler calls). Instead, the structure of the robot (including subsystems,
+ * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private DriveTrain m_driveTrain; 
   private ADIS16448_IMU m_gyro;
   // private Command m_autoCommand = new Command();
+  private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+  private IntakeShaftCommand m_intakeShaftCommand = new IntakeShaftCommand(m_intakeSubsystem);
+  private IntakeArmCommand m_intakeArmCommand = new IntakeArmCommand(m_intakeSubsystem);
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -41,15 +49,29 @@ public class RobotContainer {
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain));
     // Configure the button bindings
     configureButtonBindings();
+
+    CommandScheduler.getInstance()
+        .onCommandInitialize(command -> USBLogging.printCommandStatus(command, "initialized"));
+
+    CommandScheduler.getInstance().onCommandFinish(
+      command -> USBLogging.printCommandStatus(command, "FINISHeD"));
+
+    CommandScheduler.getInstance().onCommandInterrupt(
+      command -> USBLogging.printCommandStatus(command, "Interrupted"));
+
   }
 
   /**
-   * Use this method to define your button->command mappings.  Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a
-   * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   * Use this method to define your button->command mappings. Buttons can be
+   * created by instantiating a {@link GenericHID} or one of its subclasses
+   * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
+   * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    //new Joystick(driveController, XboxController.Button.kA.value).whenPressed(intakeShaftCommandName);
+    //new Joystick(driveController, XboxController.Button.kB.value).whenPressed(intakeDownArmCommandName.withTimeout(double));
+    //new Joystick(driveController, XboxController.Button.kX.value).whenPressed(intakeUpArmCommandName.withTimeout(double));
+
   }
 
   public static void updateGyro(){

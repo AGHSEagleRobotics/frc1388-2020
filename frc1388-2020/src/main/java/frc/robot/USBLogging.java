@@ -6,8 +6,11 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot;
+
 import java.io.*;
 import java.time.*;
+
+import edu.wpi.first.wpilibj2.command.Command;
 
 public class USBLogging {
     private static PrintStream m_logStream = null;
@@ -20,12 +23,7 @@ public class USBLogging {
     private static final String className = USBLogging.class.getSimpleName();
 
     enum Level {
-        FATAL,
-        ERROR,
-        OFF,
-        WARNING,
-        INFO,
-        DEBUG
+        FATAL, ERROR, OFF, WARNING, INFO, DEBUG
     }
 
     private static Level logLevel = Level.OFF;
@@ -34,37 +32,39 @@ public class USBLogging {
     /**
      * Open a log file, if possible, to be used by logging statements.
      * <p>
-     * This method will return a reference to the opened stream, although it
-     * isn't generally needed outside this class.  However, null will be returned
-     * if no file was opened, which may be useful.
+     * This method will return a reference to the opened stream, although it isn't
+     * generally needed outside this class. However, null will be returned if no
+     * file was opened, which may be useful.
      * 
-     * @return     A stream to the file opened, or null if no file was opened.
+     * @return A stream to the file opened, or null if no file was opened.
      */
     public static PrintStream openLog() {
         String fName = "";
         // Make sure the log directory exists
         File fLogPath = new File(logPath);
-        if (! fLogPath.isDirectory()) {
+        if (!fLogPath.isDirectory()) {
             System.out.println(className + ": Logging directory does not exist");
             m_logStream = null;
             return m_logStream;
         }
 
         // Find the file name and open it
-        // Creating a file based on timestamp would be ideal; however, since roboRIO has no RTC,
-        // there is no guarantee that a meaningful time has been set by the time we get here.
+        // Creating a file based on timestamp would be ideal; however, since roboRIO has
+        // no RTC,
+        // there is no guarantee that a meaningful time has been set by the time we get
+        // here.
         for (int i = 0; i <= 999; i++) {
             // fNum represents a number of the format 001
             // fName represents the full file path, including file name
             String fNum = String.format("%03d", i);
             fName = logPath + "/" + logPrefix + fNum;
-            if (! logSuffix.isEmpty()) {
+            if (!logSuffix.isEmpty()) {
                 fName += "." + logSuffix;
             }
 
             // See if the file exists
             File fLogFile = new File(fName);
-            if (! fLogFile.isFile()) {
+            if (!fLogFile.isFile()) {
                 try {
                     m_OutStream = new FileOutputStream(fLogFile);
                     m_logStream = new PrintStream(m_OutStream);
@@ -88,20 +88,21 @@ public class USBLogging {
     }
 
     /**
-     * Print a string to the system console, and to a log file if one has been opened.
+     * Print a string to the system console, and to a log file if one has been
+     * opened.
      * 
-     * @param   str   String to be printed
+     * @param str String to be printed
      */
     public static void printLog(String str) {
         System.out.println(LocalTime.now() + "  " + str);
         // ToDo: Add timestamp to the string written to m_logStream
         if (m_logStream != null) {
-            if (! m_today.equals(LocalDate.now())) {
+            if (!m_today.equals(LocalDate.now())) {
                 m_today = LocalDate.now();
                 m_logStream.print(m_today + "\r\n");
             }
             m_logStream.print(LocalTime.now() + "  " + str + "\r\n");
-            
+
             // flush the output stream, to reduce the chance of file corruption
             try {
                 m_OutStream.getFD().sync();
@@ -112,19 +113,17 @@ public class USBLogging {
         }
     }
 
-    private static void printDate()
-    {
-        if ( ! m_today.equals( LocalDate.now() ) ) {
+    private static void printDate() {
+        if (!m_today.equals(LocalDate.now())) {
             m_today = LocalDate.now();
-            m_logStream.print( m_today + "\r\n" );
+            m_logStream.print(m_today + "\r\n");
         }
     }
 
-    private static void flushFile()
-    {
+    private static void flushFile() {
         try {
             m_OutStream.getFD().sync();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -135,20 +134,17 @@ public class USBLogging {
      * @param msg The message to be printed
      * @param lvl The Level of the msg
      */
-    private static void printLogAtLevel( String msg, Level lvl )
-    {
-        if ( lvl.compareTo( logLevel ) <= 0 || logLevel == Level.FATAL || logLevel == Level.ERROR )
-        {
+    private static void printLogAtLevel(String msg, Level lvl) {
+        if (lvl.compareTo(logLevel) <= 0 || logLevel == Level.FATAL || logLevel == Level.ERROR) {
             String output = LocalTime.now() + " [" + lvl.name() + "] " + msg;
 
             // Print to console
-            System.out.println( output );
+            System.out.println(output);
 
             // Print to file
-            if ( m_logStream != null )
-            {
+            if (m_logStream != null) {
                 printDate();
-                m_logStream.print( output + "\r\n" );
+                m_logStream.print(output + "\r\n");
                 flushFile();
             }
         }
@@ -157,9 +153,8 @@ public class USBLogging {
     /**
      * Only allow the logLevel to be set once.
      */
-    public static void setLogLevel( Level lvl )
-    {
-        if ( levelIsSet )
+    public static void setLogLevel(Level lvl) {
+        if (levelIsSet)
             return;
 
         logLevel = lvl;
@@ -167,54 +162,52 @@ public class USBLogging {
     }
 
     /**
-     * FATAL.
-     * The robot cannot not continue operation
-     * This level is printed regardless of logLevel.
+     * FATAL. The robot cannot not continue operation This level is printed
+     * regardless of logLevel.
      *
      */
-    public static void fatal( String msg )
-    {
-        printLogAtLevel( msg, Level.FATAL );
+    public static void fatal(String msg) {
+        printLogAtLevel(msg, Level.FATAL);
     }
 
     /**
-     * ERROR.
-     * The robot can continue operation
-     *   but some facility may be broken or unresponsive
-     * A fully functional robot will have no ERROR messages
+     * ERROR. The robot can continue operation but some facility may be broken or
+     * unresponsive A fully functional robot will have no ERROR messages
      * 
      * This level is printed regardless of logLevel
      */
-    public static void error( String msg )
-    {
-        printLogAtLevel( msg, Level.ERROR );
+    public static void error(String msg) {
+        printLogAtLevel(msg, Level.ERROR);
     }
 
     /**
-     * WARNING.
-     * The robot is fully operational
-     *   but some facility may act unexpectedly
+     * WARNING. The robot is fully operational but some facility may act
+     * unexpectedly
      */
-    public static void warning( String msg )
-    {
-        printLogAtLevel( msg, Level.WARNING );
+    public static void warning(String msg) {
+        printLogAtLevel(msg, Level.WARNING);
     }
 
     /**
-     * INFO.
-     * The robot is fully operational
+     * INFO. The robot is fully operational
      */
-    public static void info( String msg )
-    {
-        printLogAtLevel( msg, Level.INFO );
+    public static void info(String msg) {
+        printLogAtLevel(msg, Level.INFO);
     }
 
     /**
-     * DEBUG.
-     * Used for testing
+     * DEBUG. Used for testing
      */
-    public static void debug( String msg )
-    {
-        printLogAtLevel( msg, Level.DEBUG );
+    public static void debug(String msg) {
+        printLogAtLevel(msg, Level.DEBUG);
+    }
+
+    public static void printCommandInitialize(Command coman) {
+
+        info(coman.getName() + " initialized");
+    }
+
+    public static void printCommandStatus(Command coman, String status) {
+        info(coman.getName() + " " + status);
     }
 }

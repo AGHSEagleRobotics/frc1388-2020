@@ -14,23 +14,64 @@ package frc.robot;
  *
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
+ * Example: import static frc.robot.Constants.*
  */
 public final class Constants {
-
     /**
+     * Device IDs generally represent the hardware resource identifier used in the object's constructor.
+     * Device IDs should follow this naming convention:
      * 
-     * CAN IDs for (Not Known)
+     * CAN IDs:         CANID_deviceName                = int
+     * PWM channels:    PWM_deviceName                  = int
+     * Digital IOs:     DIO_deviceName                  = int
+     * Analog inputs:   AIN_deviceName                  = int
+     * Relay channels:  RELAY_deviceName                = int
+     * PCM channels:    PCMCH_deviceName                = int
      * 
+     * I2C ports:       I2C_PORT_deviceName             = I2C.port
+     * SPI ports:       SPI_PORT_deviceName             = SPI.Port
+     * 
+     * USB devices:     USB_deviceName                  = int
      */
 
-     public static final int driveLFCANID = 4;
-     public static final int driveRFCANID = 1;
-     public static final int driveLBCANID = 3;
-     public static final int driveRBCANID = 2; // don't know any of the CAN IDs
+    /**
+     * TalonFX Can IDs
+     */
+    public static final int driveLFCANID = 0;
+    public static final int driveRFCANID = 0;
+    public static final int driveLBCANID = 0;
+    public static final int driveRBCANID = 0; // don't know any of the CAN IDs
 
+    /**
+     * TalonSRX Can IDs
+     */
+
+    /**
+     * VictorSPX Can IDs
+     */
+
+    /**
+     * Digital IO
+     */
+
+    /**
+     * Analog Inputs
+     */
+
+    /**
+     * I2C Ports
+     */
+
+    /**
+     * USB devices
+     */
      public static final int driveControllerInput = 0;
      public static final int opControllerInput = 1; // op Controller not specifically assigned
 
-     public static final int gyro = 0; // not known
+     public static final int intakeShaftMotorCANID = 0;
+     public static final int intakeArmMotorCANID = 0;
+
+     public static final int DIO_intakeShaftTop = 0;
+     public static final int DIO_intakeShaftBottom = 0;
 
 }
