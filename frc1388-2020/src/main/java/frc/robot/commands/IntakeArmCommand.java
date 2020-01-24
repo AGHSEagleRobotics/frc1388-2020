@@ -38,12 +38,11 @@ public class IntakeArmCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_intakeSubsystem.setIntakeArmMotor(false);
-
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_intakeSubsystem.getIntakeLimitSwitchTop() || m_intakeSubsystem.getIntakeLimitSwitchBottom();
   }
 }

@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -21,6 +22,9 @@ public class IntakeSubsystem extends SubsystemBase {
   private final WPI_TalonFX m_intakeShaftMotor;
   private final WPI_TalonFX m_intakeArmMotor;
   
+  private final DigitalInput m_intakeLimitSwitchTop;
+  private final DigitalInput m_intakeLimitSwitchBottom;
+
   // Variables for the motor speeds.
   private static final double intakeShaftSpeed = 1;
   private static final double intakeDownArmSpeed = 1; 
@@ -29,6 +33,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem() {
     m_intakeShaftMotor = new WPI_TalonFX(Constants.intakeShaftMotorCANID);
     m_intakeArmMotor = new WPI_TalonFX(Constants.intakeArmMotorCANID);
+    m_intakeLimitSwitchTop = new DigitalInput(Constants.DIO_intakeShaftTop);
+    m_intakeLimitSwitchBottom = new DigitalInput(Constants.DIO_intakeShaftBottom);
   }
 
   public void setIntakeShaftMotor(double speed){
@@ -58,6 +64,14 @@ public class IntakeSubsystem extends SubsystemBase {
     } else{
       m_intakeArmMotor.set(intakeUpArmSpeed);
     }
+  }
+
+  public boolean getIntakeLimitSwitchTop() {
+    return m_intakeLimitSwitchTop.get();
+  }
+
+  public boolean getIntakeLimitSwitchBottom() {
+    return m_intakeLimitSwitchBottom.get();
   }
 
   @Override
