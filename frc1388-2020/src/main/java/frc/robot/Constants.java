@@ -37,15 +37,19 @@ public final class Constants {
     /**
      * TalonFX Can IDs
      */
-    public static final int driveLFCANID = 0;
-    public static final int driveRFCANID = 0;
-    public static final int driveLBCANID = 0;
-    public static final int driveRBCANID = 0; // don't know any of the CAN IDs
 
+    public static final int CANID_driveRB = 1;
+    public static final int CANID_driveRF = 2;
+    public static final int CANID_driveLF = 3;
+    public static final int CANID_driveLB = 4;
+    
     /**
      * TalonSRX Can IDs
      */
 
+    public static final int CANID_intakeShaftMotor = 0;
+    public static final int CANID_intakeArmMotor = 0;
+    
     /**
      * VictorSPX Can IDs
      */
@@ -53,6 +57,9 @@ public final class Constants {
     /**
      * Digital IO
      */
+    
+         public static final int DIO_intakeShaftTop = 0;
+         public static final int DIO_intakeShaftBottom = 0;
 
     /**
      * Analog Inputs
@@ -65,13 +72,8 @@ public final class Constants {
     /**
      * USB devices
      */
-     public static final int driveControllerInput = 0;
-     public static final int opControllerInput = 1; // op Controller not specifically assigned
+     public static final int USB_driveController = 0;
+     public static final int USB_opController = 1; // op Controller not specifically assigned
 
-     public static final int intakeShaftMotorCANID = 0;
-     public static final int intakeArmMotorCANID = 0;
-
-     public static final int DIO_intakeShaftTop = 0;
-     public static final int DIO_intakeShaftBottom = 0;
 
 }

@@ -49,10 +49,10 @@ public class DriveTrain extends SubsystemBase {
 
   public DriveTrain( Supplier<Rotation2d> angleSupplier ) {
     
-    m_leftFront = new WPI_TalonFX( Constants.driveLFCANID);
-    m_rightFront = new WPI_TalonFX( Constants.driveRFCANID);
-    m_leftBack = new WPI_TalonFX( Constants.driveLBCANID);
-    m_rightBack = new WPI_TalonFX( Constants.driveRBCANID);
+    m_leftFront = new WPI_TalonFX( Constants.CANID_driveLF);
+    m_rightFront = new WPI_TalonFX( Constants.CANID_driveRF);
+    m_leftBack = new WPI_TalonFX( Constants.CANID_driveLB);
+    m_rightBack = new WPI_TalonFX( Constants.CANID_driveRB);
 
     followMode();
     configFalconFX();
@@ -67,7 +67,6 @@ public class DriveTrain extends SubsystemBase {
     // uncomment which nuetral mode desired
     // neutralCoast();
     neutralBrake();
-    
 
     addChild("DifferentialDrive", differentialDrive);
     differentialDrive.setSafetyEnabled(true);

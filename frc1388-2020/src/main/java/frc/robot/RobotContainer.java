@@ -74,12 +74,9 @@ public class RobotContainer {
 
   }
 
-  public static void updateGyro(){
-    
-  }
 
-  public static XboxController driveController = new XboxController(Constants.driveControllerInput);
-  public static XboxController opController = new XboxController(Constants.opControllerInput);
+  public static XboxController driveController = new XboxController(Constants.USB_driveController);
+  public static XboxController opController = new XboxController(Constants.USB_opController);
 
   public static double getDriveRightXAxis() {
     return driveController.getX(Hand.kRight);
