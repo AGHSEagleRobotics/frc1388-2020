@@ -7,9 +7,12 @@
 
 package frc.robot;
 
+import com.analog.adis16448.frc.ADIS16448_IMU;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import frc.robot.commands.Drive;
 import frc.robot.commands.IntakeArmCommand;
 import frc.robot.commands.IntakeShaftCommand;
@@ -28,16 +31,23 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private DriveTrain m_driveTrain = new DriveTrain(); 
-  private Drive m_autoCommand = new Drive(m_driveTrain);
+  private DriveTrain m_driveTrain; 
+  private ADIS16448_IMU m_gyro;
+  // private Command m_autoCommand = new Command();
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private IntakeShaftCommand m_intakeShaftCommand = new IntakeShaftCommand(m_intakeSubsystem);
   private IntakeArmCommand m_intakeArmCommand = new IntakeArmCommand(m_intakeSubsystem);
 
   /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
+   * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    m_gyro = new ADIS16448_IMU();
+
+    m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
+
+    // set default commands here
+    m_driveTrain.setDefaultCommand(new Drive(m_driveTrain));
     // Configure the button bindings
     configureButtonBindings();
 
@@ -65,23 +75,16 @@ public class RobotContainer {
 
   }
 
-  public static XboxController driveController = new XboxController(Constants.driveControllerInput);
-  public static XboxController opController = new XboxController(Constants.opControllerInput);
 
-  private static double deadBand(double input) {
-    if (input < 0.2 && input > -0.2) {
-      return 0.0;
-    } else {
-      return input;
-    }
-  }
+  public static XboxController driveController = new XboxController(Constants.USB_driveController);
+  public static XboxController opController = new XboxController(Constants.USB_opController);
 
   public static double getDriveRightXAxis() {
-    return deadBand(driveController.getX(Hand.kRight));
+    return driveController.getX(Hand.kRight);
   }
 
   public static double getDriveLeftYAxis() {
-    return deadBand(driveController.getY(Hand.kLeft));
+    return driveController.getY(Hand.kLeft);
   }
 
   public static boolean getAButton() {
@@ -100,6 +103,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An Drive will run in autonomous
-    return m_autoCommand;
+    return null; //m_autoCommand; // for the time being no Autonomous Command
   }
 }

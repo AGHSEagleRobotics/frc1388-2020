@@ -34,8 +34,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private static final double intakeUpArmSpeed = -1;
 
   public IntakeSubsystem() {
-    m_intakeShaftMotor = new WPI_TalonFX(Constants.intakeShaftMotorCANID);
-    m_intakeArmMotor = new WPI_TalonFX(Constants.intakeArmMotorCANID);
+    m_intakeShaftMotor = new WPI_TalonFX(Constants.CANID_intakeShaftMotor);
+    m_intakeArmMotor = new WPI_TalonFX(Constants.CANID_intakeArmMotor);
     m_intakeLimitSwitchTop = new DigitalInput(Constants.DIO_intakeShaftTop);
     m_intakeLimitSwitchBottom = new DigitalInput(Constants.DIO_intakeShaftBottom);
   }

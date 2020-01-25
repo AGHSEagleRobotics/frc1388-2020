@@ -13,17 +13,17 @@ import frc.robot.subsystems.DriveTrain;
 
 public class Drive extends CommandBase {
 
-  private boolean precisionMode = false;
-  private boolean lastLeftStickButton = false;
+  private boolean m_precisionMode = false;
+  private boolean m_lastLeftStickButton = false; 
   private DriveTrain m_subsystem;
-  
+
   /**
    * Creates a new DriveCommand.
    */
   public Drive( DriveTrain subsystem ) {
     m_subsystem = subsystem;
-    addRequirements(m_subsystem);
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(m_subsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -41,18 +41,15 @@ public class Drive extends CommandBase {
     boolean leftStickButton = RobotContainer.getLeftStickButton();
 
     // checks to see if the button has been pressed and then flags the precision mode
-    if(leftStickButton && !lastLeftStickButton) {
-      precisionMode = !precisionMode;
+    if(leftStickButton && !m_lastLeftStickButton) {
+      m_precisionMode = !m_precisionMode;
     }
-    lastLeftStickButton = leftStickButton;
-
-    // scales the Axises
-    leftYAxis *= 0.7;
-    rightXAxis *= 0.7;
-
-    // adds the curvature differential drive and allows the precision mode to be toggled
-    m_subsystem.curvatureDrive( leftYAxis, -rightXAxis, precisionMode);
+    m_lastLeftStickButton = leftStickButton;
     
+    // the deadband is placed in the subsystem
+    // adds the curvature differential drive and allows the precision mode to be toggled
+    m_subsystem.curvatureDrive( leftYAxis, -rightXAxis, m_precisionMode);
+
   }
 
   // Called once the command ends or is interrupted.
