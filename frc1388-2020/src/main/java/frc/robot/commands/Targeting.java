@@ -27,7 +27,7 @@ public class Targeting extends CommandBase {
   // area of the target we want
   // really I'm hesitant to put this because we could do the math to have the 
   // shooter change its velocity to match the distance and arch required to score
-  private final double TARGET_AREA = 0.0; // TODO unknown value
+  private final double TARGET_AREA = 8.7; // TODO unknown value
 
   // saw some examples of a max speed on the targeting function some pros some cons
   private final double MAX_SPEED = 0.7; // TODO undecided value
@@ -39,16 +39,19 @@ public class Targeting extends CommandBase {
   private final double MIN_VALID_TARGET = 0.1; // TODO undecided value
 
   // height of the mount in units //TODO decide units
-  private final double MOUNT_HEIGHT = 0.0; // TODO find out the height
+  private final double MOUNT_HEIGHT = 12.0; // TODO find out the height
 
   // angle of the mount in units // TODO decide units
   private final double MOUNT_ANGLE = 0.0; // TODO find out angle of mount
 
   // height of the target // TODO decide units
-  private final double TARGET_HEIGHT = 0.0; // TODO find out height of target
+  private final double TARGET_HEIGHT = 6.0; // TODO find out height of target
 
   // Maximum distance to shoot the ball
-  private final double MAX_DISTANCE = 0.0;
+  private final double MAX_DISTANCE = 12.0;
+
+  // Minimum distance to shoot the ball
+  private final double MIN_DISTANCE = 3.0;
 
   /************* Changing Variables  ***************/
 
@@ -101,6 +104,7 @@ public class Targeting extends CommandBase {
   // flag for targeting to be running or not
   private boolean targetingOn = false;
 
+  private int ctr = 0;
   /**
    * Creates a new Targeting.
    */
@@ -121,6 +125,15 @@ public class Targeting extends CommandBase {
     updateLimeLight();
     distanceMath();
 
+    if( ctr%200 == 0 ){
+      System.out.println( "Vlaid Target" + validTarget );
+      System.out.println( "Horizontal Offset" + horizontalOffset );
+      System.out.println( "vertical Offset" + verticalOffset );
+      System.out.println( "area" + area );
+      System.out.println( "Distance Flag" + distanceFlag );
+      System.out.println( "angle flag" + angleFlag );
+    }
+    ctr++;
     // area where we can add values to shuffle board as the if will exit the execute
     
     // retreives the full drive function button cue
@@ -177,7 +190,7 @@ public class Targeting extends CommandBase {
     // place to put math for computing distance from the target so that the distance flag can be triggered 
     // also a good place for calculating velocity to change for the shooter
     distanceFromTarget = (TARGET_HEIGHT - MOUNT_HEIGHT ) / Math.tan( MOUNT_ANGLE + verticalOffset );
-    distanceFlag = distanceFromTarget < MAX_DISTANCE;
+    distanceFlag = distanceFromTarget < MAX_DISTANCE || distanceFromTarget > MIN_DISTANCE;
 
     // to calculate the positition editting the following formula is needed
     // other factors like air resistance, mass and degree angle of launch, gravity, Spin

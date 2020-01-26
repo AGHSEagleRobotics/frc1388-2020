@@ -22,6 +22,7 @@ import frc.robot.USBLogging.Level;
 public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;
+  private Command m_targeting;
 
   private RobotContainer m_robotContainer;
 
@@ -112,7 +113,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
+    m_targeting = m_robotContainer.getTargetingCommand();
+    m_targeting.schedule();
   }
 
   /**

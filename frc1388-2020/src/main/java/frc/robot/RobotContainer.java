@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import frc.robot.commands.Drive;
 import frc.robot.commands.IntakeArmCommand;
 import frc.robot.commands.IntakeShaftCommand;
+import frc.robot.commands.Targeting;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,6 +37,7 @@ public class RobotContainer {
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private IntakeShaftCommand m_intakeShaftCommand = new IntakeShaftCommand(m_intakeSubsystem);
   private IntakeArmCommand m_intakeArmCommand = new IntakeArmCommand(m_intakeSubsystem);
+  private Targeting m_targeting;
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -44,7 +46,7 @@ public class RobotContainer {
     m_gyro = new ADIS16448_IMU();
 
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
-
+    m_targeting = new Targeting(m_driveTrain);
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain));
     // Configure the button bindings
@@ -111,5 +113,9 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An Drive will run in autonomous
     return null; //m_autoCommand; // for the time being no Autonomous Command
+  }
+
+  public Command getTargetingCommand(){
+    return m_targeting;
   }
 }
