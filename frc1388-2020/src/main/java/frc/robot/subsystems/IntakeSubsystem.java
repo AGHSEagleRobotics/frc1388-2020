@@ -7,25 +7,28 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
-  /**
-   * Creates a new IntakeSubsystem.
-   */
+  public enum Direction {
+    kUp,
+    kDown,
+    kStop
+  }
 
    // Instance fields of the shaft motor and the arm motor.
-  private final WPI_TalonFX m_intakeShaftMotor;
-  private final WPI_TalonFX m_intakeArmMotor;
+  private final WPI_TalonSRX m_intakeShaftMotor;
+  private final WPI_VictorSPX m_intakeArmMotor;
   
   private final DigitalInput m_intakeLimitSwitchTop;
   private final DigitalInput m_intakeLimitSwitchBottom;
 
-  // Variables for the motor speeds. The variable values can change based on the 
+  // Variables for the motor speeds. TODO The variable values can change based on the 
   // direction in which negative and positive values spin the motors and what speed
   // is required to efficiently run the mechanisms.
 
@@ -34,18 +37,18 @@ public class IntakeSubsystem extends SubsystemBase {
   private static final double intakeUpArmSpeed = -1;
 
   public IntakeSubsystem() {
-    m_intakeShaftMotor = new WPI_TalonFX(Constants.CANID_intakeShaftMotor);
-    m_intakeArmMotor = new WPI_TalonFX(Constants.CANID_intakeArmMotor);
-    m_intakeLimitSwitchTop = new DigitalInput(Constants.DIO_intakeShaftTop);
-    m_intakeLimitSwitchBottom = new DigitalInput(Constants.DIO_intakeShaftBottom);
+    m_intakeShaftMotor = new WPI_TalonSRX(Constants.CANID_intakeShaftMotor);
+    m_intakeArmMotor = new WPI_VictorSPX(Constants.CANID_intakeArmMotor);
+    m_intakeLimitSwitchTop = new DigitalInput(Constants.DIO_intakeArmTop);
+    m_intakeLimitSwitchBottom = new DigitalInput(Constants.DIO_intakeArmBottom);
   }
 
   public void setIntakeShaftMotor(double speed){
     m_intakeShaftMotor.set(speed);
   }
-// The else statement could be changed to the intakeShaftSpeed if people want
+// TODO The else statement could be changed to the intakeShaftSpeed if people want
 // to raise the arm to stop ball intake when the robot has reached maximum capacity
-// (5 balls) and keep the shaft moving
+// (5 balls) and keep the shaft moving.
 
   public void setIntakeShaftMotor(boolean isOn) {
       if (isOn){
@@ -58,16 +61,22 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setIntakeArmMotor(double speed) {
     m_intakeArmMotor.set(speed);
   }
- // The speed of the intake arm motor and the time it takes for the 
+ // TODO The speed of the intake arm motor and the time it takes for the 
  // arm to lower itself to the correct angle
  // are interdependent and need to be changed so that the intake arm lowers
  // the correct amount.
 
-  public void setIntakeArmMotor(boolean isOn) {
-    if (isOn){
-      m_intakeArmMotor.set(intakeDownArmSpeed);
-    } else{
-      m_intakeArmMotor.set(intakeUpArmSpeed);
+  public void setIntakeArmMotor(Direction dir) {
+    switch (dir) {
+      case kUp:
+        m_intakeArmMotor.set(intakeUpArmSpeed);
+        break;
+      case kDown:
+        m_intakeArmMotor.set(intakeDownArmSpeed);
+        break;
+      case kStop:
+        m_intakeArmMotor.set(0);
+        break;
     }
   }
 

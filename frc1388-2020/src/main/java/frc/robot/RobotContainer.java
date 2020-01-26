@@ -36,7 +36,6 @@ public class RobotContainer {
   // private Command m_autoCommand = new Command();
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private IntakeShaftCommand m_intakeShaftCommand = new IntakeShaftCommand(m_intakeSubsystem);
-  private IntakeArmCommand m_intakeArmCommand = new IntakeArmCommand(m_intakeSubsystem);
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -69,9 +68,12 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    //new JoystickButton(driveController, XboxController.Button.kA.value).whenPressed(m_intakeShaftCommand);
-    //new JoystickButton(driveController, XboxController.Button.kB.value).whenPressed(m_intakeArmCommand);
-    //new JoystickButton(driveController, XboxController.Button.kX.value).whenPressed(m_intakeArmCommand);
+    new JoystickButton(driveController, XboxController.Button.kA.value).whenPressed(m_intakeShaftCommand);
+    // TODO Determine correct timeout value.
+    new JoystickButton(driveController, XboxController.Button.kB.value)
+        .whenPressed(new IntakeArmCommand(m_intakeSubsystem, true).withTimeout(Double.POSITIVE_INFINITY));
+    new JoystickButton(driveController, XboxController.Button.kX.value)
+        .whenPressed(new IntakeArmCommand(m_intakeSubsystem, false).withTimeout(Double.POSITIVE_INFINITY));
 
   }
 
