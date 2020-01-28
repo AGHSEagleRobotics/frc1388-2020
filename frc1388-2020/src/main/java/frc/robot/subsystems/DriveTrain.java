@@ -7,10 +7,16 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -21,23 +27,46 @@ public class DriveTrain extends SubsystemBase {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  private WPI_TalonSRX leftFront;
-  private WPI_TalonSRX rightFront;
-  private WPI_TalonSRX leftBack;
-  private WPI_TalonSRX rightBack;
+  private final WPI_TalonFX m_leftFront;
+  private final WPI_TalonFX m_rightFront;
+  private final WPI_TalonFX m_leftBack;
+  private final WPI_TalonFX m_rightBack;
 
-  private DifferentialDrive differentialDrive;
+  // need to instantiate the differenetail drive
+  private final DifferentialDrive differentialDrive;
 
-  public DriveTrain() {
-    leftFront = new WPI_TalonSRX( Constants.driveLFCANID);
-    rightFront = new WPI_TalonSRX( Constants.driveRFCANID);
-    leftBack = new WPI_TalonSRX( Constants.driveLBCANID);
-    rightBack = new WPI_TalonSRX( Constants.driveRBCANID);
+  private final DifferentialDriveOdometry m_odometry;
+  private Rotation2d angle;
+  private final Supplier<Rotation2d> m_angleSupplier;
 
+  private final double K_CPR_TO_FT = 1 / 216; // don't know this value
+
+  private Pose2d m_newPosition;
+
+  private double leftEncoderDistance;
+  private double rightEncoderDistance;
+
+
+  public DriveTrain( Supplier<Rotation2d> angleSupplier ) {
+    
+    m_leftFront = new WPI_TalonFX( Constants.CANID_driveLF);
+    m_rightFront = new WPI_TalonFX( Constants.CANID_driveRF);
+    m_leftBack = new WPI_TalonFX( Constants.CANID_driveLB);
+    m_rightBack = new WPI_TalonFX( Constants.CANID_driveRB);
+
+    followMode();
+    configFalconFX();
+    
+    differentialDrive = new DifferentialDrive(m_leftFront, m_rightFront);
+    
+    m_angleSupplier = angleSupplier;
+
+    m_odometry = new DifferentialDriveOdometry(m_angleSupplier.get());
+    angle = m_angleSupplier.get();
+
+    // uncomment which nuetral mode desired
     // neutralCoast();
     neutralBrake();
-    
-    followMode();
 
     addChild("DifferentialDrive", differentialDrive);
     differentialDrive.setSafetyEnabled(true);
@@ -47,17 +76,22 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void neutralBrake() {
-    leftFront.setNeutralMode( NeutralMode.Brake);
-    rightFront.setNeutralMode( NeutralMode.Brake);
-    leftBack.setNeutralMode( NeutralMode.Brake);
-    rightBack.setNeutralMode( NeutralMode.Brake);
+    m_leftFront.setNeutralMode( NeutralMode.Brake);
+    m_rightFront.setNeutralMode( NeutralMode.Brake);
+    m_leftBack.setNeutralMode( NeutralMode.Brake);
+    m_rightBack.setNeutralMode( NeutralMode.Brake);
   }
 
   public void neutralCoast() {
-    leftFront.setNeutralMode( NeutralMode.Coast);
-    rightFront.setNeutralMode( NeutralMode.Coast);
-    leftBack.setNeutralMode( NeutralMode.Coast);
-    rightBack.setNeutralMode( NeutralMode.Coast);
+    m_leftFront.setNeutralMode( NeutralMode.Coast);
+    m_rightFront.setNeutralMode( NeutralMode.Coast);
+    m_leftBack.setNeutralMode( NeutralMode.Coast);
+    m_rightBack.setNeutralMode( NeutralMode.Coast);
+  }
+
+  public void configFalconFX(){
+    m_leftFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    m_rightFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
   }
 
   // Creates Options for drive method
@@ -72,16 +106,22 @@ public class DriveTrain extends SubsystemBase {
   }
 
   // establishes the follow method in which the sides of 
-  // motor controllers would follow the other
+  // motor controllers would follow the other 
   
   public void followMode() {
-    leftBack.follow( leftFront );
-    rightBack.follow( rightFront );
+    m_leftBack.follow( m_leftFront );
+    m_rightBack.follow( m_rightFront );
   }
 
   // to be used in the future for uses like checking the gyro
   @Override
   public void periodic() {
+    // // refer to getSelectedSensorPosition() and configSelectedFeedbackSensor (FeedbackDevice feedbackDevice)
+    // leftEncoderDistance = m_leftFront.getSelectedSensorPosition();
+    // rightEncoderDistance = m_rightFront.getSelectedSensorPosition();
+    // angle =  m_angleSupplier.get();
+    // m_newPosition = m_odometry.getPoseMeters();
+    // m_odometry.update( angle, leftEncoderDistance, rightEncoderDistance );
 
   }
 }

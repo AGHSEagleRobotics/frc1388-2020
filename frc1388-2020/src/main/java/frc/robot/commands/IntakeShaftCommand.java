@@ -8,53 +8,35 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
-import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.IntakeSubsystem;
 
-public class Drive extends CommandBase {
-
-  private boolean m_precisionMode = false;
-  private boolean m_lastLeftStickButton = false; 
-  private DriveTrain m_subsystem;
-
+public class IntakeShaftCommand extends CommandBase {
   /**
-   * Creates a new DriveCommand.
+   * Creates a new IntakeShaftCommand.
    */
-  public Drive( DriveTrain subsystem ) {
-    m_subsystem = subsystem;
+  private IntakeSubsystem m_intakeSubsystem;
+
+  public IntakeShaftCommand(IntakeSubsystem intakeSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_subsystem);
+    m_intakeSubsystem = intakeSubsystem;
+    addRequirements(m_intakeSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_intakeSubsystem.setIntakeShaftMotor(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    // retrives the nessesary inputs from the Controller
-    double leftYAxis = RobotContainer.getDriveLeftYAxis();
-    double rightXAxis = RobotContainer.getDriveRightXAxis();
-    boolean leftStickButton = RobotContainer.getLeftStickButton();
-
-    // checks to see if the button has been pressed and then flags the precision mode
-    if(leftStickButton && !m_lastLeftStickButton) {
-      m_precisionMode = !m_precisionMode;
-    }
-    m_lastLeftStickButton = leftStickButton;
-    
-    // the deadband is placed in the subsystem
-    // adds the curvature differential drive and allows the precision mode to be toggled
-    m_subsystem.curvatureDrive( leftYAxis, -rightXAxis, m_precisionMode);
-
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_intakeSubsystem.setIntakeShaftMotor(false);
   }
 
   // Returns true when the command should end.
