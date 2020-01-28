@@ -12,6 +12,8 @@ import java.util.function.Supplier;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -27,10 +29,10 @@ public class DriveTrain extends SubsystemBase {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  private final WPI_TalonFX m_leftFront;
-  private final WPI_TalonFX m_rightFront;
-  private final WPI_TalonFX m_leftBack;
-  private final WPI_TalonFX m_rightBack;
+  private final WPI_VictorSPX m_leftFront;
+  private final WPI_TalonSRX m_rightFront;
+  private final WPI_TalonSRX m_leftBack;
+  private final WPI_VictorSPX m_rightBack;
 
   // need to instantiate the differenetail drive
   private final DifferentialDrive differentialDrive;
@@ -49,13 +51,13 @@ public class DriveTrain extends SubsystemBase {
 
   public DriveTrain( Supplier<Rotation2d> angleSupplier ) {
     
-    m_leftFront = new WPI_TalonFX( Constants.CANID_driveLF);
-    m_rightFront = new WPI_TalonFX( Constants.CANID_driveRF);
-    m_leftBack = new WPI_TalonFX( Constants.CANID_driveLB);
-    m_rightBack = new WPI_TalonFX( Constants.CANID_driveRB);
+    m_leftFront = new WPI_VictorSPX( Constants.CANID_driveLF);
+    m_rightFront = new WPI_TalonSRX( Constants.CANID_driveRF);
+    m_leftBack = new WPI_TalonSRX( Constants.CANID_driveLB);
+    m_rightBack = new WPI_VictorSPX( Constants.CANID_driveRB);
 
     followMode();
-    configFalconFX();
+    // configFalconFX();
     
     differentialDrive = new DifferentialDrive(m_leftFront, m_rightFront);
     
@@ -89,10 +91,10 @@ public class DriveTrain extends SubsystemBase {
     m_rightBack.setNeutralMode( NeutralMode.Coast);
   }
 
-  public void configFalconFX(){
-    m_leftFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-    m_rightFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-  }
+  // public void configFalconFX(){
+  //   m_leftFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+  //   m_rightFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+  // }
 
   // Creates Options for drive method
   public void arcadeDrive( double speed, double rotation ) {

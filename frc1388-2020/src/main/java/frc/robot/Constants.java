@@ -40,8 +40,8 @@ public final class Constants {
 
     public static final int CANID_driveRB = 1;
     public static final int CANID_driveRF = 2;
-    public static final int CANID_driveLF = 3;
-    public static final int CANID_driveLB = 4;
+    public static final int CANID_driveLF = 4;
+    public static final int CANID_driveLB = 3;
     
     /**
      * TalonSRX Can IDs
@@ -59,7 +59,7 @@ public final class Constants {
      */
     
          public static final int DIO_intakeShaftTop = 0;
-         public static final int DIO_intakeShaftBottom = 0;
+         public static final int DIO_intakeShaftBottom = 1;
 
     /**
      * Analog Inputs

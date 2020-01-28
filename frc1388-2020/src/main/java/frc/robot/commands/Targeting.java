@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveTrain;
 import edu.wpi.first.networktables.*;
+import edu.wpi.first.wpilibj.Timer;
+
+import java.util.ArrayList;
 
 public class Targeting extends CommandBase {
   private DriveTrain m_subsystem;
@@ -39,13 +42,13 @@ public class Targeting extends CommandBase {
   private final double MIN_VALID_TARGET = 0.1; // TODO undecided value
 
   // height of the mount in units //TODO decide units
-  private final double MOUNT_HEIGHT = 12.0; // TODO find out the height
+  private final double MOUNT_HEIGHT = 1.0; // TODO find out the height
 
   // angle of the mount in units // TODO decide units
   private final double MOUNT_ANGLE = 0.0; // TODO find out angle of mount
 
   // height of the target // TODO decide units
-  private final double TARGET_HEIGHT = 6.0; // TODO find out height of target
+  private final double TARGET_HEIGHT = 6.5; // TODO find out height of target
 
   // Maximum distance to shoot the ball
   private final double MAX_DISTANCE = 12.0;
@@ -104,7 +107,11 @@ public class Targeting extends CommandBase {
   // flag for targeting to be running or not
   private boolean targetingOn = false;
 
-  private int ctr = 0;
+  private boolean m_lastBButton = false;
+  private boolean m_lastXButton = false;
+  private ArrayList<Double> areaList = new ArrayList<>();
+  private Timer timer = new Timer();
+
   /**
    * Creates a new Targeting.
    */
@@ -117,6 +124,7 @@ public class Targeting extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -125,21 +133,30 @@ public class Targeting extends CommandBase {
     updateLimeLight();
     distanceMath();
 
-    if( ctr%200 == 0 ){
-      System.out.println( "Vlaid Target" + validTarget );
-      System.out.println( "Horizontal Offset" + horizontalOffset );
-      System.out.println( "vertical Offset" + verticalOffset );
-      System.out.println( "area" + area );
-      System.out.println( "Distance Flag" + distanceFlag );
-      System.out.println( "angle flag" + angleFlag );
+    if( timer.hasPeriodPassed(4.0) ){
+      System.out.println( "Valid Target: " + validTarget );
+      System.out.println( "Horizontal Offset: " + horizontalOffset );
+      System.out.println( "vertical Offset: " + verticalOffset );
+      System.out.println( "area: " + area );
+      System.out.println( "Distance from Target: " + distanceFromTarget );
+      System.out.println( "Distance Flag: " + distanceFlag );
+      System.out.println( "angle flag: " + angleFlag );
     }
-    ctr++;
+    
     // area where we can add values to shuffle board as the if will exit the execute
     
     // retreives the full drive function button cue
     boolean fullDriveFunction = RobotContainer.getXButton(); // TODO change this to a toggle function
+    if(fullDriveFunction && !m_lastXButton) {
+      fullDriveFunction = !m_lastXButton;
+    }
+    m_lastXButton = fullDriveFunction;
     // checks to see if targeting is enabled if not then will exit execute but not close the command
     targetingOn = RobotContainer.getBButton(); // TODO change this to toggle function
+    if(targetingOn && !m_lastBButton) {
+      targetingOn = !m_lastBButton;
+    }
+    m_lastBButton = targetingOn;
     if( !targetingOn ){
       return;
     }
@@ -168,6 +185,7 @@ public class Targeting extends CommandBase {
       }
     }
 
+    driveSpeed *= -1;
     // this checks to make sure that a change in position is needed
     // not sold on the idea but thought it added to reenforcing the tolerances
     if( !distanceFlag || !angleFlag ){
@@ -228,6 +246,7 @@ public class Targeting extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    timer.stop();
   }
 
   // Returns true when the command should end.
