@@ -104,6 +104,9 @@ public class RobotContainer {
     return driveController.getStickButton(Hand.kLeft);
   }
 
+  public Command getTargeting(){
+    return m_targeting;
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

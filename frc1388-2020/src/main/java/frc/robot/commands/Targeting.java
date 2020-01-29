@@ -141,6 +141,7 @@ public class Targeting extends CommandBase {
       System.out.println( "Distance from Target: " + distanceFromTarget );
       System.out.println( "Distance Flag: " + distanceFlag );
       System.out.println( "angle flag: " + angleFlag );
+      System.out.println( "Targeting On: " + targetingOn );
     }
     
     // area where we can add values to shuffle board as the if will exit the execute
@@ -148,44 +149,21 @@ public class Targeting extends CommandBase {
     // retreives the full drive function button cue
     boolean fullDriveFunction = RobotContainer.getXButton(); // TODO change this to a toggle function
     if(fullDriveFunction && !m_lastXButton) {
-      fullDriveFunction = !m_lastXButton;
+      fullDriveFunction = !fullDriveFunction;
     }
     m_lastXButton = fullDriveFunction;
     // checks to see if targeting is enabled if not then will exit execute but not close the command
-    targetingOn = RobotContainer.getBButton(); // TODO change this to toggle function
-    if(targetingOn && !m_lastBButton) {
-      targetingOn = !m_lastBButton;
-    }
-    m_lastBButton = targetingOn;
+    targetingOn = true; // TODO change this to toggle function
+    // if(targetingOn && !m_lastBButton) {
+    //   targetingOn = !targetingOn;
+    // }
+    // m_lastBButton = targetingOn;
     if( !targetingOn ){
       return;
     }
 
-    // if no target is seen it will turn in place till target found
-    if( !hasValidTarget ){
 
-      // if a valid target is seen then will turn towards the suspected target
-      // else then will spin in a clockwise direction
-      if( validTarget < MIN_VALID_TARGET ) {
-        m_subsystem.arcadeDrive( TURN_ROTATION, 0.0 );
-      }else{
-        double seekRotation;
-        if( horizontalOffset < 0.0 ) {
-          seekRotation = -TURN_ROTATION;
-        }else {
-          seekRotation = TURN_ROTATION;
-        }
-
-        if(previousValidTarget > validTarget){
-          seekRotation *= -1;
-        }
-        
-        previousValidTarget = validTarget;
-        m_subsystem.arcadeDrive( seekRotation, 0.0 );
-      }
-    }
-
-    driveSpeed *= -1;
+    //TODO check and get rid of the distance changing
     // this checks to make sure that a change in position is needed
     // not sold on the idea but thought it added to reenforcing the tolerances
     if( !distanceFlag || !angleFlag ){
@@ -208,7 +186,7 @@ public class Targeting extends CommandBase {
     // place to put math for computing distance from the target so that the distance flag can be triggered 
     // also a good place for calculating velocity to change for the shooter
     distanceFromTarget = (TARGET_HEIGHT - MOUNT_HEIGHT ) / Math.tan( MOUNT_ANGLE + verticalOffset );
-    distanceFlag = distanceFromTarget < MAX_DISTANCE || distanceFromTarget > MIN_DISTANCE;
+    distanceFlag = distanceFromTarget < MAX_DISTANCE && distanceFromTarget > MIN_DISTANCE;
 
     // to calculate the positition editting the following formula is needed
     // other factors like air resistance, mass and degree angle of launch, gravity, Spin
@@ -231,7 +209,7 @@ public class Targeting extends CommandBase {
     hasValidTarget = true;
 
     // TODO decide the tolerance of the horizontal offset
-    angleFlag =  horizontalOffset > .05 || horizontalOffset < .05;
+    angleFlag =  horizontalOffset > -0.05 && horizontalOffset < .05;
 
     driveRotation = horizontalOffset* K_ROTATION;
 
@@ -247,6 +225,7 @@ public class Targeting extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     timer.stop();
+
   }
 
   // Returns true when the command should end.

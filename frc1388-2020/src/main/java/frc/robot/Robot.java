@@ -113,8 +113,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_targeting = m_robotContainer.getTargetingCommand();
-    m_targeting.schedule();
+    m_robotContainer.getTargeting().schedule();
   }
 
   /**
