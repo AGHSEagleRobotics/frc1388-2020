@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;  
 import frc.robot.USBLogging.Level;
+import frc.robot.commands.Targeting;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -22,7 +23,6 @@ import frc.robot.USBLogging.Level;
 public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;
-  private Command m_targeting;
 
   private RobotContainer m_robotContainer;
 
@@ -32,6 +32,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+
+    Targeting.disableLimeLightLED();
     // Start up USB logging
     USBLogging.openLog();
     USBLogging.setLogLevel(Level.INFO);
@@ -77,6 +79,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    Targeting.disableLimeLightLED();
   }
 
   @Override

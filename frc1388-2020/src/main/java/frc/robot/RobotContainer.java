@@ -21,6 +21,7 @@ import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -46,7 +47,7 @@ public class RobotContainer {
     m_gyro = new ADIS16448_IMU();
 
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
-    m_targeting = new Targeting(m_driveTrain);
+    m_targeting = new Targeting(m_driveTrain, () -> driveController.getYButton() );
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain));
     // Configure the button bindings
@@ -73,7 +74,7 @@ public class RobotContainer {
     //new Joystick(driveController, XboxController.Button.kA.value).whenPressed(intakeShaftCommandName);
     //new Joystick(driveController, XboxController.Button.kB.value).whenPressed(intakeDownArmCommandName.withTimeout(double));
     //new Joystick(driveController, XboxController.Button.kX.value).whenPressed(intakeUpArmCommandName.withTimeout(double));
-
+    
   }
 
 
@@ -100,6 +101,7 @@ public class RobotContainer {
     return driveController.getXButton();
   }
 
+
   public static boolean getLeftStickButton() {
     return driveController.getStickButton(Hand.kLeft);
   }
@@ -118,7 +120,7 @@ public class RobotContainer {
     return null; //m_autoCommand; // for the time being no Autonomous Command
   }
 
-  public Command getTargetingCommand(){
+  public Targeting getTargetingCommand(){
     return m_targeting;
   }
 }

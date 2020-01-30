@@ -12,6 +12,7 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveTrain;
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.Timer;
+import java.util.function.BooleanSupplier;
 
 import java.util.ArrayList;
 
@@ -105,7 +106,7 @@ public class Targeting extends CommandBase {
   */
 
   // flag for targeting to be running or not
-  private boolean targetingOn = false;
+  private final BooleanSupplier m_targetingOn;
 
   private boolean m_lastBButton = false;
   private boolean m_lastXButton = false;
@@ -115,9 +116,10 @@ public class Targeting extends CommandBase {
   /**
    * Creates a new Targeting.
    */
-  public Targeting( DriveTrain subsystem ) {
+  public Targeting( DriveTrain subsystem, BooleanSupplier targetingButton ) {
     m_subsystem = subsystem;
     addRequirements(subsystem);
+    m_targetingOn = targetingButton;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -125,6 +127,7 @@ public class Targeting extends CommandBase {
   @Override
   public void initialize() {
     timer.start();
+    enableLimeLightLED(); 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -141,24 +144,25 @@ public class Targeting extends CommandBase {
       System.out.println( "Distance from Target: " + distanceFromTarget );
       System.out.println( "Distance Flag: " + distanceFlag );
       System.out.println( "angle flag: " + angleFlag );
-      System.out.println( "Targeting On: " + targetingOn );
+      System.out.println( "Targeting On: " + m_targetingOn );
     }
     
     // area where we can add values to shuffle board as the if will exit the execute
     
     // retreives the full drive function button cue
-    boolean fullDriveFunction = RobotContainer.getXButton(); // TODO change this to a toggle function
-    if(fullDriveFunction && !m_lastXButton) {
-      fullDriveFunction = !fullDriveFunction;
-    }
-    m_lastXButton = fullDriveFunction;
-    // checks to see if targeting is enabled if not then will exit execute but not close the command
-    targetingOn = true; // TODO change this to toggle function
-    // if(targetingOn && !m_lastBButton) {
-    //   targetingOn = !targetingOn;
+    // boolean fullDriveFunction = RobotContainer.getXButton();
+    // if(fullDriveFunction && !m_lastXButton) {
+    //   fullDriveFunction = !fullDriveFunction;
     // }
-    // m_lastBButton = targetingOn;
-    if( !targetingOn ){
+    // m_lastXButton = fullDriveFunction;
+
+
+    // checks to see if targeting is enabled if not then will exit execute but not close the command
+    // if(m_targetingOn && !m_lastBButton) {
+    //   m_targetingOn = !m_targetingOn;
+    // }
+    // m_lastBButton = m_targetingOn;
+    if( !m_targetingOn.getAsBoolean() ){
       return;
     }
 
@@ -170,12 +174,8 @@ public class Targeting extends CommandBase {
 
       // if statement checking whether to turn or to drive or full drive function
       // I personally think is advantageous because it will be a beeline and have faster momentum towards the target
-      if( fullDriveFunction ){
-        m_subsystem.arcadeDrive( driveSpeed, driveRotation);
-      }else if( !angleFlag ){
+      if( !angleFlag ){
         m_subsystem.arcadeDrive( 0.0, driveRotation );
-      }else{
-        m_subsystem.arcadeDrive( driveSpeed, 0.0);
       }
       
     }
@@ -194,7 +194,15 @@ public class Targeting extends CommandBase {
     // velocity = ((distanceFromTarget) + .5 * acceleration * ( time * time )
   }
 
-  private void updateLimeLight() {
+  public static void disableLimeLightLED(){
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber( 1 ); 
+  }
+
+  public static void enableLimeLightLED(){
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber( 3 ); 
+  }
+
+  public void updateLimeLight() {
     validTarget = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
     horizontalOffset = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
     verticalOffset = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
