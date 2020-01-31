@@ -25,6 +25,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ColorSpinner;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -42,14 +43,7 @@ public class RobotContainer {
   private IntakeShaftCommand m_intakeShaftCommand = new IntakeShaftCommand(m_intakeSubsystem);
   private IntakeArmCommand m_intakeArmCommand = new IntakeArmCommand(m_intakeSubsystem);
 
-  private final ColorSensorV3 m_colorSensor = new ColorSensorV3(Constants.I2C_Port_ColorSensor);
-
-  // FIXME figure out what motors are on here
-  private final WPI_VictorSPX m_spinnermotor = new WPI_VictorSPX(2) ;
- 
-  private final WPI_VictorSPX m_armMotor = new WPI_VictorSPX(0);
-
-  private final ColorSpinner m_colorSpinner = new ColorSpinner(m_colorSensor, m_spinnermotor, m_armMotor);
+  private ColorSpinner m_colorSpinner = new ColorSpinner();
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
@@ -84,6 +78,8 @@ public class RobotContainer {
     //new Joystick(driveController, XboxController.Button.kA.value).whenPressed(intakeShaftCommandName);
     //new Joystick(driveController, XboxController.Button.kB.value).whenPressed(intakeDownArmCommandName.withTimeout(double));
     //new Joystick(driveController, XboxController.Button.kX.value).whenPressed(intakeUpArmCommandName.withTimeout(double));
+    new JoystickButton(opController, XboxController.Button.kBumperRight.value)
+        .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
 
   }
 
@@ -107,6 +103,9 @@ public class RobotContainer {
     return driveController.getStickButton(Hand.kLeft);
   }
 
+  public static boolean getLeftBumper() {
+    return opController.getBumper(Hand.kLeft);
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -116,5 +115,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An Drive will run in autonomous
     return null; //m_autoCommand; // for the time being no Autonomous Command
+
+
   }
 }

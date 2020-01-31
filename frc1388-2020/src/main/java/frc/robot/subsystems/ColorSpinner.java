@@ -7,15 +7,17 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.USBLogging;
 
 public class ColorSpinner extends SubsystemBase {
 
@@ -27,16 +29,7 @@ public class ColorSpinner extends SubsystemBase {
   private final WPI_VictorSPX m_spinnerMotor;
   private final WPI_VictorSPX m_armMotor;  
 
-  private boolean m_colorArmDown = false;
-
-  // color address for sensor w/o the LED light
-  // private final Color kRedTarget = ColorMatch.makeColor( 0.641845703125,
-  // 0.29248046875, 0.0654296875);
-  // private final Color kGreenTarget = ColorMatch.makeColor(0.256, 0.587, 0.156);
-  // private final Color kBlueTarget = ColorMatch.makeColor(0.194, 0.484, 0.329);
-  // private final Color kYellowTarget = ColorMatch.makeColor(0.411, 0.516,
-  // 0.072);
-  // color address for sensor with the LED light
+  private boolean m_spinnerArmDown = false;
 
   private final Color kRedTarget = ColorMatch.makeColor(0.532, 0.341, 0.126);
   private final Color kBlueTarget = ColorMatch.makeColor(0.157, 0.452, 0.389);
@@ -44,16 +37,16 @@ public class ColorSpinner extends SubsystemBase {
   private final Color kYellowTarget = ColorMatch.makeColor(0.329, 0.556, 0.072);
 
   private final ColorMatch colorMatch = new ColorMatch();
-
   // ======================================================
   // Constructors
   // ======================================================
 
-  public ColorSpinner(final ColorSensorV3 sensor, final WPI_VictorSPX motor, final WPI_VictorSPX arm ) {
-    m_colorSensor = sensor;
-    m_spinnerMotor = motor;
-    m_armMotor = arm;
-    m_colorArmDown = false;
+  public ColorSpinner() {
+    m_colorSensor = new ColorSensorV3(Constants.I2C_Port_ColorSensor);
+    m_spinnerMotor = new WPI_VictorSPX(Constants.CANID_colorSpinnerMotor);
+    m_armMotor = new WPI_VictorSPX(Constants.CANID_spinnerArmMotor);
+
+    neutralBrake();
 
     colorMatch.addColorMatch(kRedTarget);
     colorMatch.addColorMatch(kGreenTarget);
@@ -65,15 +58,13 @@ public class ColorSpinner extends SubsystemBase {
   // Color Sensor Checking
   // ======================================================
 
-public String checkColor() {
+  public String checkColor() {
     String c1;
     final Color color = m_colorSensor.getColor();
-    System.out.println("R = " + color.red + "  G = " + color.green + "  B = " + color.blue);
-    // Print lines are temporary
+    USBLogging.debug( "R = " + color.red + "  G = " + color.green + "  B = " + color.blue );
     final ColorMatchResult result = colorMatch.matchClosestColor(color);
-    System.out.println("R = " + result.color.red + "  G = " + result.color.green + "  B = " + result.color.blue
-        + " confidence = " + result.confidence);
-    // Print lines are temporary
+    USBLogging.debug( "R = " + result.color.red + "  G = " + result.color.green + "  B = " + result.color.blue
+      + " confidence = " + result.confidence );
     if (result.confidence <= .95) {
       c1 = "Uknown";
     } else if (result.color.equals(kRedTarget)) {
@@ -98,17 +89,18 @@ public String checkColor() {
   public void periodic() {
     // This method will be called once per scheduler run
     System.out.println(checkColor());
-    // checkColor();
   }
  
   // ======================================================
   // Motor Spinner
   // ======================================================
 
-  public void spinMotor( final double speed) {
-    if( m_colorArmDown ) {
-      m_spinnerMotor.set(speed);
-    }
+  public void spinMotor( final double speed ) {
+    m_spinnerMotor.set(speed);
+  }
+
+  private void neutralBrake() {
+    m_spinnerMotor.setNeutralMode( NeutralMode.Brake);
   }
 
   // ======================================================
@@ -118,19 +110,19 @@ public String checkColor() {
   
   public void engageArm()
   {
-    if( !m_colorArmDown )
+    if( !m_spinnerArmDown )
     {
       //TODO: engage the arm
-      m_colorArmDown = true;
+      m_spinnerArmDown = true;
     }
   }
 
   public void disengageArm()
   {
-    if( m_colorArmDown )
+    if( m_spinnerArmDown )
     {
     //TODO: disengage the arm
-    m_colorArmDown = false;
+    m_spinnerArmDown = false;
     }
   }
 

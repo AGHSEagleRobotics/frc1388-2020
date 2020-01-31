@@ -48,18 +48,21 @@ public final class Constants {
      */
 
     public static final int CANID_intakeShaftMotor = 0;
-    public static final int CANID_intakeArmMotor = 0;
+    public static final int CANID_intakeArmMotor = 1;
     
     /**
      * VictorSPX Can IDs
      */
+    public static final int CANID_colorSpinnerMotor = 4;
+    public static final int CANID_spinnerArmMotor = 5;
+     
 
     /**
      * Digital IO
      */
     
          public static final int DIO_intakeShaftTop = 0;
-         public static final int DIO_intakeShaftBottom = 0;
+         public static final int DIO_intakeShaftBottom = 1;
 
     /**
      * Analog Inputs
