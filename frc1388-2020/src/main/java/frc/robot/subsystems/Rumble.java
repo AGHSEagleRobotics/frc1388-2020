@@ -25,7 +25,7 @@ public class Rumble extends SubsystemBase {
   // Constant to use to turn off rumble
   private final double RUMBLE_OFF = 0.0;
   // number of Pulses used
-  private final int m_num = 2;
+  private final int m_num = 2; 
 
   public enum RumbleSide{
     LEFT(RumbleType.kLeftRumble), 

@@ -10,18 +10,21 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Rumble;
 
 public class Drive extends CommandBase {
 
   private boolean m_precisionMode = false;
   private boolean m_lastLeftStickButton = false; 
   private DriveTrain m_subsystem;
+  private Rumble m_driveRumble;
 
   /**
    * Creates a new DriveCommand.
    */
-  public Drive( DriveTrain subsystem ) {
+  public Drive( DriveTrain subsystem, Rumble rumble ) {
     m_subsystem = subsystem;
+    m_driveRumble = rumble;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_subsystem);
   }
@@ -43,6 +46,11 @@ public class Drive extends CommandBase {
     // checks to see if the button has been pressed and then flags the precision mode
     if(leftStickButton && !m_lastLeftStickButton) {
       m_precisionMode = !m_precisionMode;
+      if(m_precisionMode ){
+        m_driveRumble.rumblePulse(Rumble.RumbleSide.RIGHT);
+      }else{
+        m_driveRumble.rumblePulse(Rumble.RumbleSide.LEFT);
+      }
     }
     m_lastLeftStickButton = leftStickButton;
     

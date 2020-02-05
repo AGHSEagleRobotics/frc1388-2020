@@ -18,6 +18,7 @@ import frc.robot.commands.IntakeArmCommand;
 import frc.robot.commands.IntakeShaftCommand;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.Rumble;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -36,6 +37,8 @@ public class RobotContainer {
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private IntakeShaftCommand m_intakeShaftCommand = new IntakeShaftCommand(m_intakeSubsystem);
   private IntakeArmCommand m_intakeArmCommand = new IntakeArmCommand(m_intakeSubsystem);
+  private Rumble m_driveRumble = new Rumble(driveController);
+  private Rumble m_opRumble = new Rumble(opController);
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -46,7 +49,7 @@ public class RobotContainer {
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 
     // set default commands here
-    m_driveTrain.setDefaultCommand(new Drive(m_driveTrain));
+    m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
     // Configure the button bindings
     configureButtonBindings();
 
@@ -94,6 +97,9 @@ public class RobotContainer {
     return driveController.getStickButton(Hand.kLeft);
   }
 
+  public Rumble getDriveRumble(){
+    return m_driveRumble;
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
