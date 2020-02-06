@@ -43,27 +43,36 @@ public final class Constants {
     public static final int CANID_driveLF = 3;
     public static final int CANID_driveLB = 4;
     
+    
     /**
      * TalonSRX Can IDs
      */
 
     public static final int CANID_intakeShaftMotor = 0;
     public static final int CANID_intakeArmMotor = 0;
+    public static final int CANID_climbMotor = 5;
     
     /**
      * VictorSPX Can IDs
      */
 
+     public static final int CANID_trolleyMotor = 6;
     /**
      * Digital IO
      */
     
-         public static final int DIO_intakeShaftTop = 0;
-         public static final int DIO_intakeShaftBottom = 0;
+     public static final int DIO_intakeShaftTop = 0;
+     public static final int DIO_intakeShaftBottom = 0;
 
     /**
      * Analog Inputs
      */
+    
+    /**
+     * Relay Channel
+     */
+     public static final int RELAY_climbSolenoid = 0;
+     public static final int RELAY_trolleySolenoid = 0;
 
     /**
      * I2C Ports

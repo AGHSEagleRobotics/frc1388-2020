@@ -115,6 +115,8 @@ public class Robot extends TimedRobot {
 
   }
 
+
+  // TODO make trolley and climber only accessible during final 30 seconds
   /**
    * This function is called periodically during operator control.
    */
