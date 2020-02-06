@@ -113,15 +113,29 @@ public class DriveTrain extends SubsystemBase {
     m_rightBack.follow( m_rightFront );
   }
 
+  public Pose2d getOdometry(){
+    return m_odometry.getPoseMeters();
+  }
+
+  public long getRightEncoderInFeet(){
+    return (long)( K_CPR_TO_FT * rightEncoderDistance );
+  }
+
+  public long getLeftEncoderInFeet(){
+    return (long)( K_CPR_TO_FT * leftEncoderDistance );
+  }
+
+  
+
   // to be used in the future for uses like checking the gyro
   @Override
   public void periodic() {
-    // // refer to getSelectedSensorPosition() and configSelectedFeedbackSensor (FeedbackDevice feedbackDevice)
-    // leftEncoderDistance = m_leftFront.getSelectedSensorPosition();
-    // rightEncoderDistance = m_rightFront.getSelectedSensorPosition();
-    // angle =  m_angleSupplier.get();
-    // m_newPosition = m_odometry.getPoseMeters();
-    // m_odometry.update( angle, leftEncoderDistance, rightEncoderDistance );
+    // refer to getSelectedSensorPosition() and configSelectedFeedbackSensor (FeedbackDevice feedbackDevice)
+    leftEncoderDistance = m_leftFront.getSelectedSensorPosition();
+    rightEncoderDistance = m_rightFront.getSelectedSensorPosition();
+    angle =  m_angleSupplier.get();
+    m_newPosition = m_odometry.getPoseMeters();
+    m_odometry.update( angle, leftEncoderDistance, rightEncoderDistance );
 
   }
 }

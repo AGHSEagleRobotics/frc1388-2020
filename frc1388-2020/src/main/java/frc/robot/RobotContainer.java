@@ -67,8 +67,8 @@ public class RobotContainer {
 
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
-    m_climberSubsystem.setDefaultCommand(m_climbCommand);
-    m_trolleySubsystem.setDefaultCommand(m_trolleyCommand);
+    // m_climberSubsystem.setDefaultCommand(m_climbCommand);
+    // m_trolleySubsystem.setDefaultCommand(m_trolleyCommand);
     // Configure the button bindings
     configureButtonBindings();
 
@@ -163,6 +163,14 @@ public class RobotContainer {
 
   public Rumble getDriveRumble(){
     return m_driveRumble;
+  }
+
+  public Trolley getTrolley(){
+    return m_trolleyCommand;
+  }
+
+  public  Climb getClimb(){
+    return m_climbCommand;
   }
 
   /**
