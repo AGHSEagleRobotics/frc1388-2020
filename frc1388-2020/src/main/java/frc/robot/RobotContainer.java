@@ -7,7 +7,8 @@
 
 package frc.robot;
 
-import com.analog.adis16448.frc.ADIS16448_IMU;
+
+import com.analog.adis16470.frc.ADIS16470_IMU;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -19,8 +20,10 @@ import frc.robot.commands.IntakeShaftCommand;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Rumble;
+import frc.robot.subsystems.ColorSpinner;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -32,7 +35,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private DriveTrain m_driveTrain; 
-  private ADIS16448_IMU m_gyro;
+  private ADIS16470_IMU  m_gyro;
   // private Command m_autoCommand = new Command();
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private IntakeShaftCommand m_intakeShaftCommand = new IntakeShaftCommand(m_intakeSubsystem);
@@ -40,12 +43,13 @@ public class RobotContainer {
   private Rumble m_driveRumble = new Rumble(driveController);
   private Rumble m_opRumble = new Rumble(opController);
 
+  private ColorSpinner m_colorSpinner = new ColorSpinner();
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    m_gyro = new ADIS16448_IMU();
-
+    m_gyro = new ADIS16470_IMU();
+    m_gyro.calibrate();
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 
     // set default commands here
@@ -64,6 +68,11 @@ public class RobotContainer {
 
   }
 
+  public double getGyroAngle(){
+
+    return m_gyro.getAngle();
+    
+  }
   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by instantiating a {@link GenericHID} or one of its subclasses
@@ -74,6 +83,8 @@ public class RobotContainer {
     //new Joystick(driveController, XboxController.Button.kA.value).whenPressed(intakeShaftCommandName);
     //new Joystick(driveController, XboxController.Button.kB.value).whenPressed(intakeDownArmCommandName.withTimeout(double));
     //new Joystick(driveController, XboxController.Button.kX.value).whenPressed(intakeUpArmCommandName.withTimeout(double));
+    new JoystickButton(opController, XboxController.Button.kBumperRight.value)
+        .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
 
   }
 
@@ -97,8 +108,8 @@ public class RobotContainer {
     return driveController.getStickButton(Hand.kLeft);
   }
 
-  public Rumble getDriveRumble(){
-    return m_driveRumble;
+  public static boolean getLeftBumper() {
+    return opController.getBumper(Hand.kLeft);
   }
 
   /**
@@ -109,5 +120,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An Drive will run in autonomous
     return null; //m_autoCommand; // for the time being no Autonomous Command
+
+
   }
 }
