@@ -72,7 +72,7 @@ public final class Constants {
      * Relay Channel
      */
      public static final int RELAY_climbSolenoid = 0;
-     public static final int RELAY_trolleySolenoid = 0;
+     public static final int RELAY_trolleySolenoid = 1;
 
     /**
      * I2C Ports

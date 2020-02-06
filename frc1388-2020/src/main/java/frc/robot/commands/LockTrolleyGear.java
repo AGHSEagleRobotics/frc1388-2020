@@ -27,6 +27,7 @@ public class LockTrolleyGear extends CommandBase {
   public void initialize() {
     // changes and sets the trolley gear solenoid state
     m_solenoidState = !m_solenoidState;
+    System.out.println( "Switched!!" );
     m_solenoid.set(m_solenoidState);
   }
 
@@ -55,6 +56,6 @@ public class LockTrolleyGear extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }
