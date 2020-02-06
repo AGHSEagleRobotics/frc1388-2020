@@ -57,6 +57,7 @@ public final class Constants {
     /**
      * Analog Inputs
      */
+    public static final int AIN_ballSensor = 0; // Value known
 
     /**
      * I2C Ports
