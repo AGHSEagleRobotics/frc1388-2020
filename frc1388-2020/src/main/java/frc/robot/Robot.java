@@ -69,6 +69,8 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+  
   }
 
   /**
@@ -134,5 +136,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    USBLogging.info("Angle " + m_robotContainer.getGyroAngle());
   }
 }

@@ -7,13 +7,10 @@
 
 package frc.robot;
 
-import com.analog.adis16448.frc.ADIS16448_IMU;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-import com.revrobotics.ColorSensorV3;
+import com.analog.adis16470.frc.ADIS16470_IMU;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -37,7 +34,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private DriveTrain m_driveTrain; 
-  private ADIS16448_IMU m_gyro;
+  private ADIS16470_IMU  m_gyro;
   // private Command m_autoCommand = new Command();
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private IntakeShaftCommand m_intakeShaftCommand = new IntakeShaftCommand(m_intakeSubsystem);
@@ -48,8 +45,8 @@ public class RobotContainer {
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    m_gyro = new ADIS16448_IMU();
-
+    m_gyro = new ADIS16470_IMU();
+    m_gyro.calibrate();
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 
     // set default commands here
@@ -68,6 +65,11 @@ public class RobotContainer {
 
   }
 
+  public double getGyroAngle(){
+
+    return m_gyro.getAngle();
+    
+  }
   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by instantiating a {@link GenericHID} or one of its subclasses
