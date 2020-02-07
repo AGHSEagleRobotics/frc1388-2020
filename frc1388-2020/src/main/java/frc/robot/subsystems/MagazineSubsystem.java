@@ -49,9 +49,11 @@ public class MagazineSubsystem extends SubsystemBase {
     boolean ballPresent = false;
     if(getDistance() > IS_BALL_VALUE){
       ballPresent = false;
+      System.out.println("false");
     }
     if(getDistance() <IS_BALL_VALUE){
       ballPresent = true;
+      System.out.println("true");
     }
     return ballPresent;
   }
