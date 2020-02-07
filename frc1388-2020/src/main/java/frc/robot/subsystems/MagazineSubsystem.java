@@ -24,7 +24,7 @@ public class MagazineSubsystem extends SubsystemBase {
   final double MAX_DISTANCE = 35.0;
   final double MIN_DISTANCE = 4.5;
   final double DISTANCE_MULTIPLIER = 12.84;
-  final double VOLTAGE_EXPONENT = -0.9824;\
+  final double VOLTAGE_EXPONENT = -0.9824;
   final double IS_BALL_VALUE = 45;
 
   public MagazineSubsystem() {
