@@ -24,7 +24,8 @@ public class MagazineSubsystem extends SubsystemBase {
   final double MAX_DISTANCE = 35.0;
   final double MIN_DISTANCE = 4.5;
   final double DISTANCE_MULTIPLIER = 12.84;
-  final double VOLTAGE_EXPONENT = -0.9824;
+  final double VOLTAGE_EXPONENT = -0.9824;\
+  final double IS_BALL_VALUE = 45;
 
   public MagazineSubsystem() {
     ballSensor = new AnalogInput(Constants.AIN_ballSensor);
@@ -46,11 +47,11 @@ public class MagazineSubsystem extends SubsystemBase {
 
   public boolean ballIsPresent() {
     boolean ballPresent = false;
-    if(getDistance() > 45){
-       ballPresent = false;
+    if(getDistance() > IS_BALL_VALUE){
+      ballPresent = false;
     }
-    if(getDistance() <45){
-       ballPresent = true;
+    if(getDistance() <IS_BALL_VALUE){
+      ballPresent = true;
     }
     return ballPresent;
   }
