@@ -45,7 +45,13 @@ public class MagazineSubsystem extends SubsystemBase {
   }
 
   public boolean ballIsPresent() {
-
-    return false;
+    boolean ballPresent = false;
+    if(getDistance() > 45){
+       ballPresent = false;
+    }
+    if(getDistance() <45){
+       ballPresent = true;
+    }
+    return ballPresent;
   }
 }
