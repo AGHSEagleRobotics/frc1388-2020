@@ -47,8 +47,8 @@ public final class Constants {
     public static final int CANID_shootMotor = 0;
     public static final int CANID_feedMotor = 0;
     
-    public static final int CANID_intakeShaftMotor = 1;
-    public static final int CANID_intakeArmMotor = 2;
+    public static final int CANID_intakeShaftMotor = 0;
+    public static final int CANID_intakeArmMotor = 0;
 
     /**
      * TalonSRX Can IDs
@@ -57,9 +57,10 @@ public final class Constants {
     /**
      * VictorSPX Can IDs
      */
-    public static final int CANID_colorSpinnerMotor = 4;
-    public static final int CANID_spinnerArmMotor = 5;
-
+    public static final int CANID_colorSpinnerMotor = 0;
+    public static final int CANID_spinnerArmMotor = 0;
+    public static final int CANID_horizontalMagazineMotor = 0;
+    public static final int CANID_verticalMagazineMotor = 0;
 
     /**
      * Digital IO

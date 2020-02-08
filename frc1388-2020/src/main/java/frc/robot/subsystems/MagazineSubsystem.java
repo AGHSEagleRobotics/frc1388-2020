@@ -12,12 +12,20 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import java.lang.Math;
 
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
 /**
  * Add your docs here.
  */
 public class MagazineSubsystem extends SubsystemBase {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
+  private boolean m_shooting = false;
+  private boolean m_intake = false;
+  private boolean m_jammed = true;
+  private final WPI_VictorSPX m_horizontalMagazineMotor;
+  private final WPI_VictorSPX m_verticalMagazineMotor;
 
   AnalogInput ballSensor;
   private final double MIN_VOLTAGE = 0.00001;
@@ -31,9 +39,16 @@ public class MagazineSubsystem extends SubsystemBase {
 
   public MagazineSubsystem() {
     ballSensor = new AnalogInput(Constants.AIN_ballSensor);
+    m_horizontalMagazineMotor = new WPI_VictorSPX(Constants.CANID_horizontalMagazineMotor);
+    m_verticalMagazineMotor = new WPI_VictorSPX(Constants.CANID_verticalMagazineMotor);
   }
 
-  public double getDistance() {
+  public void setMagazines(double speed) {
+    m_horizontalMagazineMotor.set(speed);
+    m_verticalMagazineMotor.set(speed);
+  }
+
+  private double getDistance() {
     double voltage = 0;
     double distance = 0;
 
@@ -60,4 +75,49 @@ public class MagazineSubsystem extends SubsystemBase {
     }
     return ballPresent;
   }
+
+  public void startShooting() {
+    m_shooting = true;
+  }
+
+  public void stopShooting() {
+    m_shooting = false;
+  }
+
+  public void startIntake() {
+    m_intake = true;
+  }
+
+  public void stopIntake() {
+    m_intake = false;
+  }
+
+  public void startUnjam() {
+    m_jammed = true;
+  }
+
+  public void stopUnjam() {
+    m_jammed = false;
+  }
+
+  public boolean isMagazineFull() {
+    return false;
+    //TODO determine what this method should return.
+  }
+
+  @Override
+public void periodic() {
+  // This method will be called once per scheduler run
+ if (m_shooting) {
+
+ } else if (m_jammed) {
+
+ } else if (isMagazineFull()) {
+
+ } else if (m_intake) {
+
+ } else {
+
+ }
+ }
 }
