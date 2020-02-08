@@ -7,13 +7,14 @@
 
 package frc.robot;
 
-import com.analog.adis16448.frc.ADIS16448_IMU;
+
+import com.analog.adis16470.frc.ADIS16470_IMU;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+
 import frc.robot.commands.Climb;
 import frc.robot.commands.Drive;
 import frc.robot.commands.IntakeArmCommand;
@@ -21,11 +22,14 @@ import frc.robot.commands.IntakeShaftCommand;
 import frc.robot.commands.LockRackAndPinion;
 import frc.robot.commands.LockTrolleyGear;
 import frc.robot.commands.Trolley;
+
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Rumble;
 import frc.robot.subsystems.TrolleySubsystem;
+import frc.robot.subsystems.ColorSpinner;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -44,7 +48,8 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   // private Command m_autoCommand = new Command();
   private DriveTrain m_driveTrain; 
-  private ADIS16448_IMU m_gyro;
+  private ADIS16470_IMU  m_gyro;
+  // private Command m_autoCommand = new Command();
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private IntakeShaftCommand m_intakeShaftCommand = new IntakeShaftCommand(m_intakeSubsystem);
   private IntakeArmCommand m_intakeArmCommand = new IntakeArmCommand(m_intakeSubsystem);
@@ -55,12 +60,13 @@ public class RobotContainer {
   private Trolley m_trolleyCommand = new Trolley(m_trolleySubsystem);
   private Climb m_climbCommand = new Climb(m_climberSubsystem);
 
+  private ColorSpinner m_colorSpinner = new ColorSpinner();
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    m_gyro = new ADIS16448_IMU();
-
+    m_gyro = new ADIS16470_IMU();
+    m_gyro.calibrate();
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 
 
@@ -83,6 +89,11 @@ public class RobotContainer {
 
   }
 
+  public double getGyroAngle(){
+
+    return m_gyro.getAngle();
+    
+  }
   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by instantiating a {@link GenericHID} or one of its subclasses
@@ -96,7 +107,10 @@ public class RobotContainer {
     new JoystickButton(opController, XboxController.Button.kX.value).whenPressed( new LockRackAndPinion() );
     // have a similar approach as the aboves yet using the dpad directional 
     new POVButton( opController, Dpad.kLeft.getAngle() ).whenPressed( new LockTrolleyGear() );
+    new JoystickButton(opController, XboxController.Button.kBumperRight.value)
+    .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
   }
+   
 
   public enum Dpad{
     kUP(0),
@@ -161,8 +175,8 @@ public class RobotContainer {
     return driveController.getStickButton(Hand.kLeft);
   }
 
-  public Rumble getDriveRumble(){
-    return m_driveRumble;
+  public static boolean getLeftBumper() {
+    return opController.getBumper(Hand.kLeft);
   }
 
   public Trolley getTrolley(){
@@ -181,5 +195,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An Drive will run in autonomous
     return null; //m_autoCommand; // for the time being no Autonomous Command
+
+
   }
 }
