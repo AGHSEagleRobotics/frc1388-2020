@@ -4,9 +4,9 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
 package frc.robot;
 
+import edu.wpi.first.wpilibj.I2C.Port;
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants.  This class should not be used for any other purpose.  All constants should be
@@ -53,13 +53,16 @@ public final class Constants {
     /**
      * VictorSPX Can IDs
      */
+    public static final int CANID_colorSpinnerMotor = 4;
+    public static final int CANID_spinnerArmMotor = 5;
+     
 
     /**
      * Digital IO
      */
     
          public static final int DIO_intakeShaftTop = 0;
-         public static final int DIO_intakeShaftBottom = 0;
+         public static final int DIO_intakeShaftBottom = 1;
 
     public static final int DIO_intakeArmTop = 3;
     public static final int DIO_intakeArmBottom = 3;
@@ -77,5 +80,9 @@ public final class Constants {
      */
      public static final int USB_driveController = 0;
      public static final int USB_opController = 1; // op Controller not specifically assigned
+
+
+    public static final Port I2C_Port_ColorSensor = Port.kOnboard;
+
 
 }
