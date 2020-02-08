@@ -19,6 +19,7 @@ import frc.robot.commands.IntakeArmCommand;
 import frc.robot.commands.IntakeShaftCommand;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.Rumble;
 import frc.robot.subsystems.ColorSpinner;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,11 +37,11 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private DriveTrain m_driveTrain; 
   private ADIS16470_IMU  m_gyro;
-  // private Command m_autoCommand = new Command();
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private IntakeShaftCommand m_intakeShaftCommand = new IntakeShaftCommand(m_intakeSubsystem);
   private Rumble m_driveRumble = new Rumble(driveController);
   private Rumble m_opRumble = new Rumble(opController);
+  private MagazineSubsystem m_magazineSubsystem = new MagazineSubsystem();
 
   private ColorSpinner m_colorSpinner = new ColorSpinner();
   /**
