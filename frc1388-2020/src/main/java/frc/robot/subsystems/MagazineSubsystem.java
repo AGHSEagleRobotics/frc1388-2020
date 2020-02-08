@@ -20,12 +20,14 @@ public class MagazineSubsystem extends SubsystemBase {
   // here. Call these from Commands.
 
   AnalogInput ballSensor;
-  final double MIN_VOLTAGE = 0.00001;
-  final double MAX_DISTANCE = 35.0;
-  final double MIN_DISTANCE = 4.5;
-  final double DISTANCE_MULTIPLIER = 12.84;
-  final double VOLTAGE_EXPONENT = -0.9824;
-  final double IS_BALL_VALUE = 45;
+  private final double MIN_VOLTAGE = 0.00001;
+  private final double MAX_DISTANCE = 35; // This is the maximum accurate distace the sensor can read in centimeters
+  private final double MIN_DISTANCE = 4.5; // This is the minimum accurate distace the sensor can read in centimeters
+  private final double DISTANCE_MULTIPLIER = 12.84;
+  private final double VOLTAGE_EXPONENT = -0.9824;
+
+  // TODO: In need of testing to define optimal distance
+  final double BALL_PRESENT_DISTANCE = 10;
 
   public MagazineSubsystem() {
     ballSensor = new AnalogInput(Constants.AIN_ballSensor);
@@ -42,16 +44,17 @@ public class MagazineSubsystem extends SubsystemBase {
     // Constrain output
     distance = Math.max(Math.min(distance, MAX_DISTANCE), MIN_DISTANCE);
 
+    System.out.println("distance = " + distance + "   voltage = " + voltage);
     return distance;
   }
 
   public boolean ballIsPresent() {
     boolean ballPresent = false;
-    if(getDistance() > IS_BALL_VALUE){
+    if(getDistance() > BALL_PRESENT_DISTANCE){
       ballPresent = false;
       System.out.println("false");
     }
-    if(getDistance() <IS_BALL_VALUE){
+    if(getDistance() <BALL_PRESENT_DISTANCE){
       ballPresent = true;
       System.out.println("true");
     }
