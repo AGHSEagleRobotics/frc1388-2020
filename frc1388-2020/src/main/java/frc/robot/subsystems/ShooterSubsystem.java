@@ -25,8 +25,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private WPI_TalonSRX feedMotor;
 
     public ShooterSubsystem() {
-        shootMotor = new WPI_TalonFX(Constants.CANID_shootMotor);
-        feedMotor = new WPI_TalonSRX(Constants.CANID_feedMotor);
+      shootMotor = new WPI_TalonFX(Constants.CANID_shootMotor);
+      feedMotor = new WPI_TalonSRX(Constants.CANID_feedMotor);
 
     }
   }
