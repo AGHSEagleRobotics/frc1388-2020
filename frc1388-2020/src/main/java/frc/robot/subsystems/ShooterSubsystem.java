@@ -16,7 +16,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 /**
  * Add your docs here.
  */
-public class ShooterSystem extends SubsystemBase {
+public class ShooterSubsystem extends SubsystemBase {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
@@ -24,7 +24,7 @@ public class ShooterSystem extends SubsystemBase {
     private WPI_TalonFX shootMotor;
     private WPI_TalonSRX feedMotor;
 
-    public ShooterSystem() {
+    public ShooterSubsystem() {
         shootMotor = new WPI_TalonFX(Constants.CANID_shootMotor);
         feedMotor = new WPI_TalonSRX(Constants.CANID_feedMotor);
 

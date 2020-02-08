@@ -35,6 +35,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setIntakeArmMotor(double speed) {
+    if (speed < 0 && getIntakeLimitSwitchBottom()) {
+      speed = 0;
+    } else if (speed > 0 && getIntakeLimitSwitchTop()) {
+      speed = 0;
+    }
     m_intakeArmMotor.set(speed);
   }
  // TODO The speed of the intake arm motor and the time it takes for the 

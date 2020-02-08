@@ -9,25 +9,34 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.MagazineSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 public class Deploy extends CommandBase {
   private final IntakeSubsystem m_intakeSubsystem;
+  private final ShooterSubsystem m_shooterSubsystem;
+  private final MagazineSubsystem m_magazineSubsystem;
   /**
    * Creates a new Deploy.
    */
-  public Deploy(IntakeSubsystem intakeSubsystem) {
+  public Deploy(IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, MagazineSubsystem magazineSubsystem) {
     m_intakeSubsystem = intakeSubsystem;
+    m_shooterSubsystem = shooterSubsystem;
+    m_magazineSubsystem = magazineSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(m_intakeSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_intakeSubsystem.setIntakeArmMotor(-1);
+    m_intakeSubsystem.setIntakeShaftMotor(-1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
+  public void execute() { 
   }
 
   // Called once the command ends or is interrupted.
@@ -39,5 +48,9 @@ public class Deploy extends CommandBase {
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  private boolean isArmDeployed() {
+    return m_intakeSubsystem.getIntakeLimitSwitchBottom();
   }
 }
