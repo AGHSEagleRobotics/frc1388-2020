@@ -79,12 +79,12 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(driveController, XboxController.Button.kA.value).whenPressed(m_intakeShaftCommand);
+  //  new JoystickButton(driveController, XboxController.Button.kA.value).whenPressed(m_intakeShaftCommand);
     // TODO Determine correct timeout value.
-    new JoystickButton(driveController, XboxController.Button.kB.value)
-        .whenPressed(new IntakeArmCommand(m_intakeSubsystem, true).withTimeout(Double.POSITIVE_INFINITY));
-    new JoystickButton(driveController, XboxController.Button.kX.value)
-        .whenPressed(new IntakeArmCommand(m_intakeSubsystem, false).withTimeout(Double.POSITIVE_INFINITY));
+  //  new JoystickButton(driveController, XboxController.Button.kB.value)
+  //      .whenPressed(new IntakeArmCommand(m_intakeSubsystem, true).withTimeout(Double.POSITIVE_INFINITY));
+  //  new JoystickButton(driveController, XboxController.Button.kX.value)
+  //      .whenPressed(new IntakeArmCommand(m_intakeSubsystem, false).withTimeout(Double.POSITIVE_INFINITY));
     new JoystickButton(opController, XboxController.Button.kBumperRight.value)
         .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
 

@@ -15,11 +15,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
-  public enum Direction {
-    kUp,
-    kDown,
-    kStop
-  }
 
    // Instance fields of the shaft motor and the arm motor.
   private final WPI_TalonSRX m_intakeShaftMotor;
@@ -27,14 +22,6 @@ public class IntakeSubsystem extends SubsystemBase {
   
   private final DigitalInput m_intakeLimitSwitchTop;
   private final DigitalInput m_intakeLimitSwitchBottom;
-
-  // Variables for the motor speeds. TODO The variable values can change based on the 
-  // direction in which negative and positive values spin the motors and what speed
-  // is required to efficiently run the mechanisms.
-
-  private static final double intakeShaftSpeed = 1;
-  private static final double intakeDownArmSpeed = 1; 
-  private static final double intakeUpArmSpeed = -1;
 
   public IntakeSubsystem() {
     m_intakeShaftMotor = new WPI_TalonSRX(Constants.CANID_intakeShaftMotor);
@@ -46,17 +33,6 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setIntakeShaftMotor(double speed){
     m_intakeShaftMotor.set(speed);
   }
-// TODO The else statement could be changed to the intakeShaftSpeed if people want
-// to raise the arm to stop ball intake when the robot has reached maximum capacity
-// (5 balls) and keep the shaft moving.
-
-  public void setIntakeShaftMotor(boolean isOn) {
-      if (isOn){
-      m_intakeShaftMotor.set(intakeShaftSpeed);
-    } else{
-      m_intakeShaftMotor.set(0);
-    }
-  }
 
   public void setIntakeArmMotor(double speed) {
     m_intakeArmMotor.set(speed);
@@ -66,20 +42,7 @@ public class IntakeSubsystem extends SubsystemBase {
  // are interdependent and need to be changed so that the intake arm lowers
  // the correct amount.
 
-  public void setIntakeArmMotor(Direction dir) {
-    switch (dir) {
-      case kUp:
-        m_intakeArmMotor.set(intakeUpArmSpeed);
-        break;
-      case kDown:
-        m_intakeArmMotor.set(intakeDownArmSpeed);
-        break;
-      case kStop:
-        m_intakeArmMotor.set(0);
-        break;
-    }
-  }
-
+ //Limit switches on the top and bottom of the intake arm
   public boolean getIntakeLimitSwitchTop() {
     return m_intakeLimitSwitchTop.get();
   }
