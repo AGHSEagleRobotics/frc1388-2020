@@ -13,10 +13,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants;
 import frc.robot.USBLogging;
-
 
 public class ColorSpinner extends SubsystemBase {
 
@@ -39,8 +40,11 @@ public class ColorSpinner extends SubsystemBase {
   private final ColorMatch colorMatch = new ColorMatch();
 
   public enum ColorWheel {
-    UNKNOWN(ColorMatch.makeColor(0, 0, 0), "Unknown"), RED(kRedTarget, "Red"), YELLOW(kYellowTarget, "Yellow"),
-    GREEN(kGreenTarget, "Green"), BLUE(kBlueTarget, "Blue");
+    UNKNOWN(ColorMatch.makeColor(0, 0, 0), "Unknown"),
+    RED(kRedTarget, "Red"),
+    YELLOW(kYellowTarget, "Yellow"),
+    GREEN(kGreenTarget, "Green"),
+    BLUE(kBlueTarget, "Blue");
 
     Color eColor;
     String eName;
@@ -56,6 +60,23 @@ public class ColorSpinner extends SubsystemBase {
 
     public String getName() {
       return eName;
+    }
+
+    public static ColorWheel fromGameMessage() {
+      String gameData = DriverStation.getInstance().getGameSpecificMessage();
+      if (gameData.length() > 0) {
+        switch (gameData.charAt(0)) {
+          case 'B':
+            return BLUE;
+          case 'G':
+            return GREEN;
+          case 'R':
+            return RED;
+          case 'Y':
+            return YELLOW;
+        }
+      }
+      return UNKNOWN;
     }
 
   }
@@ -110,7 +131,7 @@ public class ColorSpinner extends SubsystemBase {
       curColor = ColorWheel.UNKNOWN;
     }
     return curColor;
-}
+  }
 
   // ======================================================
   // Color Sensor print out
@@ -126,8 +147,8 @@ public class ColorSpinner extends SubsystemBase {
   // ======================================================
 
   public void spinMotor(final double speed) {
-      m_spinnerMotor.set(speed);
-   }
+    m_spinnerMotor.set(speed);
+  }
 
   // ======================================================
   // Arm Motor
