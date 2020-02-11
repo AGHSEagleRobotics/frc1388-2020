@@ -7,9 +7,9 @@
 
 package frc.robot;
 
-
 import com.analog.adis16470.frc.ADIS16470_IMU;
 
+import edu.wpi.cscore.HttpCamera;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 
@@ -42,13 +42,17 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private DriveTrain m_driveTrain;
   private ADIS16470_IMU m_gyro;
+
   private UsbCamera m_cameraIntake;
+  private HttpCamera m_limeLight;
+  
   // private Command m_autoCommand = new Command();
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private IntakeShaftCommand m_intakeShaftCommand = new IntakeShaftCommand(m_intakeSubsystem);
   private IntakeArmCommand m_intakeArmCommand = new IntakeArmCommand(m_intakeSubsystem);
   private Rumble m_driveRumble = new Rumble(driveController);
   private Rumble m_opRumble = new Rumble(opController);
+
 
   private ColorSpinner m_colorSpinner = new ColorSpinner();
   /**
@@ -59,6 +63,7 @@ public class RobotContainer {
     m_gyro.calibrate();
 
     m_cameraIntake = CameraServer.getInstance().startAutomaticCapture(Constants.USB_cameraIntake);
+    m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg");
     
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 

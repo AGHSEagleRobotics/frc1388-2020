@@ -50,11 +50,12 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
 
-    
-    // CameraServer.getInstance().startAutomaticCapture();
-    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
-    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("1").setNumber(1);
-  
+    // start capturing the usb cam
+    CameraServer.getInstance().startAutomaticCapture();
+    // led mode off
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+    // driver cam mode
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
   }
 
   /**
@@ -85,6 +86,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
   }
 
   @Override
