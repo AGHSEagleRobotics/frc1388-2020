@@ -57,9 +57,11 @@ public final class Constants {
     /**
      * VictorSPX Can IDs
      */
-    public static final int CANID_colorSpinnerMotor = 4;
-    public static final int CANID_spinnerArmMotor = 5;
 
+     // Change Id's underneath
+    public static final int CANID_colorSpinnerMotor = 4;
+    public static final int CANID_spinnerArmMotor = 3;
+     
 
     /**
      * Digital IO

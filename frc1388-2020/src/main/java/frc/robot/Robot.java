@@ -25,6 +25,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -34,6 +35,7 @@ public class Robot extends TimedRobot {
     // Start up USB logging
     USBLogging.openLog();
     USBLogging.setLogLevel(Level.INFO);
+
 
     // print software version - use printLog so this always, always gets printed
     USBLogging.printLog(
@@ -80,6 +82,7 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
   }
 
+ 
   @Override
   public void disabledPeriodic() {
   }

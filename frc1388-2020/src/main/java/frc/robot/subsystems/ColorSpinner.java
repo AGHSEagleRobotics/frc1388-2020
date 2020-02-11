@@ -9,15 +9,14 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants;
 import frc.robot.USBLogging;
+
 
 public class ColorSpinner extends SubsystemBase {
 
@@ -26,27 +25,52 @@ public class ColorSpinner extends SubsystemBase {
   // ======================================================
 
   private final ColorSensorV3 m_colorSensor;
+
   private final WPI_VictorSPX m_spinnerMotor;
-  private final WPI_VictorSPX m_armMotor;  
+  private final WPI_VictorSPX m_armMotor;
 
-  private boolean m_spinnerArmDown = false;
+  private final double m_armSpeed = .5;
 
-  private final Color kRedTarget = ColorMatch.makeColor(0.532, 0.341, 0.126);
-  private final Color kBlueTarget = ColorMatch.makeColor(0.157, 0.452, 0.389);
-  private final Color kGreenTarget = ColorMatch.makeColor(0.212, 0.577, 0.210);
-  private final Color kYellowTarget = ColorMatch.makeColor(0.329, 0.556, 0.072);
+  private static final Color kRedTarget = ColorMatch.makeColor(0.517, 0.343, 0.141);
+  private static final Color kBlueTarget = ColorMatch.makeColor(0.123, 0.415, 0.461);
+  private static final Color kGreenTarget = ColorMatch.makeColor(0.165, 0.576, 0.258);
+  private static final Color kYellowTarget = ColorMatch.makeColor(0.318, 0.557, 0.125);
 
   private final ColorMatch colorMatch = new ColorMatch();
+
+  public enum ColorWheel {
+    UNKNOWN(ColorMatch.makeColor(0, 0, 0), "Unknown"), RED(kRedTarget, "Red"), YELLOW(kYellowTarget, "Yellow"),
+    GREEN(kGreenTarget, "Green"), BLUE(kBlueTarget, "Blue");
+
+    Color eColor;
+    String eName;
+
+    ColorWheel(final Color color, final String name) {
+      eColor = color;
+      eName = name;
+    }
+
+    public Color getColor() {
+      return eColor;
+    }
+
+    public String getName() {
+      return eName;
+    }
+
+  }
+
   // ======================================================
   // Constructors
   // ======================================================
 
   public ColorSpinner() {
+
     m_colorSensor = new ColorSensorV3(Constants.I2C_Port_ColorSensor);
     m_spinnerMotor = new WPI_VictorSPX(Constants.CANID_colorSpinnerMotor);
     m_armMotor = new WPI_VictorSPX(Constants.CANID_spinnerArmMotor);
 
-    neutralBrake();
+    m_spinnerMotor.setInverted(true);
 
     colorMatch.addColorMatch(kRedTarget);
     colorMatch.addColorMatch(kGreenTarget);
@@ -55,30 +79,37 @@ public class ColorSpinner extends SubsystemBase {
   }
 
   // ======================================================
-  // Color Sensor Checking
+  // Color Sensor
   // ======================================================
 
-  public String checkColor() {
-    String c1;
+  public ColorWheel checkColor() {
     final Color color = m_colorSensor.getColor();
-    USBLogging.debug( "R = " + color.red + "  G = " + color.green + "  B = " + color.blue );
+    ColorWheel curColor = ColorWheel.UNKNOWN;
+    USBLogging.debug("(R, G, B) = (" + color.red + ", " + color.green + ", " + color.blue + ")");
     final ColorMatchResult result = colorMatch.matchClosestColor(color);
-    USBLogging.debug( "R = " + result.color.red + "  G = " + result.color.green + "  B = " + result.color.blue
-      + " confidence = " + result.confidence );
+    USBLogging.debug("R = " + result.color.red + "  G = " + result.color.green + "  B = " + result.color.blue
+        + " confidence = " + result.confidence);
+
+    curColor = setColor(result);
+    return curColor;
+  }
+
+  private ColorWheel setColor(final ColorMatchResult result) {
+    ColorWheel curColor;
     if (result.confidence <= .95) {
-      c1 = "Uknown";
+      curColor = ColorWheel.UNKNOWN;
     } else if (result.color.equals(kRedTarget)) {
-      c1 = "Red";
+      curColor = ColorWheel.RED;
     } else if (result.color.equals(kGreenTarget)) {
-      c1 = "Green";
+      curColor = ColorWheel.GREEN;
     } else if (result.color.equals(kBlueTarget)) {
-      c1 = "Blue";
+      curColor = ColorWheel.BLUE;
     } else if (result.color.equals(kYellowTarget)) {
-      c1 = "Yellow";
+      curColor = ColorWheel.YELLOW;
     } else {
-      c1 = "Unknown";
+      curColor = ColorWheel.UNKNOWN;
     }
-    return c1;
+    return curColor;
 }
 
   // ======================================================
@@ -89,41 +120,30 @@ public class ColorSpinner extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
- 
+
   // ======================================================
   // Motor Spinner
   // ======================================================
 
-  public void spinMotor( final double speed ) {
-    m_spinnerMotor.set(speed);
-  }
-
-  private void neutralBrake() {
-    m_spinnerMotor.setNeutralMode( NeutralMode.Brake);
-  }
+  public void spinMotor(final double speed) {
+      m_spinnerMotor.set(speed);
+   }
 
   // ======================================================
   // Arm Motor
   // ======================================================
 
-  
-  public void engageArm()
-  {
-    if( !m_spinnerArmDown )
-    {
-      //TODO: engage the arm
-      m_spinnerArmDown = true;
-    }
+  public void raiseArm() {
+    m_armMotor.set(m_armSpeed);
   }
 
-  public void disengageArm()
-  {
-    if( m_spinnerArmDown )
-    {
-    //TODO: disengage the arm
-    m_spinnerArmDown = false;
-    }
+  public void lowerArm() {
+
+    m_armMotor.set(-m_armSpeed);
   }
 
+  public void stopArm() {
+    m_armMotor.set(0);
+  }
 
 }

@@ -17,12 +17,14 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import frc.robot.commands.Drive;
 import frc.robot.commands.IntakeArmCommand;
 import frc.robot.commands.IntakeShaftCommand;
+import frc.robot.commands.RotationalControl;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Rumble;
 import frc.robot.subsystems.ColorSpinner;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
@@ -34,8 +36,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private DriveTrain m_driveTrain; 
-  private ADIS16470_IMU  m_gyro;
+  private DriveTrain m_driveTrain;
+  private ADIS16470_IMU m_gyro;
   // private Command m_autoCommand = new Command();
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private IntakeShaftCommand m_intakeShaftCommand = new IntakeShaftCommand(m_intakeSubsystem);
@@ -43,8 +45,9 @@ public class RobotContainer {
   private Rumble m_opRumble = new Rumble(opController);
 
   private ColorSpinner m_colorSpinner = new ColorSpinner();
+  private RotationalControl m_rotationControlCmd = new RotationalControl(m_colorSpinner);
   /**
-   * The container for the robot.  Contains subsystems, OI devices, and commands.
+   * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     m_gyro = new ADIS16470_IMU();
@@ -59,11 +62,9 @@ public class RobotContainer {
     CommandScheduler.getInstance()
         .onCommandInitialize(command -> USBLogging.printCommandStatus(command, "initialized"));
 
-    CommandScheduler.getInstance().onCommandFinish(
-      command -> USBLogging.printCommandStatus(command, "FINISHeD"));
+    CommandScheduler.getInstance().onCommandFinish(command -> USBLogging.printCommandStatus(command, "Finished"));
 
-    CommandScheduler.getInstance().onCommandInterrupt(
-      command -> USBLogging.printCommandStatus(command, "Interrupted"));
+    CommandScheduler.getInstance().onCommandInterrupt(command -> USBLogging.printCommandStatus(command, "Interrupted"));
 
   }
 
@@ -79,17 +80,31 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-  //  new JoystickButton(driveController, XboxController.Button.kA.value).whenPressed(m_intakeShaftCommand);
-    // TODO Determine correct timeout value.
-  //  new JoystickButton(driveController, XboxController.Button.kB.value)
-  //      .whenPressed(new IntakeArmCommand(m_intakeSubsystem, true).withTimeout(Double.POSITIVE_INFINITY));
-  //  new JoystickButton(driveController, XboxController.Button.kX.value)
-  //      .whenPressed(new IntakeArmCommand(m_intakeSubsystem, false).withTimeout(Double.POSITIVE_INFINITY));
+    // new Joystick(driveController,
+    // XboxController.Button.kA.value).whenPressed(intakeShaftCommandName);
+    // new Joystick(driveController,
+    // XboxController.Button.kB.value).whenPressed(intakeDownArmCommandName.withTimeout(double));
+    // new Joystick(driveController,
+    // XboxController.Button.kX.value).whenPressed(intakeUpArmCommandName.withTimeout(double));
+    new Button(RobotContainer::isRightOpTriggerPressed)
+        .whileHeld(() -> m_colorSpinner.spinMotor(-.1), m_colorSpinner)
+        .whenReleased(() -> m_colorSpinner.spinMotor(0), m_colorSpinner);
+
+    new Button(RobotContainer::isLeftOpTriggerPressed)
+        .whileHeld(() -> m_colorSpinner.spinMotor(.1), m_colorSpinner)
+        .whenReleased(() -> m_colorSpinner.spinMotor(0), m_colorSpinner);
+
+    new JoystickButton(opController, XboxController.Button.kBumperLeft.value)
+        .whileHeld(() -> m_colorSpinner.raiseArm(), m_colorSpinner)
+        .whenReleased(() -> m_colorSpinner.stopArm(), m_colorSpinner);
+
     new JoystickButton(opController, XboxController.Button.kBumperRight.value)
-        .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
+        .whileHeld(() -> m_colorSpinner.lowerArm(), m_colorSpinner)
+        .whenReleased(() -> m_colorSpinner.stopArm(), m_colorSpinner);
 
+    new JoystickButton(opController, XboxController.Button.kA.value)
+        .toggleWhenPressed(m_rotationControlCmd);
   }
-
 
   public static XboxController driveController = new XboxController(Constants.USB_driveController);
   public static XboxController opController = new XboxController(Constants.USB_opController);
@@ -110,8 +125,12 @@ public class RobotContainer {
     return driveController.getStickButton(Hand.kLeft);
   }
 
-  public static boolean getLeftBumper() {
-    return opController.getBumper(Hand.kLeft);
+  public static boolean isLeftOpTriggerPressed() {
+    return opController.getTriggerAxis(Hand.kLeft) > 0.9;
+  }
+
+  public static boolean isRightOpTriggerPressed() {
+    return opController.getTriggerAxis(Hand.kRight) > 0.9;
   }
 
   /**
@@ -121,8 +140,11 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An Drive will run in autonomous
-    return null; //m_autoCommand; // for the time being no Autonomous Command
+    return null; // m_autoCommand; // for the time being no Autonomous Command
 
+    /*
+     * Victor speed control, work on robo arm motor,
+     */
 
   }
 }
