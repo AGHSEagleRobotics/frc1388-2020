@@ -29,4 +29,14 @@ public class ShooterSubsystem extends SubsystemBase {
       feedMotor = new WPI_TalonSRX(Constants.CANID_feedMotor);
 
     }
+
+    public void setShootMotor() {
+      // TODO: FIX THIS LINE
+      shootMotor.set();
+    }
+
+    public void setFeedMotor() {
+      // TODO: FIX THIS LINE
+      feedMotor.set();
+    }
   }
