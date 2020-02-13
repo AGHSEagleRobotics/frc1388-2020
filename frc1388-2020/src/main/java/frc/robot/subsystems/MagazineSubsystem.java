@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import java.lang.Math;
 
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 /**
@@ -23,7 +22,7 @@ public class MagazineSubsystem extends SubsystemBase {
   // here. Call these from Commands.
   private boolean m_shooting = false;
   private boolean m_intake = false;
-  private boolean m_jammed = true;
+  private boolean m_reverseMagazine = false;
   private final WPI_VictorSPX m_horizontalMagazineMotor;
   private final WPI_VictorSPX m_verticalMagazineMotor;
 
@@ -84,20 +83,25 @@ public class MagazineSubsystem extends SubsystemBase {
     m_shooting = false;
   }
 
-  public void startIntake() {
+  public void startIntakeMode() {
     m_intake = true;
   }
 
-  public void stopIntake() {
+  public void stopIntakeMode() {
     m_intake = false;
   }
 
-  public void startUnjam() {
-    m_jammed = true;
+  public void startReverseMagazine() {
+    m_reverseMagazine = true;
   }
 
-  public void stopUnjam() {
-    m_jammed = false;
+  public void stopReverseMagazine() {
+    m_reverseMagazine = false;
+  }
+
+  public boolean isMagazineReversed() {
+    return false;
+    //TODO determine what this method should return.
   }
 
   public boolean isMagazineFull() {
@@ -106,18 +110,18 @@ public class MagazineSubsystem extends SubsystemBase {
   }
 
   @Override
-public void periodic() {
-  // This method will be called once per scheduler run
- if (m_shooting) {
+  public void periodic() {
+    // This method will be called once per scheduler run
+    if (m_shooting) {
 
- } else if (m_jammed) {
+    } else if (m_reverseMagazine) {
 
- } else if (isMagazineFull()) {
+    } else if (isMagazineFull()) {
 
- } else if (m_intake) {
+    } else if (m_intake) {
 
- } else {
+    } else {
 
- }
- }
+    }
+  }
 }

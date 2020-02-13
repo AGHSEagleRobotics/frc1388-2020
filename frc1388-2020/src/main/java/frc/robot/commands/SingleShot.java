@@ -12,14 +12,14 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class SingleShot extends CommandBase {
 
-  private ShooterSubsystem m_subsystem;
+  private ShooterSubsystem m_shooterSubsystem;
 
   /**
    * Creates a new Shoot Command.
    */
   public SingleShot( ShooterSubsystem subsystem ) {
-    m_subsystem = subsystem;
-    addRequirements(m_subsystem);
+    m_shooterSubsystem = subsystem;
+    addRequirements(m_shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.

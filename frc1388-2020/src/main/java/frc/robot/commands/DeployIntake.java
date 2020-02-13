@@ -18,6 +18,11 @@ public class DeployIntake extends CommandBase {
   private final double k_intakeArmMotorDown = -1;
   private final double k_intakeShaftMotorForward = 1;
   private final double k_deployIntakeTimeout = 1;
+
+  // TODO The speed of the intake arm motor and the time it takes for the
+  // arm to lower itself to the correct angle
+  // are interdependent and need to be changed so that the intake arm lowers
+  // the correct amount.
   /**
    * Creates a new Deploy.
    */

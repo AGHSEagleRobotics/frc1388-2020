@@ -12,14 +12,14 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class MultiShot extends CommandBase {
 
-  private ShooterSubsystem m_subsystem;
+  private ShooterSubsystem m_shooterSubsystem;
 
   /**
    * Creates a new MultiShot.
    */
   public MultiShot( ShooterSubsystem subsystem ) {
-    m_subsystem = subsystem;
-    addRequirements(m_subsystem);
+    m_shooterSubsystem = subsystem;
+    addRequirements(m_shooterSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

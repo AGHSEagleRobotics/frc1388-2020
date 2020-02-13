@@ -15,9 +15,15 @@ public class RetractIntake extends CommandBase {
   private final IntakeSubsystem m_intakeSubsystem;
   private final MagazineSubsystem m_magazineSubsystem;
   
-  private final double k_intakeArmMotorUp = 1;
+  private final double k_intakeArmMotorUp = 0.2;
   private final double k_retractIntakeTimeout = 1;
-  private final double k_intakeShaftRetractSpeed = -0.5;
+  private final double k_intakeShaftUnjamSpeed = -0.5;    //speed when arm is retracting
+  private final double k_intakeShaftRetractSpeed = -0.2;  //speed when arm fully retracted
+
+  // TODO The speed of the intake arm motor and the time it takes for the
+  // arm to lower itself to the correct angle
+  // are interdependent and need to be changed so that the intake arm lowers
+  // the correct amount.
   /**
    * Creates a new Deploy.
    */
@@ -36,9 +42,9 @@ public class RetractIntake extends CommandBase {
   @Override
   public void initialize() {
     m_intakeSubsystem.setIntakeArmMotor(k_intakeArmMotorUp);
-    m_intakeSubsystem.setIntakeShaftMotor(k_intakeShaftRetractSpeed);
+    m_intakeSubsystem.setIntakeShaftMotor(k_intakeShaftUnjamSpeed);
 
-    m_magazineSubsystem.stopIntakeMode();
+    m_magazineSubsystem.stopIntakeMode(); //for magazine behavior
   }
 
   // Called every time scheduler the runs while the command is scheduled.
@@ -50,6 +56,7 @@ public class RetractIntake extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_intakeSubsystem.setIntakeArmMotor(0);
+    m_intakeSubsystem.setIntakeShaftMotor(k_intakeShaftRetractSpeed);
   }
 
   // Returns true when the command should end.

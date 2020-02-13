@@ -21,22 +21,21 @@ public class ShooterSubsystem extends SubsystemBase {
   // here. Call these from Commands.
 
 
-    private WPI_TalonFX shootMotor;
-    private WPI_TalonSRX feedMotor;
+    private WPI_TalonFX m_shootMotor;
+    private WPI_TalonSRX m_feedMotor;
 
     public ShooterSubsystem() {
-      shootMotor = new WPI_TalonFX(Constants.CANID_shootMotor);
-      feedMotor = new WPI_TalonSRX(Constants.CANID_feedMotor);
-
+      m_shootMotor = new WPI_TalonFX(Constants.CANID_shootMotor);
+      m_feedMotor = new WPI_TalonSRX(Constants.CANID_feedMotor);
     }
 
     public void setShootMotor() {
       // TODO: FIX THIS LINE
-      shootMotor.set();
+      m_shootMotor.set();
     }
 
     public void setFeedMotor() {
       // TODO: FIX THIS LINE
-      feedMotor.set();
+      m_feedMotor.set();
     }
   }

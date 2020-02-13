@@ -8,6 +8,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.MagazineSubsystem;
 
 public class ReverseMagazine extends CommandBase {
   private final IntakeSubsystem m_intakeSubsystem;
@@ -15,13 +17,20 @@ public class ReverseMagazine extends CommandBase {
   /**
    * Creates a new EmergencyReverse.
    */
-  public ReverseMagazine() {
+  public ReverseMagazine(IntakeSubsystem intakeSubsystem, MagazineSubsystem magazineSubsystem) {
+    m_intakeSubsystem = intakeSubsystem;
+    m_magazineSubsystem = magazineSubsystem;
+
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(m_intakeSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_intakeSubsystem.setIntakeArmMotor(1);
+    m_intakeSubsystem.setIntakeShaftMotor(-1);
+  
   }
 
   // Called every time the scheduler runs while the command is scheduled.
