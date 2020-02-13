@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 /**
  * Add your docs here.
@@ -22,21 +22,19 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
     private WPI_TalonFX shootMotor;
-    private WPI_TalonSRX feedMotor;
+    private WPI_VictorSPX feedMotor;
 
     public ShooterSubsystem() {
       shootMotor = new WPI_TalonFX(Constants.CANID_shootMotor);
-      feedMotor = new WPI_TalonSRX(Constants.CANID_feedMotor);
+      feedMotor = new WPI_VictorSPX(Constants.CANID_feedMotor);
 
     }
 
-    public void setShootMotor() {
-      // TODO: FIX THIS LINE
-      shootMotor.set();
+    public void setShootMotor( double speed) {
+      shootMotor.set( speed );
     }
 
-    public void setFeedMotor() {
-      // TODO: FIX THIS LINE
-      feedMotor.set();
+    public void setFeedMotor( double speed ) {
+      feedMotor.set( speed );
     }
   }
