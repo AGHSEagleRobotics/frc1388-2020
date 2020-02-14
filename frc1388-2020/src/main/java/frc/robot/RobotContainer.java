@@ -11,7 +11,11 @@ import com.analog.adis16470.frc.ADIS16470_IMU;
 
 import edu.wpi.cscore.HttpCamera;
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoSink;
+import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -39,22 +43,27 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private DriveTrain m_driveTrain;
-  private ADIS16470_IMU m_gyro;
+  private final int visionProcessPipeline = 1;
+  private final int visionDivePipeline = 1;
 
-  private UsbCamera m_cameraIntake;
-  private HttpCamera m_limeLight;
-  
+  // The robot's subsystems and commands are defined here...
   // private Command m_autoCommand = new Command();
+  private DriveTrain m_driveTrain;
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private IntakeShaftCommand m_intakeShaftCommand = new IntakeShaftCommand(m_intakeSubsystem);
   private IntakeArmCommand m_intakeArmCommand = new IntakeArmCommand(m_intakeSubsystem);
   private Rumble m_driveRumble = new Rumble(driveController);
   private Rumble m_opRumble = new Rumble(opController);
-
-
   private ColorSpinner m_colorSpinner = new ColorSpinner();
+  
+  // components 
+  private ADIS16470_IMU m_gyro;
+  private UsbCamera m_cameraIntake;
+  private UsbCamera m_cameraClimber;
+  private HttpCamera m_limeLight;
+  private VideoSource m_currVideoSource;
+  private VideoSink m_videoSink;
+
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
@@ -63,12 +72,21 @@ public class RobotContainer {
     m_gyro.calibrate();
 
     m_cameraIntake = CameraServer.getInstance().startAutomaticCapture(Constants.USB_cameraIntake);
+    m_cameraClimber = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber);
+    m_currVideoSource = m_cameraIntake;
     m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg");
-    
+
+    m_videoSink = CameraServer.getInstance().getServer();
+    m_videoSink.setSource(m_cameraIntake);
+
+    // sets the pipeline of the limelight
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionProcessPipeline);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
+
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 
     // set default commands here
-    m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
+    m_driveTrain.setDefaultCommand(new Drive( m_driveTrain, m_driveRumble ) );
     // Configure the button bindings
     configureButtonBindings();
 
@@ -86,6 +104,7 @@ public class RobotContainer {
   public double getGyroAngle(){
     return m_gyro.getAngle();
   }
+
   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by instantiating a {@link GenericHID} or one of its subclasses
@@ -98,7 +117,8 @@ public class RobotContainer {
     //new Joystick(driveController, XboxController.Button.kX.value).whenPressed(intakeUpArmCommandName.withTimeout(double));
     new JoystickButton(opController, XboxController.Button.kBumperRight.value)
         .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
-
+    new JoystickButton(opController, XboxController.Button.kBack.value).whenPressed(this::switchVideoSource );
+    new JoystickButton(driveController, XboxController.Button.kBack.value).whenPressed(this::switchVideoSource );
   }
 
 
@@ -125,8 +145,18 @@ public class RobotContainer {
     return opController.getBumper(Hand.kLeft);
   }
 
-  public UsbCamera getIntakeCamera(){
-    return m_cameraIntake;
+
+  // Cam stuff lol
+
+  private void switchVideoSource() {
+    if( m_currVideoSource.equals(m_cameraIntake) ){
+      m_currVideoSource = m_limeLight;
+    }else if( m_currVideoSource.equals(m_limeLight)) {
+      m_currVideoSource = m_cameraClimber;
+    }else if( m_currVideoSource.equals(m_cameraClimber)){
+      m_currVideoSource = m_cameraIntake;
+    }
+    m_videoSink.setSource(m_currVideoSource);
   }
 
   /**
@@ -135,7 +165,10 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An Drive will run in autonomous
+    // An Drive will run in autonomous 
     return null; //m_autoCommand; // for the time being no Autonomous Command
   }
+ 
+
+
 }

@@ -49,13 +49,6 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
-
-    // start capturing the usb cam
-    CameraServer.getInstance().startAutomaticCapture();
-    // led mode off
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
-    // driver cam mode
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
   }
 
   /**
@@ -86,6 +79,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    // turns of limelight ledmode
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
   }
 
