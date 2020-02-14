@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-
 import com.analog.adis16470.frc.ADIS16470_IMU;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -17,6 +16,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import frc.robot.commands.Drive;
 import frc.robot.commands.IntakeArmCommand;
 import frc.robot.commands.IntakeShaftCommand;
+import frc.robot.commands.PositionControl;
 import frc.robot.commands.RotationalControl;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -46,6 +46,7 @@ public class RobotContainer {
 
   private ColorSpinner m_colorSpinner = new ColorSpinner();
   private RotationalControl m_rotationControlCmd = new RotationalControl(m_colorSpinner);
+  private PositionControl m_positionControlCmd = new PositionControl(m_colorSpinner);
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -104,6 +105,9 @@ public class RobotContainer {
 
     new JoystickButton(opController, XboxController.Button.kA.value)
         .toggleWhenPressed(m_rotationControlCmd);
+        
+    new JoystickButton(opController, XboxController.Button.kB.value)
+        .toggleWhenPressed(m_positionControlCmd);
   }
 
   public static XboxController driveController = new XboxController(Constants.USB_driveController);

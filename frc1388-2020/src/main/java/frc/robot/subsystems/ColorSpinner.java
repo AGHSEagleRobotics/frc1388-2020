@@ -30,7 +30,7 @@ public class ColorSpinner extends SubsystemBase {
   private final WPI_VictorSPX m_spinnerMotor;
   private final WPI_VictorSPX m_armMotor;
 
-  private final double m_armSpeed = .5;
+  private final double m_armSpeed = .3;
 
   private static final Color kRedTarget = ColorMatch.makeColor(0.517, 0.343, 0.141);
   private static final Color kBlueTarget = ColorMatch.makeColor(0.123, 0.415, 0.461);
@@ -65,15 +65,18 @@ public class ColorSpinner extends SubsystemBase {
     public static ColorWheel fromGameMessage() {
       String gameData = DriverStation.getInstance().getGameSpecificMessage();
       if (gameData.length() > 0) {
+        /* We are converting the color from the desired to what our color sensor should see
+        *  when the field is on the desired color.
+        */
         switch (gameData.charAt(0)) {
           case 'B':
-            return BLUE;
-          case 'G':
-            return GREEN;
-          case 'R':
             return RED;
-          case 'Y':
+          case 'G':
             return YELLOW;
+          case 'R':
+            return BLUE;
+          case 'Y':
+            return GREEN;
         }
       }
       return UNKNOWN;

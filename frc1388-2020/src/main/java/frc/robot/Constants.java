@@ -71,7 +71,7 @@ public final class Constants {
          public static final int DIO_intakeShaftBottom = 1;
 
     public static final int DIO_intakeArmTop = 3;
-    public static final int DIO_intakeArmBottom = 3;
+    public static final int DIO_intakeArmBottom = 4;
 
     /**
      * Analog Inputs
