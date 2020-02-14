@@ -1,3 +1,4 @@
+
 /*----------------------------------------------------------------------------*/
 /* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
@@ -22,7 +23,7 @@ public class MagazineSubsystem extends SubsystemBase {
   // here. Call these from Commands.
   private boolean m_shooting = false;
   private boolean m_intake = false;
-  private boolean m_reverseMagazine = false;
+  private boolean m_eject = false;
   private final WPI_VictorSPX m_horizontalMagazineMotor;
   private final WPI_VictorSPX m_verticalMagazineMotor;
 
@@ -91,17 +92,12 @@ public class MagazineSubsystem extends SubsystemBase {
     m_intake = false;
   }
 
-  public void startReverseMagazine() {
-    m_reverseMagazine = true;
+  public void startEjectMode() {
+    m_eject = true;
   }
 
-  public void stopReverseMagazine() {
-    m_reverseMagazine = false;
-  }
-
-  public boolean isMagazineReversed() {
-    return false;
-    //TODO determine what this method should return.
+  public void stopEjectMode() {
+    m_eject = false;
   }
 
   public boolean isMagazineFull() {
@@ -114,7 +110,7 @@ public class MagazineSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     if (m_shooting) {
 
-    } else if (m_reverseMagazine) {
+    } else if (m_eject) {
 
     } else if (isMagazineFull()) {
 

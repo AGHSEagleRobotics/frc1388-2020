@@ -11,13 +11,17 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 
-public class ReverseMagazine extends CommandBase {
+public class Eject extends CommandBase {
   private final IntakeSubsystem m_intakeSubsystem;
   private final MagazineSubsystem m_magazineSubsystem;
+
+  private final double k_intakeArmMotorUp = 0.2;
+  private final double k_intakeShaftUnjamSpeed = -0.5;  //speed when arm is retracting
+
   /**
    * Creates a new EmergencyReverse.
    */
-  public ReverseMagazine(IntakeSubsystem intakeSubsystem, MagazineSubsystem magazineSubsystem) {
+  public Eject(IntakeSubsystem intakeSubsystem, MagazineSubsystem magazineSubsystem) {
     m_intakeSubsystem = intakeSubsystem;
     m_magazineSubsystem = magazineSubsystem;
 
@@ -28,9 +32,10 @@ public class ReverseMagazine extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intakeSubsystem.setIntakeArmMotor(1);
-    m_intakeSubsystem.setIntakeShaftMotor(-1);
-  
+    m_intakeSubsystem.setIntakeArmMotor(k_intakeArmMotorUp);
+    m_intakeSubsystem.setIntakeShaftMotor(k_intakeShaftUnjamSpeed);
+
+    m_magazineSubsystem.startEjectMode();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -41,11 +46,12 @@ public class ReverseMagazine extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_intakeSubsystem.setIntakeArmMotor(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_intakeSubsystem.getIntakeLimitSwitchTop();
   }
 }
