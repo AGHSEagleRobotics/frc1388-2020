@@ -58,7 +58,6 @@ public class RobotContainer {
   private DriveTrain m_driveTrain;
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private IntakeShaftCommand m_intakeShaftCommand = new IntakeShaftCommand(m_intakeSubsystem);
-  private IntakeArmCommand m_intakeArmCommand = new IntakeArmCommand(m_intakeSubsystem);
   private Rumble m_driveRumble = new Rumble(driveController);
   private Rumble m_opRumble = new Rumble(opController);
   private ColorSpinner m_colorSpinner = new ColorSpinner();
@@ -134,9 +133,12 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    //new Joystick(driveController, XboxController.Button.kA.value).whenPressed(intakeShaftCommandName);
-    //new Joystick(driveController, XboxController.Button.kB.value).whenPressed(intakeDownArmCommandName.withTimeout(double));
-    //new Joystick(driveController, XboxController.Button.kX.value).whenPressed(intakeUpArmCommandName.withTimeout(double));
+  //  new JoystickButton(driveController, XboxController.Button.kA.value).whenPressed(m_intakeShaftCommand);
+    // TODO Determine correct timeout value.
+  //  new JoystickButton(driveController, XboxController.Button.kB.value)
+  //      .whenPressed(new IntakeArmCommand(m_intakeSubsystem, true).withTimeout(Double.POSITIVE_INFINITY));
+  //  new JoystickButton(driveController, XboxController.Button.kX.value)
+  //      .whenPressed(new IntakeArmCommand(m_intakeSubsystem, false).withTimeout(Double.POSITIVE_INFINITY));
     new JoystickButton(opController, XboxController.Button.kBumperRight.value)
         .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
     new JoystickButton(opController, XboxController.Button.kBack.value).whenPressed(this::switchVideoSource );

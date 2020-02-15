@@ -42,31 +42,39 @@ public final class Constants {
     public static final int CANID_driveRF = 2;
     public static final int CANID_driveLF = 3;
     public static final int CANID_driveLB = 4;
+
+    // ShooterSubsystem motors
+    public static final int CANID_shootMotor = 0;
+    public static final int CANID_feedMotor = 0;
     
+    public static final int CANID_intakeShaftMotor = 1;
+    public static final int CANID_intakeArmMotor = 2;
+
     /**
      * TalonSRX Can IDs
      */
-
-    public static final int CANID_intakeShaftMotor = 0;
-    public static final int CANID_intakeArmMotor = 1;
     
     /**
      * VictorSPX Can IDs
      */
     public static final int CANID_colorSpinnerMotor = 4;
     public static final int CANID_spinnerArmMotor = 5;
-     
+
 
     /**
      * Digital IO
      */
-    
+
          public static final int DIO_intakeShaftTop = 0;
          public static final int DIO_intakeShaftBottom = 1;
+
+    public static final int DIO_intakeArmTop = 3;
+    public static final int DIO_intakeArmBottom = 3;
 
     /**
      * Analog Inputs
      */
+    public static final int AIN_ballSensor = 0; // Value known
 
     /**
      * I2C Ports
