@@ -36,8 +36,8 @@ public class MagazineSubsystem extends SubsystemBase {
   // Periodic Variables
   private final double horizontalMagazineShootSpeed = 0.5;
   private final double verticalMagazineShootSpeed = 0.5;
-  private final double horizontalMagazineEjectSpeed = 0.5;
-  private final double verticalMagazineEjectSpeed = 0.5;
+  private final double horizontalMagazineEjectSpeed = -0.5;
+  private final double verticalMagazineEjectSpeed = -0.5;
   private final double horizontalMagazineIntakeSpeed = 0.2;
   private final double verticalMagazineIntakeSpeed = 0.2;
   private final double horizontalMagazineDefaultSpeed = 0.2;

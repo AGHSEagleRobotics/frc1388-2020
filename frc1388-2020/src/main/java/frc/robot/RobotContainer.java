@@ -14,8 +14,10 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import frc.robot.commands.DeployIntake;
 import frc.robot.commands.Drive;
 import frc.robot.commands.Eject;
+import frc.robot.commands.RetractIntake;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
@@ -34,17 +36,20 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+
   // Commands:
   private DriveTrain m_driveTrain; 
   private ADIS16470_IMU  m_gyro;
   private Eject m_Eject;
+  private DeployIntake DeployIntake;
+  private RetractIntake RetractIntake;
 
   // Subsystems:
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
-  private Rumble m_driveRumble = new Rumble(driveController);
-  private Rumble m_opRumble = new Rumble(opController);
   private MagazineSubsystem m_magazineSubsystem = new MagazineSubsystem();
   private ColorSpinner m_colorSpinner = new ColorSpinner();
+  private Rumble m_driveRumble = new Rumble(driveController);
+  private Rumble m_opRumble = new Rumble(opController);
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -56,6 +61,7 @@ public class RobotContainer {
 
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
+    CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
     // Configure the button bindings
     configureButtonBindings();
 
@@ -82,16 +88,17 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    new JoystickButton(driveController, XboxController.Button.kA.value)
+        .whenPressed(DeployIntake);
+    new JoystickButton(driveController, XboxController.Button.kB.value)
+        .whenPressed(RetractIntake);
+
     new JoystickButton(driveController, XboxController.Button.kY.value)
         .whileHeld(m_Eject)
         .whenReleased(() -> m_magazineSubsystem.stopEjectMode());
+
     new JoystickButton(opController, XboxController.Button.kBumperRight.value)
         .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
-  //  new JoystickButton(driveController, XboxController.Button.kB.value)
-  //      .whenPressed(new IntakeArmCommand(m_intakeSubsystem, true));
-  //  new JoystickButton(driveController, XboxController.Button.kX.value)
-  //      .whenPressed(new IntakeArmCommand(m_intakeSubsystem, false));
-
   }
 
 
