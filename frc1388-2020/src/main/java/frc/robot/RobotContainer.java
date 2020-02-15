@@ -14,7 +14,6 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSink;
 import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -73,8 +72,8 @@ public class RobotContainer {
 
     m_cameraIntake = CameraServer.getInstance().startAutomaticCapture(Constants.USB_cameraIntake);
     m_cameraClimber = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber);
-    m_currVideoSource = m_cameraIntake;
     m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg");
+    m_currVideoSource = m_cameraIntake;
 
     m_videoSink = CameraServer.getInstance().getServer();
     m_videoSink.setSource(m_cameraIntake);
