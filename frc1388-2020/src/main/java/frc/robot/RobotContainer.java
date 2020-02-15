@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -87,31 +88,71 @@ public class RobotContainer {
     // XboxController.Button.kB.value).whenPressed(intakeDownArmCommandName.withTimeout(double));
     // new Joystick(driveController,
     // XboxController.Button.kX.value).whenPressed(intakeUpArmCommandName.withTimeout(double));
-    new Button(RobotContainer::isRightOpTriggerPressed)
+    
+    // Color Spinner Left
+    new JoystickButton(opController, XboxController.Button.kBumperLeft.value)
         .whileHeld(() -> m_colorSpinner.spinMotor(-.1), m_colorSpinner)
         .whenReleased(() -> m_colorSpinner.spinMotor(0), m_colorSpinner);
 
-    new Button(RobotContainer::isLeftOpTriggerPressed)
+    // Color Spinner Right
+    new JoystickButton(opController, XboxController.Button.kBumperRight.value)
         .whileHeld(() -> m_colorSpinner.spinMotor(.1), m_colorSpinner)
         .whenReleased(() -> m_colorSpinner.spinMotor(0), m_colorSpinner);
 
-    new JoystickButton(opController, XboxController.Button.kBumperLeft.value)
+    // Color Spinner Arm Up (op)
+    new POVButton( opController, Dpad.kUP.getAngle() )
         .whileHeld(() -> m_colorSpinner.raiseArm(), m_colorSpinner)
         .whenReleased(() -> m_colorSpinner.stopArm(), m_colorSpinner);
 
-    new JoystickButton(opController, XboxController.Button.kBumperRight.value)
+    // Color Spinner Arm Down (op)
+    new POVButton( opController, Dpad.kDown.getAngle() )
         .whileHeld(() -> m_colorSpinner.lowerArm(), m_colorSpinner)
         .whenReleased(() -> m_colorSpinner.stopArm(), m_colorSpinner);
+    
+    // Color Spinner Arm Up (drive)    
+    new POVButton( driveController, Dpad.kUP.getAngle() )
+        .whileHeld(() -> m_colorSpinner.raiseArm(), m_colorSpinner)
+        .whenReleased(() -> m_colorSpinner.stopArm(), m_colorSpinner);
 
-    new JoystickButton(opController, XboxController.Button.kA.value)
+    // Color Spinner Arm Down (drive)
+    new POVButton( driveController, Dpad.kDown.getAngle() )
+        .whileHeld(() -> m_colorSpinner.lowerArm(), m_colorSpinner)
+        .whenReleased(() -> m_colorSpinner.stopArm(), m_colorSpinner);
+    
+    // toggle Rotational Control on/off
+    new JoystickButton(opController, XboxController.Button.kX.value)
         .toggleWhenPressed(m_rotationControlCmd);
-        
-    new JoystickButton(opController, XboxController.Button.kB.value)
+  
+    // toggle Positional Control on/off
+    new JoystickButton(opController, XboxController.Button.kY.value)
         .toggleWhenPressed(m_positionControlCmd);
+
   }
 
   public static XboxController driveController = new XboxController(Constants.USB_driveController);
   public static XboxController opController = new XboxController(Constants.USB_opController);
+  
+  public enum Dpad{
+    kUP(0),
+    kUpRight(45),
+    kRight(90),
+    kDownRight(135),
+    kDown(180),
+    kDownLeft(225),
+    kLeft(270),
+    kUpLeft(315),
+    none(-1);
+
+    private int angle;
+
+    Dpad( int angle ){
+      this.angle = angle;
+    }
+
+    public int getAngle(){
+      return angle;
+    }
+  }
 
   public static double getDriveRightXAxis() {
     return driveController.getX(Hand.kRight);

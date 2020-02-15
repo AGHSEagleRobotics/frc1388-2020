@@ -49,9 +49,7 @@ public class PositionControl extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if( m_desiredColor == m_colorSpinner.checkColor() ){
-      return true;
-    }
-    return false;
+    return m_desiredColor == ColorWheel.UNKNOWN  || 
+            m_desiredColor == m_colorSpinner.checkColor();
   }
 }

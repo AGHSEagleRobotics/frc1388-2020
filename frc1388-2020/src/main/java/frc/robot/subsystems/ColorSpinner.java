@@ -95,6 +95,7 @@ public class ColorSpinner extends SubsystemBase {
     m_armMotor = new WPI_VictorSPX(Constants.CANID_spinnerArmMotor);
 
     m_spinnerMotor.setInverted(true);
+    m_armMotor.setInverted(true);
 
     colorMatch.addColorMatch(kRedTarget);
     colorMatch.addColorMatch(kGreenTarget);
