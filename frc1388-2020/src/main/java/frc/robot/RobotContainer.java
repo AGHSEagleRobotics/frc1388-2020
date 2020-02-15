@@ -38,13 +38,13 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   // Commands:
+  private Eject m_eject;
+  private DeployIntake m_deployIntake;
+  private RetractIntake m_retractIntake;
+  
+  // Subsystems:
   private DriveTrain m_driveTrain; 
   private ADIS16470_IMU  m_gyro;
-  private Eject m_Eject;
-  private DeployIntake DeployIntake;
-  private RetractIntake RetractIntake;
-
-  // Subsystems:
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private MagazineSubsystem m_magazineSubsystem = new MagazineSubsystem();
   private ColorSpinner m_colorSpinner = new ColorSpinner();
@@ -58,6 +58,10 @@ public class RobotContainer {
     m_gyro = new ADIS16470_IMU();
     m_gyro.calibrate();
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
+
+    m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
+    m_deployIntake = new DeployIntake(m_intakeSubsystem, m_magazineSubsystem);
+    m_retractIntake = new RetractIntake(m_intakeSubsystem, m_magazineSubsystem);
 
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
@@ -89,12 +93,16 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     new JoystickButton(driveController, XboxController.Button.kA.value)
-        .whenPressed(DeployIntake);
+        .whenPressed(m_deployIntake);
     new JoystickButton(driveController, XboxController.Button.kB.value)
-        .whenPressed(RetractIntake);
+        .whenPressed(m_retractIntake);
+    new JoystickButton(opController, XboxController.Button.kA.value)
+        .whenPressed(m_deployIntake);
+    new JoystickButton(opController, XboxController.Button.kB.value)
+        .whenPressed(m_retractIntake);
 
-    new JoystickButton(driveController, XboxController.Button.kY.value)
-        .whileHeld(m_Eject)
+    new JoystickButton(opController, XboxController.Button.kY.value)
+        .whileHeld(m_eject)
         .whenReleased(() -> m_magazineSubsystem.stopEjectMode());
 
     new JoystickButton(opController, XboxController.Button.kBumperRight.value)
