@@ -83,5 +83,8 @@ public final class Constants {
      */
      public static final int USB_driveController = 0;
      public static final int USB_opController = 1; // op Controller not specifically assigned
+    public static final int USB_cameraIntake = 0;
+    public static final int USB_cameraClimber = 1;
+
 
 }

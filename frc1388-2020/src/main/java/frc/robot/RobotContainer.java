@@ -7,13 +7,25 @@
 
 package frc.robot;
 
+import java.util.Map;
 
 import com.analog.adis16470.frc.ADIS16470_IMU;
+
+import edu.wpi.cscore.HttpCamera;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoSink;
+import edu.wpi.cscore.VideoSource;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.commands.DeployIntake;
 import frc.robot.commands.Drive;
 import frc.robot.commands.Eject;
@@ -23,6 +35,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.Rumble;
 import frc.robot.subsystems.ColorSpinner;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -35,6 +48,9 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  private final int visionProcessPipeline = 0;
+  private final int visionDrivePipeline = 1;
+
   // The robot's subsystems and commands are defined here...
 
   // Commands:
@@ -44,12 +60,21 @@ public class RobotContainer {
   
   // Subsystems:
   private DriveTrain m_driveTrain; 
-  private ADIS16470_IMU  m_gyro;
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private MagazineSubsystem m_magazineSubsystem = new MagazineSubsystem();
   private ColorSpinner m_colorSpinner = new ColorSpinner();
   private Rumble m_driveRumble = new Rumble(driveController);
   private Rumble m_opRumble = new Rumble(opController);
+  
+  // components 
+  private ADIS16470_IMU m_gyro;
+  private UsbCamera m_cameraIntake;
+  private UsbCamera m_cameraClimber;
+  private HttpCamera m_limeLight;
+  private int m_currVideoSourceIndex = 0;
+  private VideoSink m_videoSink;
+  private VideoSource[] m_videoSources;
+  private ComplexWidget complexWidget;
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -57,6 +82,32 @@ public class RobotContainer {
   public RobotContainer() {
     m_gyro = new ADIS16470_IMU();
     m_gyro.calibrate();
+
+    m_cameraIntake = CameraServer.getInstance().startAutomaticCapture(Constants.USB_cameraIntake);
+    // m_cameraClimber = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber);
+
+    m_cameraIntake.setConnectVerbose(0);
+
+    m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg");
+    
+    m_videoSources = new VideoSource[]{
+      m_limeLight, 
+      m_cameraIntake
+    };
+
+    m_videoSink = CameraServer.getInstance().getServer();
+    m_videoSink.setSource(m_cameraIntake);
+    ShuffleboardTab shuffleboard = Shuffleboard.getTab("SmartDashboard");
+    complexWidget = shuffleboard
+      .add(m_videoSink.getSource())
+      .withWidget(BuiltInWidgets.kCameraStream)
+      .withProperties(Map.of("Show Crosshair", true, "Show Controls", false));
+
+    // sets the pipeline of the limelight
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionDrivePipeline);
+    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionProcessPipeline);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
+
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 
     m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
@@ -81,10 +132,9 @@ public class RobotContainer {
   }
 
   public double getGyroAngle(){
-
     return m_gyro.getAngle();
-    
   }
+
   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by instantiating a {@link GenericHID} or one of its subclasses
@@ -107,6 +157,8 @@ public class RobotContainer {
 
     new JoystickButton(opController, XboxController.Button.kBumperRight.value)
         .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
+    new JoystickButton(opController, XboxController.Button.kBack.value).whenPressed(this::switchVideoSource );
+    new JoystickButton(driveController, XboxController.Button.kBack.value).whenPressed(this::switchVideoSource );
   }
 
 
@@ -133,15 +185,25 @@ public class RobotContainer {
     return opController.getBumper(Hand.kLeft);
   }
 
+
+  // Cam stuff lol
+
+  private void switchVideoSource() {
+    m_currVideoSourceIndex = (m_currVideoSourceIndex+1) % m_videoSources.length;
+    m_videoSink.setSource( m_videoSources[m_currVideoSourceIndex] );
+    complexWidget.withProperties(Map.of("Title", m_videoSink.getSource().getName()));
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An Drive will run in autonomous
+    // An Drive will run in autonomous 
     return null; //m_autoCommand; // for the time being no Autonomous Command
-
-
   }
+ 
+
+
 }
