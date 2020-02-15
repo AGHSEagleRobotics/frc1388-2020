@@ -34,16 +34,18 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  // Commands:
   private DriveTrain m_driveTrain; 
   private ADIS16470_IMU  m_gyro;
+  private Eject m_Eject;
+
+  // Subsystems:
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private Rumble m_driveRumble = new Rumble(driveController);
   private Rumble m_opRumble = new Rumble(opController);
   private MagazineSubsystem m_magazineSubsystem = new MagazineSubsystem();
-
   private ColorSpinner m_colorSpinner = new ColorSpinner();
 
-  private Eject m_Eject;
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
@@ -83,14 +85,12 @@ public class RobotContainer {
     new JoystickButton(driveController, XboxController.Button.kY.value)
         .whileHeld(m_Eject)
         .whenReleased(() -> m_magazineSubsystem.stopEjectMode());
-  //  new JoystickButton(driveController, XboxController.Button.kB.value)
-  //      .whenPressed(new IntakeArmCommand(m_intakeSubsystem, true));
-
-  
-  //  new JoystickButton(driveController, XboxController.Button.kX.value)
-  //      .whenPressed(new IntakeArmCommand(m_intakeSubsystem, false));
     new JoystickButton(opController, XboxController.Button.kBumperRight.value)
         .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
+  //  new JoystickButton(driveController, XboxController.Button.kB.value)
+  //      .whenPressed(new IntakeArmCommand(m_intakeSubsystem, true));
+  //  new JoystickButton(driveController, XboxController.Button.kX.value)
+  //      .whenPressed(new IntakeArmCommand(m_intakeSubsystem, false));
 
   }
 

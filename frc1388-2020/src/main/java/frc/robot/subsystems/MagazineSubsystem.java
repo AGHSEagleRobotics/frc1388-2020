@@ -21,12 +21,29 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 public class MagazineSubsystem extends SubsystemBase {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
+
+  // Method Fields
   private boolean m_shooting = false;
   private boolean m_intake = false;
   private boolean m_eject = false;
+  private boolean m_magazineIsFull = false;
   private final WPI_VictorSPX m_horizontalMagazineMotor;
   private final WPI_VictorSPX m_verticalMagazineMotor;
 
+  // Magazine Status Variables
+  private final int BALL_STOPPED_VALUE = 5; // TODO change int value after testing
+  private int m_ballPresentCounter = 0;
+  // Periodic Variables
+  private final double horizontalMagazineShootSpeed = 0.5;
+  private final double verticalMagazineShootSpeed = 0.5;
+  private final double horizontalMagazineEjectSpeed = 0.5;
+  private final double verticalMagazineEjectSpeed = 0.5;
+  private final double horizontalMagazineIntakeSpeed = 0.2;
+  private final double verticalMagazineIntakeSpeed = 0.2;
+  private final double horizontalMagazineDefaultSpeed = 0.2;
+  private final double verticalMagazineDefaultSpeed = 0.2;
+
+  // Infrared Proximity Sensor Fields
   AnalogInput ballSensor;
   private final double MIN_VOLTAGE = 0.00001;
   private final double MAX_DISTANCE = 35; // This is the maximum accurate distace the sensor can read in centimeters
@@ -43,6 +60,7 @@ public class MagazineSubsystem extends SubsystemBase {
     m_verticalMagazineMotor = new WPI_VictorSPX(Constants.CANID_verticalMagazineMotor);
   }
 
+  // TODO change number of motors for magazine; number of motors for magazine is TBD
   public void setMagazines(double speed) {
     m_horizontalMagazineMotor.set(speed);
     m_verticalMagazineMotor.set(speed);
@@ -101,23 +119,42 @@ public class MagazineSubsystem extends SubsystemBase {
   }
 
   public boolean isMagazineFull() {
-    return false;
-    //TODO determine what this method should return.
+    boolean magazineIsFull = false;
+    if (ballIsPresent()) {
+      // increase ball counter by 1
+      m_ballPresentCounter++;
+    } else {
+      // reset ball present counter to zero
+      m_ballPresentCounter = 0;
+    }
+    if (m_ballPresentCounter > BALL_STOPPED_VALUE) {
+      magazineIsFull = true;
+    } else {
+      magazineIsFull = false;
+    }
+    return magazineIsFull;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    // This variable placement ensures that the method is called every time periodic is run
+    m_magazineIsFull = isMagazineFull();
     if (m_shooting) {
-
+      m_horizontalMagazineMotor.set(horizontalMagazineShootSpeed);
+      m_verticalMagazineMotor.set(verticalMagazineShootSpeed);
     } else if (m_eject) {
-
-    } else if (isMagazineFull()) {
-
+      m_horizontalMagazineMotor.set(horizontalMagazineEjectSpeed);
+      m_verticalMagazineMotor.set(verticalMagazineEjectSpeed);
+    } else if (m_magazineIsFull) {
+      m_horizontalMagazineMotor.set(0);
+      m_verticalMagazineMotor.set(0);
     } else if (m_intake) {
-
-    } else {
-
+      m_horizontalMagazineMotor.set(horizontalMagazineIntakeSpeed);
+      m_verticalMagazineMotor.set(verticalMagazineIntakeSpeed);
+    } else { // Run the motors at default speed
+      m_horizontalMagazineMotor.set(horizontalMagazineDefaultSpeed);
+      m_verticalMagazineMotor.set(verticalMagazineDefaultSpeed);
     }
   }
 }
