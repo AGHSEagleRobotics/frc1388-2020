@@ -52,31 +52,30 @@ public final class Constants {
 
     // ShooterSubsystem motors
     public static final int CANID_shootMotor = 13;
-    public static final int CANID_feedMotor = 14;
-    
-    public static final int CANID_intakeShaftMotor = 5;
-    public static final int CANID_intakeArmMotor = 6;
 
     /**
      * TalonSRX Can IDs
      */
+    public static final int CANID_intakeArmMotor = 6;
     
     /**
      * VictorSPX Can IDs
      */
-    public static final int CANID_colorSpinnerMotor = 7;
-    public static final int CANID_spinnerArmMotor = 8;
-
+    public static final int CANID_colorSpinnerMotor = 0;
+    public static final int CANID_spinnerArmMotor = 0;
+    
+    public static final int CANID_horizontalMagazineMotor = 0;
+    public static final int CANID_verticalMagazineMotor = 0;
+    
+    public static final int CANID_intakeShaftMotor = 5;
+    
+    public static final int CANID_feedMotor = 14;
 
     /**
      * Digital IO
      */
-
-         public static final int DIO_intakeShaftTop = 0;
-         public static final int DIO_intakeShaftBottom = 1;
-
-    public static final int DIO_intakeArmTop = 3;
-    public static final int DIO_intakeArmBottom = 4;
+    public static final int DIO_intakeArmTop = 0;
+    public static final int DIO_intakeArmBottom = 1;
 
     /**
      * Analog Inputs
@@ -86,6 +85,7 @@ public final class Constants {
     /**
      * I2C Ports
      */
+    public static final Port I2C_Port_ColorSensor = Port.kOnboard;
 
     /**
      * USB devices
@@ -94,10 +94,6 @@ public final class Constants {
      public static final int USB_opController = 1; // op Controller not specifically assigned
     public static final int USB_cameraIntake = 0;
     public static final int USB_cameraClimber = 1;
-
-
-
-    public static final Port I2C_Port_ColorSensor = Port.kOnboard;
 
 
 }

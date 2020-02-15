@@ -7,12 +7,9 @@
 
 package frc.robot;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import com.analog.adis16470.frc.ADIS16470_IMU;
-
-import org.opencv.video.Video;
 
 import edu.wpi.cscore.HttpCamera;
 import edu.wpi.cscore.UsbCamera;
@@ -29,12 +26,13 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.robot.commands.DeployIntake;
 import frc.robot.commands.Drive;
-import frc.robot.commands.IntakeArmCommand;
-import frc.robot.commands.IntakeShaftCommand;
-
+import frc.robot.commands.Eject;
+import frc.robot.commands.RetractIntake;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.Rumble;
 import frc.robot.subsystems.ColorSpinner;
 
@@ -54,13 +52,19 @@ public class RobotContainer {
   private final int visionDrivePipeline = 1;
 
   // The robot's subsystems and commands are defined here...
-  // private Command m_autoCommand = new Command();
-  private DriveTrain m_driveTrain;
+
+  // Commands:
+  private Eject m_eject;
+  private DeployIntake m_deployIntake;
+  private RetractIntake m_retractIntake;
+  
+  // Subsystems:
+  private DriveTrain m_driveTrain; 
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
-  private IntakeShaftCommand m_intakeShaftCommand = new IntakeShaftCommand(m_intakeSubsystem);
+  private MagazineSubsystem m_magazineSubsystem = new MagazineSubsystem();
+  private ColorSpinner m_colorSpinner = new ColorSpinner();
   private Rumble m_driveRumble = new Rumble(driveController);
   private Rumble m_opRumble = new Rumble(opController);
-  private ColorSpinner m_colorSpinner = new ColorSpinner();
   
   // components 
   private ADIS16470_IMU m_gyro;
@@ -106,8 +110,13 @@ public class RobotContainer {
 
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 
+    m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
+    m_deployIntake = new DeployIntake(m_intakeSubsystem, m_magazineSubsystem);
+    m_retractIntake = new RetractIntake(m_intakeSubsystem, m_magazineSubsystem);
+
     // set default commands here
-    m_driveTrain.setDefaultCommand(new Drive( m_driveTrain, m_driveRumble ) );
+    m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
+    CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
     // Configure the button bindings
     configureButtonBindings();
 
@@ -133,12 +142,19 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-  //  new JoystickButton(driveController, XboxController.Button.kA.value).whenPressed(m_intakeShaftCommand);
-    // TODO Determine correct timeout value.
-  //  new JoystickButton(driveController, XboxController.Button.kB.value)
-  //      .whenPressed(new IntakeArmCommand(m_intakeSubsystem, true).withTimeout(Double.POSITIVE_INFINITY));
-  //  new JoystickButton(driveController, XboxController.Button.kX.value)
-  //      .whenPressed(new IntakeArmCommand(m_intakeSubsystem, false).withTimeout(Double.POSITIVE_INFINITY));
+    new JoystickButton(driveController, XboxController.Button.kA.value)
+        .whenPressed(m_deployIntake);
+    new JoystickButton(driveController, XboxController.Button.kB.value)
+        .whenPressed(m_retractIntake);
+    new JoystickButton(opController, XboxController.Button.kA.value)
+        .whenPressed(m_deployIntake);
+    new JoystickButton(opController, XboxController.Button.kB.value)
+        .whenPressed(m_retractIntake);
+
+    new JoystickButton(opController, XboxController.Button.kY.value)
+        .whileHeld(m_eject)
+        .whenReleased(() -> m_magazineSubsystem.stopEjectMode());
+
     new JoystickButton(opController, XboxController.Button.kBumperRight.value)
         .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
     new JoystickButton(opController, XboxController.Button.kBack.value).whenPressed(this::switchVideoSource );

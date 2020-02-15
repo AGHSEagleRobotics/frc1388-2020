@@ -17,15 +17,15 @@ import frc.robot.Constants;
 public class IntakeSubsystem extends SubsystemBase {
 
    // Instance fields of the shaft motor and the arm motor.
-  private final WPI_TalonSRX m_intakeShaftMotor;
-  private final WPI_VictorSPX m_intakeArmMotor;
+  private final WPI_VictorSPX m_intakeShaftMotor;
+  private final WPI_TalonSRX m_intakeArmMotor;
   
   private final DigitalInput m_intakeLimitSwitchTop;
   private final DigitalInput m_intakeLimitSwitchBottom;
 
   public IntakeSubsystem() {
-    m_intakeShaftMotor = new WPI_TalonSRX(Constants.CANID_intakeShaftMotor);
-    m_intakeArmMotor = new WPI_VictorSPX(Constants.CANID_intakeArmMotor);
+    m_intakeShaftMotor = new WPI_VictorSPX(Constants.CANID_intakeShaftMotor); // forward is positive, reverse is negative
+    m_intakeArmMotor = new WPI_TalonSRX(Constants.CANID_intakeArmMotor);  // positive is up, negative is down
     m_intakeLimitSwitchTop = new DigitalInput(Constants.DIO_intakeArmTop);
     m_intakeLimitSwitchBottom = new DigitalInput(Constants.DIO_intakeArmBottom);
   }
@@ -35,18 +35,30 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setIntakeArmMotor(double speed) {
+    if (speed < 0 && getIntakeLimitSwitchBottom()) {
+      speed = 0;
+    } else if (speed > 0 && getIntakeLimitSwitchTop()) {
+      speed = 0;
+    }
     m_intakeArmMotor.set(speed);
   }
- // TODO The speed of the intake arm motor and the time it takes for the 
- // arm to lower itself to the correct angle
- // are interdependent and need to be changed so that the intake arm lowers
- // the correct amount.
 
- //Limit switches on the top and bottom of the intake arm
+  // Limit switches on the top and bottom of the intake arm
+
+  /**
+   * This gets the intake arm limit switch
+   * 
+   * @return true when pressed, false when not pressed
+   */
   public boolean getIntakeLimitSwitchTop() {
     return m_intakeLimitSwitchTop.get();
   }
 
+  /**
+   * This gets the intake arm limit switch
+   * 
+   * @return true when pressed, false when not pressed
+   */
   public boolean getIntakeLimitSwitchBottom() {
     return m_intakeLimitSwitchBottom.get();
   }

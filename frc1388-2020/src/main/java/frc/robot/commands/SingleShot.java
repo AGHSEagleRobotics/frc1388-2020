@@ -6,33 +6,36 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot.commands;
+import frc.robot.subsystems.ShooterSubsystem;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.IntakeSubsystem;
 
-public class IntakeArmCommand extends CommandBase {
-  private final IntakeSubsystem m_intakeSubsystem;
+public class SingleShot extends CommandBase {
+
+  private ShooterSubsystem m_shooterSubsystem;
+
   /**
-   * Creates a new IntakeArmCommand.
-   * @param intakeSubsystem intake subsystem
-   * @param shouldArmDeploy If true, deploy arm. If false, retract arm.
+   * Creates a new Shoot Command.
    */
-  public IntakeArmCommand(IntakeSubsystem intakeSubsystem, boolean shouldArmDeploy) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    m_intakeSubsystem = intakeSubsystem;
-    addRequirements(m_intakeSubsystem);
+  public SingleShot( ShooterSubsystem subsystem ) {
+    m_shooterSubsystem = subsystem;
+    addRequirements(m_shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
   }
-  
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+
+
+
+
+    
   }
 
   // Called once the command ends or is interrupted.
@@ -43,6 +46,6 @@ public class IntakeArmCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intakeSubsystem.getIntakeLimitSwitchTop() || m_intakeSubsystem.getIntakeLimitSwitchBottom();
+    return false;
   }
 }
