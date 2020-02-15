@@ -38,17 +38,24 @@ public final class Constants {
      * TalonFX Can IDs
      */
 
+    // competetition constants
     public static final int CANID_driveRB = 1;
     public static final int CANID_driveRF = 2;
     public static final int CANID_driveLF = 3;
     public static final int CANID_driveLB = 4;
 
+    // // test constants knightmare // FIXME: do not check in with the following uncommented. test only!
+    // public static final int CANID_driveRB = 1;
+    // public static final int CANID_driveRF = 2;
+    // public static final int CANID_driveLF = 3;
+    // public static final int CANID_driveLB = 4;
+
     // ShooterSubsystem motors
-    public static final int CANID_shootMotor = 0;
-    public static final int CANID_feedMotor = 0;
+    public static final int CANID_shootMotor = 13;
+    public static final int CANID_feedMotor = 14;
     
-    public static final int CANID_intakeShaftMotor = 1;
-    public static final int CANID_intakeArmMotor = 2;
+    public static final int CANID_intakeShaftMotor = 5;
+    public static final int CANID_intakeArmMotor = 6;
 
     /**
      * TalonSRX Can IDs
@@ -57,8 +64,8 @@ public final class Constants {
     /**
      * VictorSPX Can IDs
      */
-    public static final int CANID_colorSpinnerMotor = 4;
-    public static final int CANID_spinnerArmMotor = 5;
+    public static final int CANID_colorSpinnerMotor = 7;
+    public static final int CANID_spinnerArmMotor = 8;
 
 
     /**
@@ -69,7 +76,7 @@ public final class Constants {
          public static final int DIO_intakeShaftBottom = 1;
 
     public static final int DIO_intakeArmTop = 3;
-    public static final int DIO_intakeArmBottom = 3;
+    public static final int DIO_intakeArmBottom = 4;
 
     /**
      * Analog Inputs
