@@ -10,10 +10,10 @@
         "hgap": 8.0,
         "vgap": 8.0,
         "tiles": {
-          "22,0": {
+          "21,0": {
             "size": [
               11,
-              13
+              10
             ],
             "content": {
               "_type": "Camera Stream",
@@ -21,7 +21,7 @@
               "_title": "Camera Stream",
               "Crosshair/Show crosshair": true,
               "Crosshair/Crosshair color": "#FFFFFFFF",
-              "Controls/Show controls": true,
+              "Controls/Show controls": false,
               "Controls/Rotation": "NONE",
               "compression": -1.0,
               "fps": -1,
@@ -29,9 +29,9 @@
               "imageHeight": 0
             }
           },
-          "0,0": {
+          "12,0": {
             "size": [
-              4,
+              5,
               6
             ],
             "content": {
@@ -68,23 +68,48 @@
               }
             }
           },
-          "11,0": {
+          "4,0": {
             "size": [
-              11,
-              11
+              2,
+              1
             ],
             "content": {
-              "_type": "Camera Stream",
-              "_source0": "camera_server://limelight",
-              "_title": "Camera Stream",
-              "Crosshair/Show crosshair": true,
-              "Crosshair/Crosshair color": "#FFFFFFFF",
-              "Controls/Show controls": true,
-              "Controls/Rotation": "NONE",
-              "compression": -1.0,
-              "fps": -1,
-              "imageWidth": 0,
-              "imageHeight": 0
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/limelight_PipelineName",
+              "_title": "limelight_PipelineName"
+            }
+          },
+          "6,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/limelight_Interface",
+              "_title": "limelight_Interface"
+            }
+          },
+          "8,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/limelight_Stream",
+              "_title": "limelight_Stream"
+            }
+          },
+          "10,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///CameraPublisher/USB Camera 0/Property/backlight_compensation",
+              "_title": "CameraPublisher/USB Camera 0/Property/backlight_compensation"
             }
           }
         }
@@ -285,7 +310,7 @@
   "windowGeometry": {
     "x": -7.0,
     "y": 0.0,
-    "width": 1382.0,
-    "height": 548.0
+    "width": 1380.0,
+    "height": 689.0
   }
 }

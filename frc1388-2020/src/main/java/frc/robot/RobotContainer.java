@@ -7,7 +7,12 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 import com.analog.adis16470.frc.ADIS16470_IMU;
+
+import org.opencv.video.Video;
 
 import edu.wpi.cscore.HttpCamera;
 import edu.wpi.cscore.UsbCamera;
@@ -20,7 +25,10 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.commands.Drive;
 import frc.robot.commands.IntakeArmCommand;
 import frc.robot.commands.IntakeShaftCommand;
@@ -42,8 +50,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private final int visionProcessPipeline = 1;
-  private final int visionDivePipeline = 1;
+  private final int visionProcessPipeline = 0;
+  private final int visionDrivePipeline = 1;
 
   // The robot's subsystems and commands are defined here...
   // private Command m_autoCommand = new Command();
@@ -60,8 +68,10 @@ public class RobotContainer {
   private UsbCamera m_cameraIntake;
   private UsbCamera m_cameraClimber;
   private HttpCamera m_limeLight;
-  private VideoSource m_currVideoSource;
+  private int m_currVideoSourceIndex = 0;
   private VideoSink m_videoSink;
+  private VideoSource[] m_videoSources;
+  private ComplexWidget complexWidget;
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -71,15 +81,28 @@ public class RobotContainer {
     m_gyro.calibrate();
 
     m_cameraIntake = CameraServer.getInstance().startAutomaticCapture(Constants.USB_cameraIntake);
-    m_cameraClimber = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber);
+    // m_cameraClimber = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber);
+
+    m_cameraIntake.setConnectVerbose(0);
+
     m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg");
-    m_currVideoSource = m_cameraIntake;
+    
+    m_videoSources = new VideoSource[]{
+      m_limeLight, 
+      m_cameraIntake
+    };
 
     m_videoSink = CameraServer.getInstance().getServer();
     m_videoSink.setSource(m_cameraIntake);
+    ShuffleboardTab shuffleboard = Shuffleboard.getTab("SmartDashboard");
+    complexWidget = shuffleboard
+      .add(m_videoSink.getSource())
+      .withWidget(BuiltInWidgets.kCameraStream)
+      .withProperties(Map.of("Show Crosshair", true, "Show Controls", false));
 
     // sets the pipeline of the limelight
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionProcessPipeline);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionDrivePipeline);
+    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionProcessPipeline);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
 
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
@@ -148,14 +171,9 @@ public class RobotContainer {
   // Cam stuff lol
 
   private void switchVideoSource() {
-    if( m_currVideoSource.equals(m_cameraIntake) ){
-      m_currVideoSource = m_limeLight;
-    }else if( m_currVideoSource.equals(m_limeLight)) {
-      m_currVideoSource = m_cameraClimber;
-    }else if( m_currVideoSource.equals(m_cameraClimber)){
-      m_currVideoSource = m_cameraIntake;
-    }
-    m_videoSink.setSource(m_currVideoSource);
+    m_currVideoSourceIndex = (m_currVideoSourceIndex+1) % m_videoSources.length;
+    m_videoSink.setSource( m_videoSources[m_currVideoSourceIndex] );
+    complexWidget.withProperties(Map.of("Title", m_videoSink.getSource().getName()));
   }
 
   /**
