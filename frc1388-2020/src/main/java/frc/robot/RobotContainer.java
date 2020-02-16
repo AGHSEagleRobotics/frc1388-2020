@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.robot.commands.AutonMove;
 import frc.robot.commands.DeployIntake;
 import frc.robot.commands.Drive;
 import frc.robot.commands.Eject;
@@ -57,6 +58,7 @@ public class RobotContainer {
   private Eject m_eject;
   private DeployIntake m_deployIntake;
   private RetractIntake m_retractIntake;
+  private AutonMove m_autonMove;
   
   // Subsystems:
   private DriveTrain m_driveTrain; 
@@ -80,6 +82,7 @@ public class RobotContainer {
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+
     m_gyro = new ADIS16470_IMU();
     m_gyro.calibrate();
 
@@ -96,8 +99,11 @@ public class RobotContainer {
     };
 
     m_videoSink = CameraServer.getInstance().getServer();
+
     m_videoSink.setSource(m_cameraIntake);
+
     ShuffleboardTab shuffleboard = Shuffleboard.getTab("SmartDashboard");
+
     complexWidget = shuffleboard
       .add(m_videoSink.getSource())
       .withWidget(BuiltInWidgets.kCameraStream)
@@ -113,10 +119,12 @@ public class RobotContainer {
     m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
     m_deployIntake = new DeployIntake(m_intakeSubsystem, m_magazineSubsystem);
     m_retractIntake = new RetractIntake(m_intakeSubsystem, m_magazineSubsystem);
+    m_autonMove = new AutonMove(m_driveTrain);
 
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
     CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
+
     // Configure the button bindings
     configureButtonBindings();
 
@@ -157,8 +165,10 @@ public class RobotContainer {
 
     new JoystickButton(opController, XboxController.Button.kBumperRight.value)
         .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
-    new JoystickButton(opController, XboxController.Button.kBack.value).whenPressed(this::switchVideoSource );
-    new JoystickButton(driveController, XboxController.Button.kBack.value).whenPressed(this::switchVideoSource );
+    new JoystickButton(opController, XboxController.Button.kBack.value)
+        .whenPressed(this::switchVideoSource );
+    new JoystickButton(driveController, XboxController.Button.kBack.value)
+        .whenPressed(this::switchVideoSource );
   }
 
 
@@ -191,7 +201,6 @@ public class RobotContainer {
   private void switchVideoSource() {
     m_currVideoSourceIndex = (m_currVideoSourceIndex+1) % m_videoSources.length;
     m_videoSink.setSource( m_videoSources[m_currVideoSourceIndex] );
-    complexWidget.withProperties(Map.of("Title", m_videoSink.getSource().getName()));
   }
 
   /**

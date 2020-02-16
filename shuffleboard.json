@@ -111,6 +111,16 @@
               "_source0": "network_table:///CameraPublisher/USB Camera 0/Property/backlight_compensation",
               "_title": "CameraPublisher/USB Camera 0/Property/backlight_compensation"
             }
+          },
+          "11,7": {
+            "size": [
+              6,
+              5
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_title": "AutonChooser"
+            }
           }
         }
       }
@@ -301,6 +311,68 @@
               "_type": "Text View",
               "_source0": "network_table:///LiveWindow/DriveTrain/DifferentialDrive/Right Motor Speed",
               "_title": "DriveTrain/DifferentialDrive/Right Motor Speed"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Competition",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 32.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "20,0": {
+            "size": [
+              9,
+              3
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Color Spinner",
+              "Layout/Number of columns": 4,
+              "Layout/Number of rows": 4,
+              "Layout/Label position": "BOTTOM",
+              "_children": {
+                "0,0": {
+                  "_type": "Boolean Box",
+                  "_title": "Blue",
+                  "Colors/Color when true": "#000080FF",
+                  "Colors/Color when false": "#1A1A1AFF"
+                },
+                "1,0": {
+                  "_type": "Boolean Box",
+                  "_title": "Green",
+                  "Colors/Color when true": "#00FF00FF",
+                  "Colors/Color when false": "#1A1A1AFF"
+                },
+                "2,0": {
+                  "_type": "Boolean Box",
+                  "_title": "Red",
+                  "Colors/Color when true": "#FF0000FF",
+                  "Colors/Color when false": "#1A1A1AFF"
+                },
+                "3,0": {
+                  "_type": "Boolean Box",
+                  "_title": "Yellow",
+                  "Colors/Color when true": "#FFFF00FF",
+                  "Colors/Color when false": "#1A1A1AFF"
+                }
+              }
+            }
+          },
+          "16,0": {
+            "size": [
+              4,
+              3
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_title": "AutonChooser"
             }
           }
         }
