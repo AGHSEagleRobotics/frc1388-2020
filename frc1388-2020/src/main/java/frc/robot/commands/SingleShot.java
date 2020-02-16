@@ -6,37 +6,41 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot.commands;
+import frc.robot.subsystems.ShooterSubsystem;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.IntakeSubsystem;
 
-public class IntakeShaftCommand extends CommandBase {
+public class SingleShot extends CommandBase {
+
+  private ShooterSubsystem m_shooterSubsystem;
+
   /**
-   * Creates a new IntakeShaftCommand.
+   * Creates a new Shoot Command.
    */
-  private IntakeSubsystem m_intakeSubsystem;
-
-  public IntakeShaftCommand(IntakeSubsystem intakeSubsystem) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    m_intakeSubsystem = intakeSubsystem;
-    addRequirements(m_intakeSubsystem);
+  public SingleShot( ShooterSubsystem subsystem ) {
+    m_shooterSubsystem = subsystem;
+    addRequirements(m_shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intakeSubsystem.setIntakeShaftMotor(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+
+
+
+
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intakeSubsystem.setIntakeShaftMotor(false);
   }
 
   // Returns true when the command should end.
