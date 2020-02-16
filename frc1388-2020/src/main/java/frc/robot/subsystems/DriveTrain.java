@@ -31,15 +31,15 @@ public class DriveTrain extends SubsystemBase {
 
 
   // Competition Bot motors
-  private final WPI_TalonFX m_leftFront;
-  private final WPI_TalonFX m_rightFront;
-  private final WPI_TalonFX m_leftBack;
-  private final WPI_TalonFX m_rightBack;
+  // private final WPI_TalonFX m_leftFront;
+  // private final WPI_TalonFX m_rightFront;
+  // private final WPI_TalonFX m_leftBack;
+  // private final WPI_TalonFX m_rightBack;
   // // Knightmare test motors // FIXME: do not check in with the following uncommented. test only!
-  // private final WPI_TalonSRX m_leftFront;
-  // private final WPI_TalonSRX m_rightFront;
-  // private final WPI_VictorSPX m_leftBack;
-  // private final WPI_VictorSPX m_rightBack;
+  private final WPI_TalonSRX m_leftFront;
+  private final WPI_TalonSRX m_rightFront;
+  private final WPI_VictorSPX m_leftBack;
+  private final WPI_VictorSPX m_rightBack;
 
   // need to instantiate the differenetail drive
   private final DifferentialDrive differentialDrive;
@@ -58,15 +58,15 @@ public class DriveTrain extends SubsystemBase {
   public DriveTrain( Supplier<Rotation2d> angleSupplier ) {
     
     // Competition Robot motors
-    m_leftFront = new WPI_TalonFX( Constants.CANID_driveLF );
-    m_rightFront = new WPI_TalonFX( Constants.CANID_driveRF );
-    m_leftBack = new WPI_TalonFX( Constants.CANID_driveLB);
-    m_rightBack = new WPI_TalonFX( Constants.CANID_driveRB );
+    // m_leftFront = new WPI_TalonFX( Constants.CANID_driveLF );
+    // m_rightFront = new WPI_TalonFX( Constants.CANID_driveRF );
+    // m_leftBack = new WPI_TalonFX( Constants.CANID_driveLB);
+    // m_rightBack = new WPI_TalonFX( Constants.CANID_driveRB );
     // // knightmare test motors // FIXME: do not check in with the following uncommented. test only!
-    // m_leftFront = new WPI_TalonSRX( Constants.CANID_driveLF );
-    // m_rightFront = new WPI_TalonSRX( Constants.CANID_driveRF );
-    // m_leftBack = new WPI_VictorSPX( Constants.CANID_driveLB);
-    // m_rightBack = new WPI_VictorSPX( Constants.CANID_driveRB );
+    m_leftFront = new WPI_TalonSRX( Constants.CANID_driveLF );
+    m_rightFront = new WPI_TalonSRX( Constants.CANID_driveRF );
+    m_leftBack = new WPI_VictorSPX( Constants.CANID_driveLB);
+    m_rightBack = new WPI_VictorSPX( Constants.CANID_driveRB );
     
     followMode();
     // configFalconFX();
@@ -126,16 +126,24 @@ public class DriveTrain extends SubsystemBase {
     m_leftBack.follow( m_leftFront );
     m_rightBack.follow( m_rightFront );
   }
-
+  public Pose2d getDriveOdemetry(){
+    return m_odometry.getPoseMeters();  
+  }
+  public Pose2d compareTo(Pose2d pose2d){
+    return m_odometry.getPoseMeters().relativeTo(pose2d);
+  }
+  public Rotation2d getAngle(){
+    return m_angleSupplier.get();
+  }
+  
   // to be used in the future for uses like checking the gyro
   @Override
   public void periodic() {
-    // // refer to getSelectedSensorPosition() and configSelectedFeedbackSensor (FeedbackDevice feedbackDevice)
-    // leftEncoderDistance = m_leftFront.getSelectedSensorPosition();
-    // rightEncoderDistance = m_rightFront.getSelectedSensorPosition();
-    // angle =  m_angleSupplier.get();
-    // m_newPosition = m_odometry.getPoseMeters();
-    // m_odometry.update( angle, leftEncoderDistance, rightEncoderDistance );
+    // refer to getSelectedSensorPosition() and configSelectedFeedbackSensor (FeedbackDevice feedbackDevice)
+    leftEncoderDistance = m_leftFront.getSelectedSensorPosition();
+    rightEncoderDistance = m_rightFront.getSelectedSensorPosition();
+    angle =  m_angleSupplier.get();
+    m_odometry.update( angle, leftEncoderDistance, rightEncoderDistance );
 
   }
 }
