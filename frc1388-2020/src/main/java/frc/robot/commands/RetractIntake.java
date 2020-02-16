@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
@@ -16,6 +17,7 @@ public class RetractIntake extends CommandBase {
   private final MagazineSubsystem m_magazineSubsystem;
   
   private final double k_intakeArmMotorUp = 0.2;
+  private final Timer m_retractIntakeTimer = new Timer();
   private final double k_retractIntakeTimeout = 1;
   private final double k_intakeShaftUnjamSpeed = -0.5;    //speed when arm is retracting
   private final double k_intakeShaftRetractSpeed = -0.2;  //speed when arm fully retracted
@@ -30,10 +32,7 @@ public class RetractIntake extends CommandBase {
   public RetractIntake(IntakeSubsystem intakeSubsystem, MagazineSubsystem magazineSubsystem) {
     m_intakeSubsystem = intakeSubsystem;
     m_magazineSubsystem = magazineSubsystem;
-
-    // Timeout used to stop the intake arm from going down too far in case the limit switch fails to stop the arm
-    withTimeout(k_retractIntakeTimeout);
-
+    
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_intakeSubsystem);
   }
@@ -43,6 +42,8 @@ public class RetractIntake extends CommandBase {
   public void initialize() {
     m_intakeSubsystem.setIntakeArmMotor(k_intakeArmMotorUp);
     m_intakeSubsystem.setIntakeShaftMotor(k_intakeShaftUnjamSpeed);
+
+    m_retractIntakeTimer.start();
 
     m_magazineSubsystem.stopIntakeMode(); //for magazine behavior
   }
@@ -57,11 +58,15 @@ public class RetractIntake extends CommandBase {
   public void end(boolean interrupted) {
     m_intakeSubsystem.setIntakeArmMotor(0);
     m_intakeSubsystem.setIntakeShaftMotor(k_intakeShaftRetractSpeed);
+
+    m_retractIntakeTimer.stop();
+    m_retractIntakeTimer.reset();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intakeSubsystem.getIntakeLimitSwitchTop();
+    return m_intakeSubsystem.getIntakeLimitSwitchTop() || 
+           m_retractIntakeTimer.hasPeriodPassed(k_retractIntakeTimeout);
   }
 }

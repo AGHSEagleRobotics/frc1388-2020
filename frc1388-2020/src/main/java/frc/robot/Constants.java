@@ -55,8 +55,7 @@ public final class Constants {
     public static final int CANID_colorSpinnerMotor = 0;
     public static final int CANID_spinnerArmMotor = 0;
     
-    public static final int CANID_horizontalMagazineMotor = 0;
-    public static final int CANID_verticalMagazineMotor = 0;
+    public static final int CANID_magazineMotor = 0;
     
     public static final int CANID_intakeShaftMotor = 5;
     

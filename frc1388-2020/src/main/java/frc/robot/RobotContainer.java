@@ -66,7 +66,7 @@ public class RobotContainer {
   private Rumble m_driveRumble = new Rumble(driveController);
   private Rumble m_opRumble = new Rumble(opController);
   
-  // components 
+  // Components 
   private ADIS16470_IMU m_gyro;
   private UsbCamera m_cameraIntake;
   private UsbCamera m_cameraClimber;
@@ -75,6 +75,9 @@ public class RobotContainer {
   private VideoSink m_videoSink;
   private VideoSource[] m_videoSources;
   private ComplexWidget complexWidget;
+  
+  // Constants
+  private final double k_intakeShaftRetractSpeed = -0.2;
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -152,8 +155,7 @@ public class RobotContainer {
         .whenPressed(m_retractIntake);
 
     new JoystickButton(opController, XboxController.Button.kY.value)
-        .whileHeld(m_eject)
-        .whenReleased(() -> m_magazineSubsystem.stopEjectMode());
+        .whileHeld(m_eject);
 
     new JoystickButton(opController, XboxController.Button.kBumperRight.value)
         .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
