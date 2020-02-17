@@ -35,10 +35,7 @@ import frc.robot.commands.RotationalControl;
 import frc.robot.commands.SpinnerArm;
 import frc.robot.commands.Eject;
 import frc.robot.commands.RetractIntake;
-import frc.robot.commands.LockRackAndPinion;
-import frc.robot.commands.LockTrolleyGear;
 import frc.robot.commands.Trolley;
-
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -60,8 +57,6 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-
-
   
   private final int visionProcessPipeline = 0;
   private final int visionDrivePipeline = 1;
@@ -147,8 +142,8 @@ public class RobotContainer {
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
     CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
-    // m_climberSubsystem.setDefaultCommand(m_climbCommand);
-    // m_trolleySubsystem.setDefaultCommand(m_trolleyCommand);
+    m_climberSubsystem.setDefaultCommand(m_climbCommand);
+    m_trolleySubsystem.setDefaultCommand(m_trolleyCommand);
     // Configure the button bindings
     configureButtonBindings();
 
@@ -218,13 +213,12 @@ public class RobotContainer {
     new JoystickButton(opController, XboxController.Button.kY.value)
         .whileHeld(m_eject);
 
-    new JoystickButton(opController, XboxController.Button.kX.value).whenPressed( new LockRackAndPinion() );
-    // have a similar approach as the aboves yet using the dpad directional 
-    new POVButton( opController, Dpad.kLeft.getAngle() ).whenPressed( new LockTrolleyGear() );
     new JoystickButton(opController, XboxController.Button.kBumperRight.value)
-    .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
-    new JoystickButton(opController, XboxController.Button.kBack.value).whenPressed(this::switchVideoSource );
-    new JoystickButton(driveController, XboxController.Button.kBack.value).whenPressed(this::switchVideoSource );
+        .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
+    new JoystickButton(opController, XboxController.Button.kBack.value)
+        .whenPressed(this::switchVideoSource );
+    new JoystickButton(driveController, XboxController.Button.kBack.value)
+        .whenPressed(this::switchVideoSource );
   }
   
   public static enum Dpad{

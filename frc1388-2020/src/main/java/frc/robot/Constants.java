@@ -79,8 +79,8 @@ public final class Constants {
      * Digital IO
      */
 
-         public static final int DIO_intakeShaftTop = 0;
-         public static final int DIO_intakeShaftBottom = 1;
+    public static final int DIO_intakeShaftTop = 0;
+    public static final int DIO_intakeShaftBottom = 1;
 
     public static final int DIO_intakeArmTop = 3;
     public static final int DIO_intakeArmBottom = 4;

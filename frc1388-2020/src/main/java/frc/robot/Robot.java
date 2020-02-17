@@ -132,11 +132,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    if( timer.getMatchTime() > 120 && !climberOn){
-      m_robotContainer.getClimb().schedule();
-      m_robotContainer.getTrolley().schedule();
-      climberOn = true;
-    }
   }
 
   @Override

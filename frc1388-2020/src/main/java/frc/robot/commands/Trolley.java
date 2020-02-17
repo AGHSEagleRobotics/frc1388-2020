@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.TrolleySubsystem;
@@ -14,6 +15,14 @@ import frc.robot.subsystems.TrolleySubsystem;
 public class Trolley extends CommandBase {
   private TrolleySubsystem m_trolleySubsystem;
   private double m_trolleySpeed = 0.0;
+  private double m_climbingSpeed = 0.0;
+  private Timer timer = new Timer();
+  private Timer timerElasp = new Timer();
+  private final double timeTillMotorReady = 3.0;
+  private final double timeTillLockReady = 2.0;
+  private boolean unlockedForTime = false;
+  private boolean pendLocking = false;
+
   /**
    * Creates a new Trolley.
    */
@@ -31,9 +40,40 @@ public class Trolley extends CommandBase {
   @Override
   public void execute() {
     m_trolleySpeed = RobotContainer.getOpRightXAxis();
-    if( !LockTrolleyGear.getTrolleySolenoidState()){
-      m_trolleySubsystem.setTrolleyMotor(m_trolleySpeed);
+    // if( !LockTrolleyGear.getTrolleySolenoidState()){
+    //   m_trolleySubsystem.setTrolleyMotor(m_trolleySpeed);
+    // }
+
+    if(m_trolleySpeed != 0 ){
+      m_trolleySubsystem.setTrolleyServoUnlock();
+      timer.reset();
     }
+
+    // if( !m_trolleySubsystem.gettrolleySolenoidState() ){
+    //   m_trolleySubsystem.settrolleyMotor(m_climbingSpeed);
+    // }
+
+    if( timer.hasPeriodPassed(timeTillMotorReady) ){
+      unlockedForTime = true;
+    }
+
+    if( !m_trolleySubsystem.getTrolleyServoState() && unlockedForTime ){
+      m_trolleySubsystem.setTrolleyMotor(m_climbingSpeed);
+    }
+
+    if( m_climbingSpeed == 0.0 && !pendLocking ){
+      pendLocking = true;
+      if(timerElasp.get() > 0.0 ){
+        timerElasp.reset();
+      }else{
+        timerElasp.start();
+      }
+    }
+
+    if(pendLocking && timerElasp.hasPeriodPassed(timeTillLockReady)){
+      m_trolleySubsystem.setTrolleyServoLock();
+    }
+
   }
 
   // Called once the command ends or is interrupted.
