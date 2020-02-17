@@ -77,7 +77,7 @@ public class MagazineSubsystem extends SubsystemBase {
     // Constrain output
     distance = Math.max(Math.min(distance, MAX_DISTANCE), MIN_DISTANCE);
 
-    System.out.println("distance = " + distance + "   voltage = " + voltage);
+    // System.out.println("distance = " + distance + "   voltage = " + voltage);
     return distance;
   }
 
@@ -85,11 +85,11 @@ public class MagazineSubsystem extends SubsystemBase {
     boolean ballPresent = false;
     if(getDistance() > BALL_PRESENT_DISTANCE){
       ballPresent = false;
-      System.out.println("false");
+      // System.out.println("false");
     }
     if(getDistance() <BALL_PRESENT_DISTANCE){
       ballPresent = true;
-      System.out.println("true");
+      // System.out.println("true");
     }
     return ballPresent;
   }

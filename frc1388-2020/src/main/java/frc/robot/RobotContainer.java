@@ -34,6 +34,7 @@ import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.Rumble;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ColorSpinner;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -62,6 +63,7 @@ public class RobotContainer {
   private DriveTrain m_driveTrain; 
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private MagazineSubsystem m_magazineSubsystem = new MagazineSubsystem();
+  private ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private ColorSpinner m_colorSpinner = new ColorSpinner();
   private Rumble m_driveRumble = new Rumble(driveController);
   private Rumble m_opRumble = new Rumble(opController);
@@ -117,6 +119,7 @@ public class RobotContainer {
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
     CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
+    CommandScheduler.getInstance().registerSubsystem(m_shooterSubsystem);
     // Configure the button bindings
     configureButtonBindings();
 
