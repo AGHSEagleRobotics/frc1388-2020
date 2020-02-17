@@ -8,6 +8,7 @@
 package frc.robot;
 
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 
 import com.analog.adis16470.frc.ADIS16470_IMU;
 
@@ -16,19 +17,23 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSink;
 import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.commands.AutonMove;
+import frc.robot.commands.AutonMoveShoot;
 import frc.robot.commands.AutonShoot;
 import frc.robot.commands.DeployIntake;
 import frc.robot.commands.Drive;
@@ -56,6 +61,8 @@ public class RobotContainer {
   private final int visionDrivePipeline = 1;
   private final int camHeight = 5;
   private final int camWidth = 4;
+  private final int colorSpinnerGridHeight = 10;
+  private final int colorSpinnerGridWidth = 8;
 
   // The robot's subsystems and commands are defined here...
 
@@ -64,7 +71,8 @@ public class RobotContainer {
   private DeployIntake m_deployIntake;
   private RetractIntake m_retractIntake;
   private AutonMove m_autonMove;
-  private AutonShoot m_shoot;
+  private AutonShoot m_autonShoot;
+  private AutonMoveShoot m_autonMoveShoot;
   
   // Subsystems:
   private DriveTrain m_driveTrain; 
@@ -76,17 +84,28 @@ public class RobotContainer {
   
   // components 
   private ADIS16470_IMU m_gyro;
+  public static XboxController driveController = new XboxController(Constants.USB_driveController);
+  public static XboxController opController = new XboxController(Constants.USB_opController);
+  
+  // cameras
   private UsbCamera m_cameraIntake;
   private UsbCamera m_cameraClimber;
   private HttpCamera m_limeLight;
   private int m_currVideoSourceIndex = 0;
   private VideoSink m_videoSink;
   private VideoSource[] m_videoSources;
+
+  // shuffleboard
   private ShuffleboardTab shuffleboard;
   private ComplexWidget complexWidgetCam;
   private ComplexWidget complexWidgetAuton;
-  private SendableChooser<String> autonChooser = new SendableChooser<>();
-
+  private SendableChooser<Command> autonChooser = new SendableChooser<>();
+  private NetworkTableEntry MaxCapacityBox;
+  private ShuffleboardLayout colorSpinnerGrid;
+  private BooleanSupplier blueColorSupplier;
+  private BooleanSupplier redColorSupplier;
+  private BooleanSupplier yellowColorSupplier;
+  private BooleanSupplier greenColorSupplier;
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
@@ -94,6 +113,17 @@ public class RobotContainer {
 
     m_gyro = new ADIS16470_IMU();
     m_gyro.calibrate();
+
+    m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
+
+    m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
+    m_deployIntake = new DeployIntake(m_intakeSubsystem, m_magazineSubsystem);
+    m_retractIntake = new RetractIntake(m_intakeSubsystem, m_magazineSubsystem);
+    m_autonMove = new AutonMove(m_driveTrain);
+
+    // set default commands here
+    m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
+    CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
 
     m_cameraIntake = CameraServer.getInstance().startAutomaticCapture(Constants.USB_cameraIntake);
     // m_cameraClimber = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber);
@@ -119,10 +149,10 @@ public class RobotContainer {
       .withSize(camHeight, camWidth)
       .withProperties(Map.of("Show Crosshair", true, "Show Controls", false, "Title", "Camera"));
 
-    autonChooser.addOption("Nothing", "Nothing" );
-    autonChooser.addOption("Move", "Move" );
-    autonChooser.addOption("Shoot", "Shoot" );
-    autonChooser.addOption("MoveShoot", "MoveShoot" );
+    autonChooser.addOption("Nothing", null );
+    autonChooser.addOption("Move", m_autonMove );
+    autonChooser.addOption("Shoot", m_autonShoot );
+    autonChooser.addOption("MoveShoot", m_autonMoveShoot );
     // autonChooser.addOption("FiveShoot", "FiveShoot" );
     // autonChooser.addOption("EightShoot", "EightShoot" );
 
@@ -130,21 +160,34 @@ public class RobotContainer {
       .add(autonChooser)
       .withWidget(BuiltInWidgets.kComboBoxChooser);
 
+    MaxCapacityBox = shuffleboard
+      .add("MaxCapacity", false)
+      .withWidget(BuiltInWidgets.kBooleanBox)
+      .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey" ))
+      .getEntry();
+
+    colorSpinnerGrid = shuffleboard
+      .getLayout("Color Spinner", BuiltInLayouts.kGrid)
+      .withSize( colorSpinnerGridWidth, colorSpinnerGridHeight );
+
+    // TODO get the suppliers to work
+    colorSpinnerGrid
+      .addBoolean("Blue", blueColorSupplier )
+      .withWidget(BuiltInWidgets.kBooleanBox);
+    colorSpinnerGrid
+      .addBoolean("Red", redColorSupplier)
+      .withWidget(BuiltInWidgets.kBooleanBox);
+    colorSpinnerGrid
+      .addBoolean("Green", greenColorSupplier)
+      .withWidget(BuiltInWidgets.kBooleanBox);
+    colorSpinnerGrid
+      .addBoolean("Yellow", yellowColorSupplier)
+      .withWidget(BuiltInWidgets.kBooleanBox);
+
     // sets the pipeline of the limelight
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionDrivePipeline);
     // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionProcessPipeline);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
-
-    m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
-
-    m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
-    m_deployIntake = new DeployIntake(m_intakeSubsystem, m_magazineSubsystem);
-    m_retractIntake = new RetractIntake(m_intakeSubsystem, m_magazineSubsystem);
-    m_autonMove = new AutonMove(m_driveTrain);
-
-    // set default commands here
-    m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
-    CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -193,9 +236,6 @@ public class RobotContainer {
   }
 
 
-  public static XboxController driveController = new XboxController(Constants.USB_driveController);
-  public static XboxController opController = new XboxController(Constants.USB_opController);
-
   public static double getDriveRightXAxis() {
     return driveController.getX(Hand.kRight);
   }
@@ -231,24 +271,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An Drive will run in autonomous 
-    Command autonCommand = m_autonMove;
-    
-    switch(autonChooser.getSelected()){
-      case "Nothing":
-        autonCommand = null;
-        break;
-      case "Move":
-        autonCommand = m_autonMove;
-        break;
-      case "Shoot":
-        autonCommand = m_shoot;
-        break;
-      case "Default":
-        //autonCommand = m_moveShoot;
-        break;
-    }
-    return autonCommand; 
+    return autonChooser.getSelected();
   }
-
+  
 
 }

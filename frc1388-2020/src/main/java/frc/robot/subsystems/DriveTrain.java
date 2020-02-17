@@ -31,15 +31,15 @@ public class DriveTrain extends SubsystemBase {
 
 
   // Competition Bot motors
-  // private final WPI_TalonFX m_leftFront;
-  // private final WPI_TalonFX m_rightFront;
-  // private final WPI_TalonFX m_leftBack;
-  // private final WPI_TalonFX m_rightBack;
+  private final WPI_TalonFX m_leftFront;
+  private final WPI_TalonFX m_rightFront;
+  private final WPI_TalonFX m_leftBack;
+  private final WPI_TalonFX m_rightBack;
   // // Knightmare test motors // FIXME: do not check in with the following uncommented. test only!
-  private final WPI_TalonSRX m_leftFront;
-  private final WPI_TalonSRX m_rightFront;
-  private final WPI_VictorSPX m_leftBack;
-  private final WPI_VictorSPX m_rightBack;
+  // private final WPI_TalonSRX m_leftFront;
+  // private final WPI_TalonSRX m_rightFront;
+  // private final WPI_VictorSPX m_leftBack;
+  // private final WPI_VictorSPX m_rightBack;
 
   // need to instantiate the differenetail drive
   private final DifferentialDrive differentialDrive;
@@ -58,15 +58,15 @@ public class DriveTrain extends SubsystemBase {
   public DriveTrain( Supplier<Rotation2d> angleSupplier ) {
     
     // Competition Robot motors
-    // m_leftFront = new WPI_TalonFX( Constants.CANID_driveLF );
-    // m_rightFront = new WPI_TalonFX( Constants.CANID_driveRF );
-    // m_leftBack = new WPI_TalonFX( Constants.CANID_driveLB);
-    // m_rightBack = new WPI_TalonFX( Constants.CANID_driveRB );
+    m_leftFront = new WPI_TalonFX( Constants.CANID_driveLF );
+    m_rightFront = new WPI_TalonFX( Constants.CANID_driveRF );
+    m_leftBack = new WPI_TalonFX( Constants.CANID_driveLB);
+    m_rightBack = new WPI_TalonFX( Constants.CANID_driveRB );
     // // knightmare test motors // FIXME: do not check in with the following uncommented. test only!
-    m_leftFront = new WPI_TalonSRX( Constants.CANID_driveLF );
-    m_rightFront = new WPI_TalonSRX( Constants.CANID_driveRF );
-    m_leftBack = new WPI_VictorSPX( Constants.CANID_driveLB);
-    m_rightBack = new WPI_VictorSPX( Constants.CANID_driveRB );
+    // m_leftFront = new WPI_TalonSRX( Constants.CANID_driveLF );
+    // m_rightFront = new WPI_TalonSRX( Constants.CANID_driveRF );
+    // m_leftBack = new WPI_VictorSPX( Constants.CANID_driveLB);
+    // m_rightBack = new WPI_VictorSPX( Constants.CANID_driveRB );
     
     followMode();
     // configFalconFX();
@@ -103,10 +103,10 @@ public class DriveTrain extends SubsystemBase {
     m_rightBack.setNeutralMode( NeutralMode.Coast);
   }
 
-  // public void configFalconFX(){
-  //   m_leftFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-  //   m_rightFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-  // }
+  public void configFalconFX(){
+    m_leftFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    m_rightFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+  }
 
   // Creates Options for drive method
   public void arcadeDrive( double speed, double rotation ) {
@@ -144,7 +144,7 @@ public class DriveTrain extends SubsystemBase {
     return m_leftFront.getSelectedSensorPosition();
   }
 
-  
+
   
   // to be used in the future for uses like checking the gyro
   @Override
