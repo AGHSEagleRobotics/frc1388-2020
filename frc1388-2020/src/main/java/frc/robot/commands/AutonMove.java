@@ -10,11 +10,14 @@ package frc.robot.commands;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class AutonMove extends CommandBase {
+  private final double kDRIVE = 0.5;
+  private final double kROTATION = 0.5;
 
+  private final double TIME_PERIOD_MOVE = 3.0;
+  
   private DriveTrain m_driveTrain;
   private Timer timer = new Timer();
   private boolean m_hasMovePeriodPass = false;
@@ -23,10 +26,8 @@ public class AutonMove extends CommandBase {
   private double m_timeToRun = 0.0;
   private boolean m_timeMode = false;
   private boolean isInFeet = false;
+  private double m_rotation = 0.0;
   
-  private final double kDRIVE = 0.5;
-  private final double kROTATION = 0.5;
-  private final double TIME_PERIOD_MOVE = 3.0;
 
   /**
    * Creates a new AutonMove.
@@ -52,15 +53,15 @@ public class AutonMove extends CommandBase {
   public void execute() {
 
     if( m_timeMode ){
-      if(timer.hasPeriodPassed(TIME_PERIOD_MOVE) && !m_hasMovePeriodPass)
-        m_driveTrain.curvatureDrive( kDRIVE, kROTATION, true );
+      if(timer.hasPeriodPassed(m_timeToRun) && !m_hasMovePeriodPass)
+        m_driveTrain.curvatureDrive( kDRIVE, m_rotation, true );
     }else{
       if(isInFeet){
         if( m_driveTrain.leftEncoderDistance() < m_distance && m_driveTrain.rightEncoderDistance() < m_distance )
-          m_driveTrain.curvatureDrive(kDRIVE, kROTATION, true);
+          m_driveTrain.curvatureDrive(kDRIVE, m_rotation, true);
       }else{
         if( m_driveTrain.leftEncoderDistance() < m_distanceInFeet && m_driveTrain.rightEncoderDistance() < m_distanceInFeet)
-          m_driveTrain.curvatureDrive(kDRIVE, kROTATION, true);
+          m_driveTrain.curvatureDrive(kDRIVE, m_rotation, true);
       }
     }
   }
@@ -70,16 +71,19 @@ public class AutonMove extends CommandBase {
   public void setTimeRun( double timeForRunning ){
     m_timeMode = true;
     m_timeToRun = timeForRunning;
+    m_rotation = 0.0;
   }
 
   public void setDistanceInUnit( int distance ){
     m_timeMode = false;
     m_distance = distance;
+    m_rotation = 0.0;
   }
 
   public void setDistanceInFeet( double distance ){
     m_timeMode = false;
     m_distanceInFeet = distance;
+    m_rotation = 0.0;
   }
 
   // Called once the command ends or is interrupted.
