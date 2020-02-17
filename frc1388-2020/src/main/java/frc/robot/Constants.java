@@ -50,7 +50,7 @@ public final class Constants {
     // public static final int CANID_driveLF = 3;
     // public static final int CANID_driveLB = 4;
 
-    // ShooterSubsystem motors
+    // ShooterSubsystem motors        
     public static final int CANID_shootMotor = 13;
 
     /**
@@ -61,11 +61,12 @@ public final class Constants {
     /**
      * VictorSPX Can IDs
      */
-    public static final int CANID_colorSpinnerMotor = 0;
-    public static final int CANID_spinnerArmMotor = 0;
     
-    public static final int CANID_horizontalMagazineMotor = 0;
-    public static final int CANID_verticalMagazineMotor = 0;
+    // Change Id's underneath
+    public static final int CANID_colorSpinnerMotor = 7;
+    public static final int CANID_spinnerArmMotor = 8;
+    
+    public static final int CANID_magazineMotor = 0;
     
     public static final int CANID_intakeShaftMotor = 5;
     
@@ -77,8 +78,13 @@ public final class Constants {
     /**
      * Digital IO
      */
-    public static final int DIO_intakeArmTop = 0;
-    public static final int DIO_intakeArmBottom = 1;
+
+         public static final int DIO_intakeShaftTop = 0;
+         public static final int DIO_intakeShaftBottom = 1;
+
+    public static final int DIO_intakeArmTop = 3;
+    public static final int DIO_intakeArmBottom = 4;
+
     
     public static final int DIO_climbServo = 4;
     public static final int DIO_trolleyServo = 5;

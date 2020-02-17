@@ -17,6 +17,7 @@ public class Eject extends CommandBase {
 
   private final double k_intakeArmMotorUp = 0.2;
   private final double k_intakeShaftUnjamSpeed = -0.5;  //speed when arm is retracting
+  private final double k_intakeShaftEjectDefaultSpeed = -0.2;
 
   /**
    * Creates a new EmergencyReverse.
@@ -41,17 +42,21 @@ public class Eject extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (m_intakeSubsystem.getIntakeLimitSwitchTop()) {
+      m_intakeSubsystem.setIntakeArmMotor(0);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intakeSubsystem.setIntakeArmMotor(0);
+    m_magazineSubsystem.stopEjectMode();
+    m_intakeSubsystem.setIntakeShaftMotor(k_intakeShaftEjectDefaultSpeed);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intakeSubsystem.getIntakeLimitSwitchTop();
+    return false;
   }
 }
