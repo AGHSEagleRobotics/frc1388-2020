@@ -12,8 +12,8 @@
         "tiles": {
           "21,0": {
             "size": [
-              11,
-              10
+              13,
+              13
             ],
             "content": {
               "_type": "Camera Stream",
@@ -29,7 +29,7 @@
               "imageHeight": 0
             }
           },
-          "12,0": {
+          "14,0": {
             "size": [
               5,
               6
@@ -121,8 +121,18 @@
               "_type": "ComboBox Chooser",
               "_title": "AutonChooser"
             }
+          },
+          "20,13": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_title": "Text View"
           }
         }
+      }
       }
     },
     {
@@ -326,46 +336,46 @@
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
-          "20,0": {
+          "23,3": {
             "size": [
-              9,
-              3
+              5,
+              9
             ],
             "content": {
               "_type": "Grid Layout",
               "_title": "Color Spinner",
-              "Layout/Number of columns": 4,
+              "Layout/Number of columns": 1,
               "Layout/Number of rows": 4,
               "Layout/Label position": "BOTTOM",
               "_children": {
-                "0,0": {
-                  "_type": "Boolean Box",
-                  "_title": "Blue",
-                  "Colors/Color when true": "#000080FF",
-                  "Colors/Color when false": "#1A1A1AFF"
-                },
-                "1,0": {
-                  "_type": "Boolean Box",
-                  "_title": "Green",
-                  "Colors/Color when true": "#00FF00FF",
-                  "Colors/Color when false": "#1A1A1AFF"
-                },
-                "2,0": {
+                "0,3": {
                   "_type": "Boolean Box",
                   "_title": "Red",
                   "Colors/Color when true": "#FF0000FF",
                   "Colors/Color when false": "#1A1A1AFF"
                 },
-                "3,0": {
+                "0,2": {
+                  "_type": "Boolean Box",
+                  "_title": "Green",
+                  "Colors/Color when true": "#00FF00FF",
+                  "Colors/Color when false": "#1A1A1AFF"
+                },
+                "0,1": {
                   "_type": "Boolean Box",
                   "_title": "Yellow",
                   "Colors/Color when true": "#FFFF00FF",
                   "Colors/Color when false": "#1A1A1AFF"
+                },
+                "0,0": {
+                  "_type": "Boolean Box",
+                  "_title": "Blue",
+                  "Colors/Color when true": "#000080FF",
+                  "Colors/Color when false": "#1A1A1AFF"
                 }
               }
             }
-          },
-          "5,0": {
+                },
+                "1,0": {
             "size": [
               4,
               3
@@ -373,6 +383,332 @@
             "content": {
               "_type": "ComboBox Chooser",
               "_title": "AutonChooser"
+            }
+          },
+          "1,3": {
+            "size": [
+              4,
+              4
+            ],
+            "content": {
+                  "_type": "Boolean Box",
+              "_title": "FULL MAG",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "23,0": {
+            "size": [
+              5,
+              3
+            ],
+            "content": {
+              "_type": "Text View",
+              "_title": "Desired Color"
+            }
+          },
+          "0,10": {
+            "size": [
+              5,
+              3
+            ],
+            "content": {
+              "_type": "Encoder",
+              "_title": "Shooter Encoder"
+            }
+          },
+          "5,0": {
+            "size": [
+              18,
+              13
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_title": "Camera Stream",
+              "Crosshair/Show crosshair": false,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": false,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": -1,
+              "imageWidth": -1,
+              "imageHeight": -1
+            }
+          },
+          "1,7": {
+            "size": [
+              4,
+              3
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_title": "Color Armed",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "COMP 2",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 32.0,
+        "showGrid": true,
+        "hgap": 8.0,
+        "vgap": 8.0,
+        "tiles": {
+          "22,0": {
+            "size": [
+              12,
+              15
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_title": "Camera Stream",
+              "Crosshair/Show crosshair": false,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": false,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": -1,
+              "imageWidth": -1,
+              "imageHeight": -1
+            }
+          },
+          "5,0": {
+            "size": [
+              13,
+              15
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_title": "Camera Stream",
+              "Crosshair/Show crosshair": false,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": false,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": -1,
+              "imageWidth": -1,
+              "imageHeight": -1
+            }
+          },
+          "0,7": {
+            "size": [
+              5,
+              4
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_title": "MAX AMMO",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "0,3": {
+            "size": [
+              5,
+              4
+            ],
+            "content": {
+              "_type": "Encoder",
+              "_title": "RPM"
+            }
+          },
+          "18,12": {
+            "size": [
+              4,
+              3
+            ],
+            "content": {
+              "_type": "Text View",
+              "_title": " Craved Colour"
+            }
+          },
+          "0,0": {
+            "size": [
+              5,
+              3
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_title": "Autonomoose?"
+            }
+          },
+          "18,0": {
+            "size": [
+              4,
+              12
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "COLOUR SPINNER",
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Boolean Box",
+                  "_title": "GRRRRREEEEEEEEEEEN",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#000000FF"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_title": "BLU",
+                  "Colors/Color when true": "#000080FF",
+                  "Colors/Color when false": "#000000FF"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_title": "REDRUM",
+                  "Colors/Color when true": "#FF0000FF",
+                  "Colors/Color when false": "#000000FF"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_title": "YELL-O",
+                  "Colors/Color when true": "#FFFF00FF",
+                  "Colors/Color when false": "#000000FF"
+                }
+              ]
+            }
+          },
+          "0,11": {
+            "size": [
+              5,
+              4
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_title": "Color Armed?",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "COMBO 3",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 32.0,
+        "showGrid": true,
+        "hgap": 8.0,
+        "vgap": 8.0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              18,
+              18
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_title": "Camera Stream",
+              "Crosshair/Show crosshair": false,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": false,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": -1,
+              "imageWidth": -1,
+              "imageHeight": -1
+            }
+          },
+          "18,11": {
+            "size": [
+              4,
+              4
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_title": "FULL MAG",
+              "Colors/Color when true": "#FF0000FF",
+              "Colors/Color when false": "#000000FF"
+            }
+          },
+          "23,11": {
+            "size": [
+              4,
+              4
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_title": "Color Armed",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#000000FF"
+            }
+          },
+          "27,6": {
+            "size": [
+              6,
+              3
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_title": "Autonomous?"
+            }
+          },
+          "18,5": {
+            "size": [
+              7,
+              4
+            ],
+            "content": {
+              "_type": "Encoder",
+              "_title": "Shooter RPM"
+            }
+          },
+          "18,0": {
+            "size": [
+              11,
+              5
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "COLOUR SPINER",
+              "Layout/Number of columns": 4,
+              "Layout/Number of rows": 1,
+              "Layout/Label position": "BOTTOM",
+              "_children": {
+                "0,0": {
+                  "_type": "Boolean Box",
+                  "_title": "Green",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#000000FF"
+                },
+                "1,0": {
+                  "_type": "Boolean Box",
+                  "_title": "Blue",
+                  "Colors/Color when true": "#000080FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                "2,0": {
+                  "_type": "Boolean Box",
+                  "_title": "Red",
+                  "Colors/Color when true": "#FF0000FF",
+                  "Colors/Color when false": "#000000FF"
+                },
+                "3,0": {
+                  "_type": "Boolean Box",
+                  "_title": "Yellow",
+                  "Colors/Color when true": "#FFFF00FF",
+                  "Colors/Color when false": "#000000FF"
+                }
+              }
+            }
+          },
+          "29,0": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_title": "Craved Colour"
             }
           },
           "9,3": {
@@ -398,9 +734,9 @@
     }
   ],
   "windowGeometry": {
-    "x": -7.0,
-    "y": 0.0,
-    "width": 1380.0,
-    "height": 689.0
+    "x": -8.0,
+    "y": -8.0,
+    "width": 1382.0,
+    "height": 744.0
   }
 }
