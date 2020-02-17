@@ -17,6 +17,8 @@ public class SpinnerArm extends CommandBase {
   private final double k_stallTime = 1.0;
   private final Timer m_stallTimer = new Timer();
   private Direction m_direction;
+  private final double m_spinnerArmUp = 0.6;
+  private final double m_spinnerArmDown = -0.5;
 
   public enum Direction {
     kUp,
@@ -37,9 +39,9 @@ public class SpinnerArm extends CommandBase {
   @Override
   public void initialize() {
     if (m_direction == Direction.kUp) {
-      m_colorSpinner.raiseArm();
+      m_colorSpinner.setArmMotor(m_spinnerArmUp);
     } else if (m_direction == Direction.kDown) {
-      m_colorSpinner.lowerArm();
+      m_colorSpinner.setArmMotor(m_spinnerArmDown);
     }
   }
 
@@ -47,12 +49,16 @@ public class SpinnerArm extends CommandBase {
   @Override
   public void execute() {
     double spinnerArmCurrent = Math.abs(m_colorSpinner.getSpinnerArmCurrent());
+    System.out.println("Current = " + spinnerArmCurrent);
     if (spinnerArmCurrent > k_stallAmps && m_stallTimer.get() == 0) {
       m_stallTimer.start();
+      System.out.println("Starting timer");
     } else if (spinnerArmCurrent < k_stallAmps) {
       m_stallTimer.stop();
+      System.out.println("Stopping timer");
       m_stallTimer.reset();
     }
+    System.out.println("Timer = " + m_stallTimer.get());
   }
 
   // Called once the command ends or is interrupted.

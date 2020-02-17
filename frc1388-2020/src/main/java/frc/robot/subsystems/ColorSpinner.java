@@ -31,7 +31,7 @@ public class ColorSpinner extends SubsystemBase {
   private final WPI_VictorSPX m_spinnerMotor;
   private final WPI_TalonSRX m_spinnerArmMotor;
 
-  private final double m_armSpeed = .3;
+  private final double m_armSpeed = 0.5;
 
   private static final Color kRedTarget = ColorMatch.makeColor(0.517, 0.343, 0.141);
   private static final Color kBlueTarget = ColorMatch.makeColor(0.123, 0.415, 0.461);
@@ -150,12 +150,8 @@ public class ColorSpinner extends SubsystemBase {
   // Arm Motor
   // ======================================================
 
-  public void raiseArm() {
-    m_spinnerArmMotor.set(m_armSpeed);
-  }
-
-  public void lowerArm() {
-    m_spinnerArmMotor.set(-m_armSpeed);
+  public void setArmMotor(double speed) {
+    m_spinnerArmMotor.set(speed);
   }
 
   public void stopArm() {
