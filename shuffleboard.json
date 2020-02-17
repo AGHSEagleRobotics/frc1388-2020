@@ -365,7 +365,7 @@
               }
             }
           },
-          "16,0": {
+          "5,0": {
             "size": [
               4,
               3
@@ -373,6 +373,24 @@
             "content": {
               "_type": "ComboBox Chooser",
               "_title": "AutonChooser"
+            }
+          },
+          "9,3": {
+            "size": [
+              9,
+              6
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_title": "Camera Stream",
+              "Crosshair/Show crosshair": true,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": false,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": -1,
+              "imageWidth": -1,
+              "imageHeight": -1
             }
           }
         }

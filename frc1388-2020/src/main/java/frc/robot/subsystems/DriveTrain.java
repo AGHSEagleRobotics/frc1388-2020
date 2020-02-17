@@ -135,6 +135,16 @@ public class DriveTrain extends SubsystemBase {
   public Rotation2d getAngle(){
     return m_angleSupplier.get();
   }
+
+  public int leftEncoderDistance(){
+    return m_rightFront.getSelectedSensorPosition();
+  }
+
+  public int rightEncoderDistance(){
+    return m_leftFront.getSelectedSensorPosition();
+  }
+
+  
   
   // to be used in the future for uses like checking the gyro
   @Override

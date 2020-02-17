@@ -9,8 +9,6 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.RobotContainer;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -18,9 +16,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class AutonMove extends CommandBase {
 
   private DriveTrain m_driveTrain;
-  private Pose2d m_targetPosi;
   private Timer timer = new Timer();
-  private boolean hasMovePeriodPass = false;
+  private boolean m_hasMovePeriodPass = false;
+  private int m_distance = 0;
+  private double m_distanceInFeet = 0.0;
+  private double m_timeToRun = 0.0;
+  private boolean m_timeMode = false;
+  private boolean isInFeet = false;
   
   private final double kDRIVE = 0.5;
   private final double kROTATION = 0.5;
@@ -34,7 +36,7 @@ public class AutonMove extends CommandBase {
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements( m_driveTrain);
-    // m_targetPosi = new Pose2d(10, 10, m_driveTrain.getAngle());
+    // m_targetPois = new Pose2d(10, 10, m_driveTrain.getAngle());
     
   }
 
@@ -49,10 +51,35 @@ public class AutonMove extends CommandBase {
   @Override
   public void execute() {
 
-    if(timer.hasPeriodPassed(TIME_PERIOD_MOVE) && !hasMovePeriodPass){
-      m_driveTrain.curvatureDrive( kDRIVE, kROTATION, true );
+    if( m_timeMode ){
+      if(timer.hasPeriodPassed(TIME_PERIOD_MOVE) && !m_hasMovePeriodPass)
+        m_driveTrain.curvatureDrive( kDRIVE, kROTATION, true );
+    }else{
+      if(isInFeet){
+        if( m_driveTrain.leftEncoderDistance() < m_distance && m_driveTrain.rightEncoderDistance() < m_distance )
+          m_driveTrain.curvatureDrive(kDRIVE, kROTATION, true);
+      }else{
+        if( m_driveTrain.leftEncoderDistance() < m_distanceInFeet && m_driveTrain.rightEncoderDistance() < m_distanceInFeet)
+          m_driveTrain.curvatureDrive(kDRIVE, kROTATION, true);
+      }
     }
-    
+  }
+   
+  
+
+  public void setTimeRun( double timeForRunning ){
+    m_timeMode = true;
+    m_timeToRun = timeForRunning;
+  }
+
+  public void setDistanceInUnit( int distance ){
+    m_timeMode = false;
+    m_distance = distance;
+  }
+
+  public void setDistanceInFeet( double distance ){
+    m_timeMode = false;
+    m_distanceInFeet = distance;
   }
 
   // Called once the command ends or is interrupted.

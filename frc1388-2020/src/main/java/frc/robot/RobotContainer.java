@@ -26,7 +26,10 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.commands.AutonMove;
+import frc.robot.commands.AutonShoot;
 import frc.robot.commands.DeployIntake;
 import frc.robot.commands.Drive;
 import frc.robot.commands.Eject;
@@ -51,6 +54,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
   private final int visionProcessPipeline = 0;
   private final int visionDrivePipeline = 1;
+  private final int camHeight = 5;
+  private final int camWidth = 4;
 
   // The robot's subsystems and commands are defined here...
 
@@ -59,6 +64,7 @@ public class RobotContainer {
   private DeployIntake m_deployIntake;
   private RetractIntake m_retractIntake;
   private AutonMove m_autonMove;
+  private AutonShoot m_shoot;
   
   // Subsystems:
   private DriveTrain m_driveTrain; 
@@ -76,7 +82,10 @@ public class RobotContainer {
   private int m_currVideoSourceIndex = 0;
   private VideoSink m_videoSink;
   private VideoSource[] m_videoSources;
-  private ComplexWidget complexWidget;
+  private ShuffleboardTab shuffleboard;
+  private ComplexWidget complexWidgetCam;
+  private ComplexWidget complexWidgetAuton;
+  private SendableChooser<String> autonChooser = new SendableChooser<>();
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -102,12 +111,24 @@ public class RobotContainer {
 
     m_videoSink.setSource(m_cameraIntake);
 
-    ShuffleboardTab shuffleboard = Shuffleboard.getTab("SmartDashboard");
+    shuffleboard = Shuffleboard.getTab("Competition");
 
-    complexWidget = shuffleboard
+    complexWidgetCam = shuffleboard
       .add(m_videoSink.getSource())
       .withWidget(BuiltInWidgets.kCameraStream)
-      .withProperties(Map.of("Show Crosshair", true, "Show Controls", false));
+      .withSize(camHeight, camWidth)
+      .withProperties(Map.of("Show Crosshair", true, "Show Controls", false, "Title", "Camera"));
+
+    autonChooser.addOption("Nothing", "Nothing" );
+    autonChooser.addOption("Move", "Move" );
+    autonChooser.addOption("Shoot", "Shoot" );
+    autonChooser.addOption("MoveShoot", "MoveShoot" );
+    // autonChooser.addOption("FiveShoot", "FiveShoot" );
+    // autonChooser.addOption("EightShoot", "EightShoot" );
+
+    complexWidgetAuton = shuffleboard
+      .add(autonChooser)
+      .withWidget(BuiltInWidgets.kComboBoxChooser);
 
     // sets the pipeline of the limelight
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionDrivePipeline);
@@ -199,7 +220,7 @@ public class RobotContainer {
   // Cam stuff lol
 
   private void switchVideoSource() {
-    m_currVideoSourceIndex = (m_currVideoSourceIndex+1) % m_videoSources.length;
+    m_currVideoSourceIndex = (m_currVideoSourceIndex + 1) % m_videoSources.length;
     m_videoSink.setSource( m_videoSources[m_currVideoSourceIndex] );
   }
 
@@ -210,9 +231,24 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An Drive will run in autonomous 
-    return null; //m_autoCommand; // for the time being no Autonomous Command
+    Command autonCommand = m_autonMove;
+    
+    switch(autonChooser.getSelected()){
+      case "Nothing":
+        autonCommand = null;
+        break;
+      case "Move":
+        autonCommand = m_autonMove;
+        break;
+      case "Shoot":
+        autonCommand = m_shoot;
+        break;
+      case "Default":
+        //autonCommand = m_moveShoot;
+        break;
+    }
+    return autonCommand; 
   }
- 
 
 
 }
