@@ -7,8 +7,16 @@
 
 package frc.robot;
 
+import java.util.Map;
 
 import com.analog.adis16470.frc.ADIS16470_IMU;
+
+import edu.wpi.cscore.HttpCamera;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoSink;
+import edu.wpi.cscore.VideoSource;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -16,9 +24,14 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 
 import frc.robot.commands.Climb;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.robot.commands.DeployIntake;
 import frc.robot.commands.Drive;
-import frc.robot.commands.IntakeArmCommand;
-import frc.robot.commands.IntakeShaftCommand;
+import frc.robot.commands.Eject;
+import frc.robot.commands.RetractIntake;
 import frc.robot.commands.LockRackAndPinion;
 import frc.robot.commands.LockTrolleyGear;
 import frc.robot.commands.Trolley;
@@ -26,6 +39,7 @@ import frc.robot.commands.Trolley;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.Rumble;
 import frc.robot.subsystems.TrolleySubsystem;
 import frc.robot.subsystems.ColorSpinner;
@@ -43,36 +57,84 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  private final int visionProcessPipeline = 0;
+  private final int visionDrivePipeline = 1;
+  
   private static final double DEADBAND_NUM = 0.15;
 
   // The robot's subsystems and commands are defined here...
-  // private Command m_autoCommand = new Command();
+  
+  // Commands:
+  private Eject m_eject;
+  private DeployIntake m_deployIntake;
+  private RetractIntake m_retractIntake;
+  
+  // Subsystems:
   private DriveTrain m_driveTrain; 
-  private ADIS16470_IMU  m_gyro;
-  // private Command m_autoCommand = new Command();
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
-  private IntakeShaftCommand m_intakeShaftCommand = new IntakeShaftCommand(m_intakeSubsystem);
-  private IntakeArmCommand m_intakeArmCommand = new IntakeArmCommand(m_intakeSubsystem);
+  private MagazineSubsystem m_magazineSubsystem = new MagazineSubsystem();
+  private ColorSpinner m_colorSpinner = new ColorSpinner();
   private Rumble m_driveRumble = new Rumble(driveController);
   private Rumble m_opRumble = new Rumble(opController);
   private TrolleySubsystem m_trolleySubsystem = new TrolleySubsystem();
   private ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
   private Trolley m_trolleyCommand = new Trolley(m_trolleySubsystem);
   private Climb m_climbCommand = new Climb(m_climberSubsystem);
-
-  private ColorSpinner m_colorSpinner = new ColorSpinner();
+  
+  // components 
+  public static XboxController driveController = new XboxController(Constants.USB_driveController);
+  public static XboxController opController = new XboxController(Constants.USB_opController);
+  private ADIS16470_IMU m_gyro;
+  
+  private UsbCamera m_cameraIntake;
+  private UsbCamera m_cameraClimber;
+  private HttpCamera m_limeLight;
+  private int m_currVideoSourceIndex = 0;
+  private VideoSink m_videoSink;
+  private VideoSource[] m_videoSources;
+  private ComplexWidget complexWidget;
+  
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     m_gyro = new ADIS16470_IMU();
     m_gyro.calibrate();
+
+    m_cameraIntake = CameraServer.getInstance().startAutomaticCapture(Constants.USB_cameraIntake);
+    // m_cameraClimber = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber);
+
+    m_cameraIntake.setConnectVerbose(0);
+
+    m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg");
+    
+    m_videoSources = new VideoSource[]{
+      m_limeLight, 
+      m_cameraIntake
+    };
+
+    m_videoSink = CameraServer.getInstance().getServer();
+    m_videoSink.setSource(m_cameraIntake);
+    ShuffleboardTab shuffleboard = Shuffleboard.getTab("SmartDashboard");
+    complexWidget = shuffleboard
+      .add(m_videoSink.getSource())
+      .withWidget(BuiltInWidgets.kCameraStream)
+      .withProperties(Map.of("Show Crosshair", true, "Show Controls", false));
+
+    // sets the pipeline of the limelight
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionDrivePipeline);
+    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionProcessPipeline);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
+
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 
-
+    m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
+    m_deployIntake = new DeployIntake(m_intakeSubsystem, m_magazineSubsystem);
+    m_retractIntake = new RetractIntake(m_intakeSubsystem, m_magazineSubsystem);
 
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
+    CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
     // m_climberSubsystem.setDefaultCommand(m_climbCommand);
     // m_trolleySubsystem.setDefaultCommand(m_trolleyCommand);
     // Configure the button bindings
@@ -90,10 +152,9 @@ public class RobotContainer {
   }
 
   public double getGyroAngle(){
-
     return m_gyro.getAngle();
-    
   }
+    
   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by instantiating a {@link GenericHID} or one of its subclasses
@@ -101,18 +162,28 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    //new Joystick(driveController, XboxController.Button.kA.value).whenPressed(intakeShaftCommandName);
-    //new Joystick(driveController, XboxController.Button.kB.value).whenPressed(intakeDownArmCommandName.withTimeout(double));
-    //new Joystick(driveController, XboxController.Button.kX.value).whenPressed(intakeUpArmCommandName.withTimeout(double));
+    new JoystickButton(driveController, XboxController.Button.kA.value)
+        .whenPressed(m_deployIntake);
+    new JoystickButton(driveController, XboxController.Button.kB.value)
+        .whenPressed(m_retractIntake);
+    new JoystickButton(opController, XboxController.Button.kA.value)
+        .whenPressed(m_deployIntake);
+    new JoystickButton(opController, XboxController.Button.kB.value)
+        .whenPressed(m_retractIntake);
+
+    new JoystickButton(opController, XboxController.Button.kY.value)
+        .whileHeld(m_eject)
+        .whenReleased(() -> m_magazineSubsystem.stopEjectMode());
+
     new JoystickButton(opController, XboxController.Button.kX.value).whenPressed( new LockRackAndPinion() );
     // have a similar approach as the aboves yet using the dpad directional 
     new POVButton( opController, Dpad.kLeft.getAngle() ).whenPressed( new LockTrolleyGear() );
     new JoystickButton(opController, XboxController.Button.kBumperRight.value)
     .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
+    new JoystickButton(opController, XboxController.Button.kBack.value).whenPressed(this::switchVideoSource );
+    new JoystickButton(driveController, XboxController.Button.kBack.value).whenPressed(this::switchVideoSource );
   }
-   
-
-  public enum Dpad{
+  public static enum Dpad{
     kUP(0),
     kUpRight(45),
     kRight(90),
@@ -133,11 +204,10 @@ public class RobotContainer {
       return angle;
     }
   }
+  
 
 
 
-  public static XboxController driveController = new XboxController(Constants.USB_driveController);
-  public static XboxController opController = new XboxController(Constants.USB_opController);
 
   private static double deadBand( double input ){
     if(input < DEADBAND_NUM && input < DEADBAND_NUM ){
@@ -187,6 +257,15 @@ public class RobotContainer {
     return m_climbCommand;
   }
 
+
+  // Cam stuff lol
+
+  private void switchVideoSource() {
+    m_currVideoSourceIndex = (m_currVideoSourceIndex+1) % m_videoSources.length;
+    m_videoSink.setSource( m_videoSources[m_currVideoSourceIndex] );
+    complexWidget.withProperties(Map.of("Title", m_videoSink.getSource().getName()));
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -195,7 +274,5 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An Drive will run in autonomous
     return null; //m_autoCommand; // for the time being no Autonomous Command
-
-
   }
 }
