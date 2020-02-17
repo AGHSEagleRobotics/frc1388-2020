@@ -27,7 +27,6 @@ public class LockRackAndPinion extends CommandBase {
   public void initialize() {
     // changing the state of the solenoid for the rack and pinion and then setting the solenoid to the switched state
     m_solenoidState = !m_solenoidState;
-    System.out.println( "Switched!! but not hte one you wanted");
     m_solenoid.set(m_solenoidState);
   }
 

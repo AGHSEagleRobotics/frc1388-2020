@@ -27,7 +27,6 @@ public class LockTrolleyGear extends CommandBase {
   public void initialize() {
     // changes and sets the trolley gear solenoid state
     m_solenoidState = !m_solenoidState;
-    System.out.println( "Switched!!" );
     m_solenoid.set(m_solenoidState);
   }
 
