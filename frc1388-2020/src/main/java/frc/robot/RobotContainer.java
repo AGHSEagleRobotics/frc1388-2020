@@ -22,24 +22,36 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+
+import frc.robot.commands.Climb;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.commands.DeployIntake;
 import frc.robot.commands.Drive;
+import frc.robot.commands.PositionControl;
+import frc.robot.commands.RotationalControl;
+import frc.robot.commands.SpinnerArm;
 import frc.robot.commands.Eject;
 import frc.robot.commands.RetractIntake;
+import frc.robot.commands.LockRackAndPinion;
+import frc.robot.commands.LockTrolleyGear;
+import frc.robot.commands.Trolley;
+
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.Rumble;
+import frc.robot.subsystems.TrolleySubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ColorSpinner;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -49,9 +61,15 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
+
+  
   private final int visionProcessPipeline = 0;
   private final int visionDrivePipeline = 1;
 
+  private static final double DEADBAND_NUM = 0.15;
+  private final double k_intakeShaftRetractSpeed = -0.2;
+  
   // The robot's subsystems and commands are defined here...
 
   // Commands:
@@ -67,9 +85,20 @@ public class RobotContainer {
   private ColorSpinner m_colorSpinner = new ColorSpinner();
   private Rumble m_driveRumble = new Rumble(driveController);
   private Rumble m_opRumble = new Rumble(opController);
+  private TrolleySubsystem m_trolleySubsystem = new TrolleySubsystem();
+  private ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
+  private Trolley m_trolleyCommand = new Trolley(m_trolleySubsystem);
+  private Climb m_climbCommand = new Climb(m_climberSubsystem);
+  private RotationalControl m_rotationControlCmd = new RotationalControl(m_colorSpinner);
+  private PositionControl m_positionControlCmd = new PositionControl(m_colorSpinner);
+  private SpinnerArm m_spinnerArmUp = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kUp);
+  private SpinnerArm m_spinnerArmDown = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kDown);
   
   // components 
+  public static XboxController driveController = new XboxController(Constants.USB_driveController);
+  public static XboxController opController = new XboxController(Constants.USB_opController);
   private ADIS16470_IMU m_gyro;
+  
   private UsbCamera m_cameraIntake;
   private UsbCamera m_cameraClimber;
   private HttpCamera m_limeLight;
@@ -77,6 +106,7 @@ public class RobotContainer {
   private VideoSink m_videoSink;
   private VideoSource[] m_videoSources;
   private ComplexWidget complexWidget;
+
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -120,17 +150,17 @@ public class RobotContainer {
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
     CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
     CommandScheduler.getInstance().registerSubsystem(m_shooterSubsystem);
+    // m_climberSubsystem.setDefaultCommand(m_climbCommand);
+    // m_trolleySubsystem.setDefaultCommand(m_trolleyCommand);
     // Configure the button bindings
     configureButtonBindings();
 
     CommandScheduler.getInstance()
         .onCommandInitialize(command -> USBLogging.printCommandStatus(command, "initialized"));
 
-    CommandScheduler.getInstance().onCommandFinish(
-      command -> USBLogging.printCommandStatus(command, "FINISHeD"));
+    CommandScheduler.getInstance().onCommandFinish(command -> USBLogging.printCommandStatus(command, "Finished"));
 
-    CommandScheduler.getInstance().onCommandInterrupt(
-      command -> USBLogging.printCommandStatus(command, "Interrupted"));
+    CommandScheduler.getInstance().onCommandInterrupt(command -> USBLogging.printCommandStatus(command, "Interrupted"));
 
   }
 
@@ -145,6 +175,40 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    
+    // Color Spinner Left
+    new JoystickButton(opController, XboxController.Button.kBumperLeft.value)
+        .whileHeld(() -> m_colorSpinner.spinMotor(-.1), m_colorSpinner)
+        .whenReleased(() -> m_colorSpinner.spinMotor(0), m_colorSpinner);
+
+    // Color Spinner Right
+    new JoystickButton(opController, XboxController.Button.kBumperRight.value)
+        .whileHeld(() -> m_colorSpinner.spinMotor(.1), m_colorSpinner)
+        .whenReleased(() -> m_colorSpinner.spinMotor(0), m_colorSpinner);
+
+    // Color Spinner Arm Up (op)
+    new POVButton( opController, Dpad.kUP.getAngle())
+        .whenHeld(m_spinnerArmUp);
+        
+        // Color Spinner Arm Down (op)
+    new POVButton( opController, Dpad.kDown.getAngle())
+        .whenHeld(m_spinnerArmDown);
+        
+        // Color Spinner Arm Up (drive)    
+    new POVButton( driveController, Dpad.kUP.getAngle())
+        .whenHeld(m_spinnerArmUp);
+
+    // Color Spinner Arm Down (drive)
+    new POVButton( driveController, Dpad.kDown.getAngle())
+        .whenHeld(m_spinnerArmDown);
+    
+    // toggle Rotational Control on/off
+    new JoystickButton(opController, XboxController.Button.kX.value)
+        .toggleWhenPressed(m_rotationControlCmd);
+  
+    // toggle Positional Control on/off
+    new JoystickButton(opController, XboxController.Button.kY.value)
+        .toggleWhenPressed(m_positionControlCmd);
     new JoystickButton(driveController, XboxController.Button.kA.value)
         .whenPressed(m_deployIntake);
     new JoystickButton(driveController, XboxController.Button.kB.value)
@@ -155,18 +219,50 @@ public class RobotContainer {
         .whenPressed(m_retractIntake);
 
     new JoystickButton(opController, XboxController.Button.kY.value)
-        .whileHeld(m_eject)
-        .whenReleased(() -> m_magazineSubsystem.stopEjectMode());
+        .whileHeld(m_eject);
 
+    new JoystickButton(opController, XboxController.Button.kX.value).whenPressed( new LockRackAndPinion() );
+    // have a similar approach as the aboves yet using the dpad directional 
+    new POVButton( opController, Dpad.kLeft.getAngle() ).whenPressed( new LockTrolleyGear() );
     new JoystickButton(opController, XboxController.Button.kBumperRight.value)
         .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
     new JoystickButton(opController, XboxController.Button.kBack.value).whenPressed(this::switchVideoSource );
     new JoystickButton(driveController, XboxController.Button.kBack.value).whenPressed(this::switchVideoSource );
   }
 
+  public static enum Dpad{
+    kUP(0),
+    kUpRight(45),
+    kRight(90),
+    kDownRight(135),
+    kDown(180),
+    kDownLeft(225),
+    kLeft(270),
+    kUpLeft(315),
+    none(-1);
 
-  public static XboxController driveController = new XboxController(Constants.USB_driveController);
-  public static XboxController opController = new XboxController(Constants.USB_opController);
+    private int angle;
+
+    Dpad( int angle ){
+      this.angle = angle;
+    }
+
+    public int getAngle(){
+      return angle;
+    }
+  }
+
+  private static double deadBand( double input ){
+    if(input < DEADBAND_NUM && input < DEADBAND_NUM ){
+      return 0.0;
+    }else{
+      if( input > 0 ){
+        return ( ( (1 + DEADBAND_NUM ) * input ) - DEADBAND_NUM);
+      }else{
+        return ( ( (1 + DEADBAND_NUM ) * input ) + DEADBAND_NUM);
+      }
+    }
+  }
 
   public static double getDriveRightXAxis() {
     return driveController.getX(Hand.kRight);
@@ -174,6 +270,14 @@ public class RobotContainer {
 
   public static double getDriveLeftYAxis() {
     return driveController.getY(Hand.kLeft);
+  }
+
+  public static double getOpRightXAxis() {
+    return deadBand( driveController.getX(Hand.kRight) );
+  }
+
+  public static double getOpLeftYAxis() {
+    return deadBand(driveController.getY(Hand.kLeft));
   }
 
   public static boolean getAButton() {
@@ -184,8 +288,20 @@ public class RobotContainer {
     return driveController.getStickButton(Hand.kLeft);
   }
 
-  public static boolean getLeftBumper() {
-    return opController.getBumper(Hand.kLeft);
+  public static boolean isLeftOpTriggerPressed() {
+    return opController.getTriggerAxis(Hand.kLeft) > 0.9;
+  }
+
+  public static boolean isRightOpTriggerPressed() {
+    return opController.getTriggerAxis(Hand.kRight) > 0.9;
+  }
+
+  public Trolley getTrolley(){
+    return m_trolleyCommand;
+  }
+
+  public  Climb getClimb(){
+    return m_climbCommand;
   }
 
 
@@ -205,8 +321,10 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An Drive will run in autonomous 
     return null; //m_autoCommand; // for the time being no Autonomous Command
-  }
  
+    /*
+     * Victor speed control, work on robo arm motor,
+     */
 
-
+}
 }

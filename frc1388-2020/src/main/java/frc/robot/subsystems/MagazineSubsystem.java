@@ -23,28 +23,26 @@ public class MagazineSubsystem extends SubsystemBase {
   // here. Call these from Commands.
 
   // Method Fields
+  private final WPI_VictorSPX m_magazineMotor;
+  
+  // Magazine Status Variables
+  private final int BALL_STOPPED_VALUE = 5; // TODO change int value after testing
+  private int m_ballPresentCounter = 0;
+
   private boolean m_shooting = false;
   private boolean m_intake = false;
   private boolean m_eject = false;
   private boolean m_magazineIsFull = false;
-  private final WPI_VictorSPX m_horizontalMagazineMotor;
-  private final WPI_VictorSPX m_verticalMagazineMotor;
 
-  // Magazine Status Variables
-  private final int BALL_STOPPED_VALUE = 5; // TODO change int value after testing
-  private int m_ballPresentCounter = 0;
   // Periodic Variables
-  private final double horizontalMagazineShootSpeed = 0.5;
-  private final double verticalMagazineShootSpeed = 0.5;
-  private final double horizontalMagazineEjectSpeed = -0.5;
-  private final double verticalMagazineEjectSpeed = -0.5;
-  private final double horizontalMagazineIntakeSpeed = 0.2;
-  private final double verticalMagazineIntakeSpeed = 0.2;
-  private final double horizontalMagazineDefaultSpeed = 0.2;
-  private final double verticalMagazineDefaultSpeed = 0.2;
+  private final double k_magazineShootSpeed = 0.5;
+  private final double k_magazineEjectSpeed = -0.5;
+  private final double k_magazineIntakeSpeed = 0.2;
+  private final double k_magazineDefaultSpeed = 0.2;
 
   // Infrared Proximity Sensor Fields
-  AnalogInput ballSensor;
+  private final AnalogInput m_ballSensor;
+  
   private final double MIN_VOLTAGE = 0.00001;
   private final double MAX_DISTANCE = 35; // This is the maximum accurate distace the sensor can read in centimeters
   private final double MIN_DISTANCE = 4.5; // This is the minimum accurate distace the sensor can read in centimeters
@@ -55,15 +53,13 @@ public class MagazineSubsystem extends SubsystemBase {
   final double BALL_PRESENT_DISTANCE = 10;
 
   public MagazineSubsystem() {
-    ballSensor = new AnalogInput(Constants.AIN_ballSensor);
-    m_horizontalMagazineMotor = new WPI_VictorSPX(Constants.CANID_horizontalMagazineMotor);
-    m_verticalMagazineMotor = new WPI_VictorSPX(Constants.CANID_verticalMagazineMotor);
+    m_ballSensor = new AnalogInput(Constants.AIN_ballSensor);
+    m_magazineMotor = new WPI_VictorSPX(Constants.CANID_magazineMotor);
   }
 
   // TODO change number of motors for magazine; number of motors for magazine is TBD
-  public void setMagazines(double speed) {
-    m_horizontalMagazineMotor.set(speed);
-    m_verticalMagazineMotor.set(speed);
+  public void setMagazine(double speed) {
+    m_magazineMotor.set(speed);
   }
 
   private double getDistance() {
@@ -71,7 +67,7 @@ public class MagazineSubsystem extends SubsystemBase {
     double distance = 0;
 
     // Don't allow zero/negative values
-    voltage = Math.max(ballSensor.getVoltage(), MIN_VOLTAGE);
+    voltage = Math.max(m_ballSensor.getVoltage(), MIN_VOLTAGE);
     distance = DISTANCE_MULTIPLIER * Math.pow(voltage, VOLTAGE_EXPONENT);
 
     // Constrain output
@@ -82,17 +78,15 @@ public class MagazineSubsystem extends SubsystemBase {
   }
 
   public boolean ballIsPresent() {
-    boolean ballPresent = false;
-    if(getDistance() > BALL_PRESENT_DISTANCE){
-      ballPresent = false;
-      // System.out.println("false");
+    // boolean ballPresent = false;
+    // if (getDistance() > BALL_PRESENT_DISTANCE){
+    // ballPresent = false;
+    // }
+    // if (getDistance() < BALL_PRESENT_DISTANCE){
+    // ballPresent = true;
+    // }
+    return getDistance() < BALL_PRESENT_DISTANCE;
     }
-    if(getDistance() <BALL_PRESENT_DISTANCE){
-      ballPresent = true;
-      // System.out.println("true");
-    }
-    return ballPresent;
-  }
 
   public void startShooting() {
     m_shooting = true;
@@ -119,7 +113,7 @@ public class MagazineSubsystem extends SubsystemBase {
   }
 
   public boolean isMagazineFull() {
-    boolean magazineIsFull = false;
+    // boolean magazineIsFull = false;
     if (ballIsPresent()) {
       // increase ball counter by 1
       m_ballPresentCounter++;
@@ -127,34 +121,31 @@ public class MagazineSubsystem extends SubsystemBase {
       // reset ball present counter to zero
       m_ballPresentCounter = 0;
     }
-    if (m_ballPresentCounter > BALL_STOPPED_VALUE) {
-      magazineIsFull = true;
-    } else {
-      magazineIsFull = false;
+    // if (m_ballPresentCounter >= BALL_STOPPED_VALUE) {
+    // magazineIsFull = true;
+    // } else {
+    // magazineIsFull = false;
+    // }
+    // return magazineIsFull;
+    return m_ballPresentCounter >= BALL_STOPPED_VALUE;
     }
-    return magazineIsFull;
-  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    // This variable placement ensures that the method is called every time periodic is run
+    // This variable placement ensures that the method is called every time periodic
+    // is run
     m_magazineIsFull = isMagazineFull();
     if (m_shooting) {
-      m_horizontalMagazineMotor.set(horizontalMagazineShootSpeed);
-      m_verticalMagazineMotor.set(verticalMagazineShootSpeed);
+      m_magazineMotor.set(k_magazineShootSpeed);
     } else if (m_eject) {
-      m_horizontalMagazineMotor.set(horizontalMagazineEjectSpeed);
-      m_verticalMagazineMotor.set(verticalMagazineEjectSpeed);
+      m_magazineMotor.set(k_magazineEjectSpeed);
     } else if (m_magazineIsFull) {
-      m_horizontalMagazineMotor.set(0);
-      m_verticalMagazineMotor.set(0);
+      m_magazineMotor.set(0);
     } else if (m_intake) {
-      m_horizontalMagazineMotor.set(horizontalMagazineIntakeSpeed);
-      m_verticalMagazineMotor.set(verticalMagazineIntakeSpeed);
+      m_magazineMotor.set(k_magazineIntakeSpeed);
     } else { // Run the motors at default speed
-      m_horizontalMagazineMotor.set(horizontalMagazineDefaultSpeed);
-      m_verticalMagazineMotor.set(verticalMagazineDefaultSpeed);
+      m_magazineMotor.set(k_magazineDefaultSpeed);
     }
   }
 }
