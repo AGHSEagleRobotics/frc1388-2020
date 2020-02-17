@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;  
 import frc.robot.USBLogging.Level;
@@ -24,8 +25,11 @@ import frc.robot.USBLogging.Level;
 public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;
+  private Timer timer = new Timer();
+  private boolean climberOn = false;
 
   private RobotContainer m_robotContainer;
+
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -36,6 +40,7 @@ public class Robot extends TimedRobot {
     // Start up USB logging
     USBLogging.openLog();
     USBLogging.setLogLevel(Level.INFO);
+
 
     // print software version - use printLog so this always, always gets printed
     USBLogging.printLog(
@@ -83,6 +88,7 @@ public class Robot extends TimedRobot {
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
   }
 
+ 
   @Override
   public void disabledPeriodic() {
   }
@@ -120,12 +126,17 @@ public class Robot extends TimedRobot {
 
   }
 
+
   /**
    * This function is called periodically during operator control.
    */
   @Override
   public void teleopPeriodic() {
-    
+    if( timer.getMatchTime() > 120 && !climberOn){
+      m_robotContainer.getClimb().schedule();
+      m_robotContainer.getTrolley().schedule();
+      climberOn = true;
+    }
   }
 
   @Override
