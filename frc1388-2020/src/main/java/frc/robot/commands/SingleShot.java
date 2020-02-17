@@ -6,18 +6,20 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot.commands;
+import frc.robot.subsystems.ShooterSubsystem;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.IntakeSubsystem;
 
-public class Deploy extends CommandBase {
-  private final IntakeSubsystem m_intakeSubsystem;
+public class SingleShot extends CommandBase {
+
+  private ShooterSubsystem m_shooterSubsystem;
+
   /**
-   * Creates a new Deploy.
+   * Creates a new Shoot Command.
    */
-  public Deploy(IntakeSubsystem intakeSubsystem) {
-    m_intakeSubsystem = intakeSubsystem;
-    // Use addRequirements() here to declare subsystem dependencies.
+  public SingleShot( ShooterSubsystem subsystem ) {
+    m_shooterSubsystem = subsystem;
+    addRequirements(m_shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -28,6 +30,12 @@ public class Deploy extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+
+
+
+
+    
   }
 
   // Called once the command ends or is interrupted.

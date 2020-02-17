@@ -38,21 +38,25 @@ public final class Constants {
      * TalonFX Can IDs
      */
 
+    // competetition constants
     public static final int CANID_driveRB = 1;
     public static final int CANID_driveRF = 2;
     public static final int CANID_driveLF = 3;
     public static final int CANID_driveLB = 4;
 
-    // ShooterSubsystem motors
-    public static final int CANID_shootMotor = 0;
-    public static final int CANID_feedMotor = 0;
-    
-    public static final int CANID_intakeShaftMotor = 1;
-    public static final int CANID_intakeArmMotor = 2;
-    
+    // // test constants knightmare // FIXME: do not check in with the following uncommented. test only!
+    // public static final int CANID_driveRB = 1;
+    // public static final int CANID_driveRF = 2;
+    // public static final int CANID_driveLF = 3;
+    // public static final int CANID_driveLB = 4;
+
+    // ShooterSubsystem motors        
+    public static final int CANID_shootMotor = 13;
+
     /**
      * TalonSRX Can IDs
      */
+    public static final int CANID_intakeArmMotor = 6;
     
     /**
      * VictorSPX Can IDs
@@ -61,7 +65,16 @@ public final class Constants {
     // Change Id's underneath
     public static final int CANID_colorSpinnerMotor = 7;
     public static final int CANID_spinnerArmMotor = 8;
-   
+    
+    public static final int CANID_horizontalMagazineMotor = 0;
+    public static final int CANID_verticalMagazineMotor = 0;
+    
+    public static final int CANID_intakeShaftMotor = 5;
+    
+    public static final int CANID_feedMotor = 14;
+
+    public static final int CANID_climbMotor = 11;
+    public static final int CANID_trolleyMotor = 12;
 
     /**
      * Digital IO
@@ -73,23 +86,34 @@ public final class Constants {
     public static final int DIO_intakeArmTop = 3;
     public static final int DIO_intakeArmBottom = 4;
 
+    
+    public static final int DIO_climbServo = 4;
+    public static final int DIO_trolleyServo = 5;
+
     /**
      * Analog Inputs
      */
     public static final int AIN_ballSensor = 0; // Value known
+    
+    /**
+     * Relay Channel
+     */
+    public static final int RELAY_climbSolenoid = 0;
+    public static final int RELAY_trolleySolenoid = 1;
+
 
     /**
      * I2C Ports
      */
+    public static final Port I2C_Port_ColorSensor = Port.kOnboard;
 
     /**
      * USB devices
      */
      public static final int USB_driveController = 0;
      public static final int USB_opController = 1; // op Controller not specifically assigned
-
-
-    public static final Port I2C_Port_ColorSensor = Port.kOnboard;
+    public static final int USB_cameraIntake = 0;
+    public static final int USB_cameraClimber = 1;
 
 
 }
