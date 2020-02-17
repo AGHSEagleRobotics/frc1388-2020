@@ -22,8 +22,8 @@ public class PositionControl extends CommandBase {
    * Creates a new PositionControl.
    */
   public PositionControl( ColorSpinner colorSpinner) {
-    // Use addRequirements() here to declare subsystem dependencies.
     m_colorSpinner = colorSpinner;
+    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_colorSpinner);
   }
 

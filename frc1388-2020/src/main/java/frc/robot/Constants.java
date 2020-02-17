@@ -49,7 +49,7 @@ public final class Constants {
     
     public static final int CANID_intakeShaftMotor = 1;
     public static final int CANID_intakeArmMotor = 2;
-
+    
     /**
      * TalonSRX Can IDs
      */
@@ -57,10 +57,10 @@ public final class Constants {
     /**
      * VictorSPX Can IDs
      */
-
-     // Change Id's underneath
-    public static final int CANID_colorSpinnerMotor = 4;
-    public static final int CANID_spinnerArmMotor = 3;
+    
+    // Change Id's underneath
+    public static final int CANID_colorSpinnerMotor = 7;
+    public static final int CANID_spinnerArmMotor = 8;
    
 
     /**

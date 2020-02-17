@@ -11,16 +11,24 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ColorSpinner;
 
-public class SpinnerDown extends CommandBase {
+public class SpinnerArm extends CommandBase {
   private final ColorSpinner m_colorSpinner;
-  private final double k_stallAmps = 5;
-  private final double k_stallTime = 2;
+  private final double k_stallAmps = 5.0;
+  private final double k_stallTime = 1.0;
   private final Timer m_stallTimer = new Timer();
+  private Direction m_direction;
+
+  public enum Direction {
+    kUp,
+    kDown
+  }
+
   /**
    * Creates a new SpinnerUp.
    */
-  public SpinnerDown(ColorSpinner colorSpinner) {
+  public SpinnerArm(ColorSpinner colorSpinner, Direction direction) {
     m_colorSpinner = colorSpinner;
+    m_direction = direction;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_colorSpinner);
   }
@@ -28,7 +36,11 @@ public class SpinnerDown extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_colorSpinner.lowerArm();
+    if (m_direction == Direction.kUp) {
+      m_colorSpinner.raiseArm();
+    } else if (m_direction == Direction.kDown) {
+      m_colorSpinner.lowerArm();
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.

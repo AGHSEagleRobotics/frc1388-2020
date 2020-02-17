@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import frc.robot.commands.Drive;
 import frc.robot.commands.PositionControl;
 import frc.robot.commands.RotationalControl;
+import frc.robot.commands.SpinnerArm;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Rumble;
@@ -33,9 +34,11 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
   // The robot's subsystems and commands are defined here...
   private DriveTrain m_driveTrain;
   private ADIS16470_IMU m_gyro;
+
   // private Command m_autoCommand = new Command();
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private Rumble m_driveRumble = new Rumble(driveController);
@@ -44,6 +47,9 @@ public class RobotContainer {
   private ColorSpinner m_colorSpinner = new ColorSpinner();
   private RotationalControl m_rotationControlCmd = new RotationalControl(m_colorSpinner);
   private PositionControl m_positionControlCmd = new PositionControl(m_colorSpinner);
+  private SpinnerArm m_spinnerArmUp = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kUp);
+  private SpinnerArm m_spinnerArmDown = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kDown);
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -67,9 +73,7 @@ public class RobotContainer {
   }
 
   public double getGyroAngle(){
-
     return m_gyro.getAngle();
-    
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be
@@ -78,12 +82,6 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // new Joystick(driveController,
-    // XboxController.Button.kA.value).whenPressed(intakeShaftCommandName);
-    // new Joystick(driveController,
-    // XboxController.Button.kB.value).whenPressed(intakeDownArmCommandName.withTimeout(double));
-    // new Joystick(driveController,
-    // XboxController.Button.kX.value).whenPressed(intakeUpArmCommandName.withTimeout(double));
     
     // Color Spinner Left
     new JoystickButton(opController, XboxController.Button.kBumperLeft.value)
@@ -96,24 +94,20 @@ public class RobotContainer {
         .whenReleased(() -> m_colorSpinner.spinMotor(0), m_colorSpinner);
 
     // Color Spinner Arm Up (op)
-    new POVButton( opController, Dpad.kUP.getAngle() )
-        .whileHeld(() -> m_colorSpinner.raiseArm(), m_colorSpinner)
-        .whenReleased(() -> m_colorSpinner.stopArm(), m_colorSpinner);
-
-    // Color Spinner Arm Down (op)
-    new POVButton( opController, Dpad.kDown.getAngle() )
-        .whileHeld(() -> m_colorSpinner.lowerArm(), m_colorSpinner)
-        .whenReleased(() -> m_colorSpinner.stopArm(), m_colorSpinner);
-    
-    // Color Spinner Arm Up (drive)    
-    new POVButton( driveController, Dpad.kUP.getAngle() )
-        .whileHeld(() -> m_colorSpinner.raiseArm(), m_colorSpinner)
-        .whenReleased(() -> m_colorSpinner.stopArm(), m_colorSpinner);
+    new POVButton( opController, Dpad.kUP.getAngle())
+        .whenHeld(m_spinnerArmUp);
+        
+        // Color Spinner Arm Down (op)
+    new POVButton( opController, Dpad.kDown.getAngle())
+        .whenHeld(m_spinnerArmDown);
+        
+        // Color Spinner Arm Up (drive)    
+    new POVButton( driveController, Dpad.kUP.getAngle())
+        .whenHeld(m_spinnerArmUp);
 
     // Color Spinner Arm Down (drive)
-    new POVButton( driveController, Dpad.kDown.getAngle() )
-        .whileHeld(() -> m_colorSpinner.lowerArm(), m_colorSpinner)
-        .whenReleased(() -> m_colorSpinner.stopArm(), m_colorSpinner);
+    new POVButton( driveController, Dpad.kDown.getAngle())
+        .whenHeld(m_spinnerArmDown);
     
     // toggle Rotational Control on/off
     new JoystickButton(opController, XboxController.Button.kX.value)
