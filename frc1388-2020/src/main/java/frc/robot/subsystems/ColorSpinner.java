@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -28,7 +29,7 @@ public class ColorSpinner extends SubsystemBase {
   private final ColorSensorV3 m_colorSensor;
 
   private final WPI_VictorSPX m_spinnerMotor;
-  private final WPI_VictorSPX m_armMotor;
+  private final WPI_TalonSRX m_spinnerArmMotor;
 
   private final double m_armSpeed = .3;
 
@@ -92,10 +93,10 @@ public class ColorSpinner extends SubsystemBase {
 
     m_colorSensor = new ColorSensorV3(Constants.I2C_Port_ColorSensor);
     m_spinnerMotor = new WPI_VictorSPX(Constants.CANID_colorSpinnerMotor);
-    m_armMotor = new WPI_VictorSPX(Constants.CANID_spinnerArmMotor);
+    m_spinnerArmMotor = new WPI_TalonSRX(Constants.CANID_spinnerArmMotor);
 
     m_spinnerMotor.setInverted(true);
-    m_armMotor.setInverted(true);
+    m_spinnerArmMotor.setInverted(true);
 
     colorMatch.addColorMatch(kRedTarget);
     colorMatch.addColorMatch(kGreenTarget);
@@ -138,15 +139,6 @@ public class ColorSpinner extends SubsystemBase {
   }
 
   // ======================================================
-  // Color Sensor print out
-  // ======================================================
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
-
-  // ======================================================
   // Motor Spinner
   // ======================================================
 
@@ -159,16 +151,23 @@ public class ColorSpinner extends SubsystemBase {
   // ======================================================
 
   public void raiseArm() {
-    m_armMotor.set(m_armSpeed);
+    m_spinnerArmMotor.set(m_armSpeed);
   }
 
   public void lowerArm() {
-
-    m_armMotor.set(-m_armSpeed);
+    m_spinnerArmMotor.set(-m_armSpeed);
   }
 
   public void stopArm() {
-    m_armMotor.set(0);
+    m_spinnerArmMotor.set(0);
   }
 
+  public double getSpinnerArmCurrent() {
+    return m_spinnerArmMotor.getStatorCurrent();
+  }
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
 }

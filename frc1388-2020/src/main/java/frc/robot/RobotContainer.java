@@ -14,8 +14,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import frc.robot.commands.Drive;
-import frc.robot.commands.IntakeArmCommand;
-import frc.robot.commands.IntakeShaftCommand;
 import frc.robot.commands.PositionControl;
 import frc.robot.commands.RotationalControl;
 import frc.robot.subsystems.DriveTrain;
@@ -24,7 +22,6 @@ import frc.robot.subsystems.Rumble;
 import frc.robot.subsystems.ColorSpinner;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
@@ -41,7 +38,6 @@ public class RobotContainer {
   private ADIS16470_IMU m_gyro;
   // private Command m_autoCommand = new Command();
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
-  private IntakeShaftCommand m_intakeShaftCommand = new IntakeShaftCommand(m_intakeSubsystem);
   private Rumble m_driveRumble = new Rumble(driveController);
   private Rumble m_opRumble = new Rumble(opController);
 
