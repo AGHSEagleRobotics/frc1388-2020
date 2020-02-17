@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -39,15 +40,23 @@ import frc.robot.commands.DeployIntake;
 import frc.robot.commands.Drive;
 import frc.robot.commands.Eject;
 import frc.robot.commands.RetractIntake;
+import frc.robot.commands.LockRackAndPinion;
+import frc.robot.commands.LockTrolleyGear;
+import frc.robot.commands.Trolley;
+import frc.robot.commands.Climb;
+
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.Rumble;
+import frc.robot.subsystems.TrolleySubsystem;
 import frc.robot.subsystems.ColorSpinner;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -63,9 +72,11 @@ public class RobotContainer {
   private final int camWidth = 4;
   private final int colorSpinnerGridHeight = 10;
   private final int colorSpinnerGridWidth = 8;
+  
+  private static final double DEADBAND_NUM = 0.15;
 
   // The robot's subsystems and commands are defined here...
-
+  
   // Commands:
   private Eject m_eject;
   private DeployIntake m_deployIntake;
@@ -81,12 +92,15 @@ public class RobotContainer {
   private ColorSpinner m_colorSpinner = new ColorSpinner();
   private Rumble m_driveRumble = new Rumble(driveController);
   private Rumble m_opRumble = new Rumble(opController);
+  private TrolleySubsystem m_trolleySubsystem = new TrolleySubsystem();
+  private ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
+  private Trolley m_trolleyCommand = new Trolley(m_trolleySubsystem);
+  private Climb m_climbCommand = new Climb(m_climberSubsystem);
   
   // components 
-  private ADIS16470_IMU m_gyro;
   public static XboxController driveController = new XboxController(Constants.USB_driveController);
   public static XboxController opController = new XboxController(Constants.USB_opController);
-  
+  private ADIS16470_IMU m_gyro;
   // cameras
   private UsbCamera m_cameraIntake;
   private UsbCamera m_cameraClimber;
@@ -189,6 +203,17 @@ public class RobotContainer {
     // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionProcessPipeline);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
 
+    m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
+
+    m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
+    m_deployIntake = new DeployIntake(m_intakeSubsystem, m_magazineSubsystem);
+    m_retractIntake = new RetractIntake(m_intakeSubsystem, m_magazineSubsystem);
+
+    // set default commands here
+    m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
+    CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
+    // m_climberSubsystem.setDefaultCommand(m_climbCommand);
+    // m_trolleySubsystem.setDefaultCommand(m_trolleyCommand);
     // Configure the button bindings
     configureButtonBindings();
 
@@ -206,7 +231,7 @@ public class RobotContainer {
   public double getGyroAngle(){
     return m_gyro.getAngle();
   }
-
+    
   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by instantiating a {@link GenericHID} or one of its subclasses
@@ -227,14 +252,47 @@ public class RobotContainer {
         .whileHeld(m_eject)
         .whenReleased(() -> m_magazineSubsystem.stopEjectMode());
 
+    new JoystickButton(opController, XboxController.Button.kX.value).whenPressed( new LockRackAndPinion() );
+    // have a similar approach as the aboves yet using the dpad directional 
+    new POVButton( opController, Dpad.kLeft.getAngle() ).whenPressed( new LockTrolleyGear() );
     new JoystickButton(opController, XboxController.Button.kBumperRight.value)
-        .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
-    new JoystickButton(opController, XboxController.Button.kBack.value)
-        .whenPressed(this::switchVideoSource );
-    new JoystickButton(driveController, XboxController.Button.kBack.value)
-        .whenPressed(this::switchVideoSource );
+    .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
+    new JoystickButton(opController, XboxController.Button.kBack.value).whenPressed(this::switchVideoSource );
+    new JoystickButton(driveController, XboxController.Button.kBack.value).whenPressed(this::switchVideoSource );
   }
+  public static enum Dpad{
+    kUP(0),
+    kUpRight(45),
+    kRight(90),
+    kDownRight(135),
+    kDown(180),
+    kDownLeft(225),
+    kLeft(270),
+    kUpLeft(315),
+    none(-1);
 
+    private int angle;
+
+    Dpad( int angle ){
+      this.angle = angle;
+    }
+
+    public int getAngle(){
+      return angle;
+    }
+  }
+  
+  private static double deadBand( double input ){
+    if(input < DEADBAND_NUM && input < DEADBAND_NUM ){
+      return 0.0;
+    }else{
+      if( input > 0 ){
+        return ( ( (1 + DEADBAND_NUM ) * input ) - DEADBAND_NUM);
+      }else{
+        return ( ( (1 + DEADBAND_NUM ) * input ) + DEADBAND_NUM);
+      }
+    }
+  }
 
   public static double getDriveRightXAxis() {
     return driveController.getX(Hand.kRight);
@@ -242,6 +300,14 @@ public class RobotContainer {
 
   public static double getDriveLeftYAxis() {
     return driveController.getY(Hand.kLeft);
+  }
+
+  public static double getOpRightXAxis() {
+    return deadBand( driveController.getX(Hand.kRight) );
+  }
+
+  public static double getOpLeftYAxis() {
+    return deadBand(driveController.getY(Hand.kLeft));
   }
 
   public static boolean getAButton() {
@@ -254,6 +320,14 @@ public class RobotContainer {
 
   public static boolean getLeftBumper() {
     return opController.getBumper(Hand.kLeft);
+  }
+
+  public Trolley getTrolley(){
+    return m_trolleyCommand;
+  }
+
+  public  Climb getClimb(){
+    return m_climbCommand;
   }
 
 

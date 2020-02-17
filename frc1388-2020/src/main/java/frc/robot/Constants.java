@@ -71,16 +71,29 @@ public final class Constants {
     
     public static final int CANID_feedMotor = 14;
 
+    public static final int CANID_climbMotor = 11;
+    public static final int CANID_trolleyMotor = 12;
+
     /**
      * Digital IO
      */
     public static final int DIO_intakeArmTop = 0;
     public static final int DIO_intakeArmBottom = 1;
+    
+    public static final int DIO_climbServo = 4;
+    public static final int DIO_trolleyServo = 5;
 
     /**
      * Analog Inputs
      */
     public static final int AIN_ballSensor = 0; // Value known
+    
+    /**
+     * Relay Channel
+     */
+    public static final int RELAY_climbSolenoid = 0;
+    public static final int RELAY_trolleySolenoid = 1;
+
 
     /**
      * I2C Ports
