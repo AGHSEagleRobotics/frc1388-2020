@@ -42,16 +42,17 @@ public class Climb extends CommandBase {
   public void execute() {
     m_climbingSpeed = RobotContainer.getOpLeftYAxis();
     
-    if(m_climbingSpeed != 0 ){
+    if(m_climbingSpeed != 0 && !unlockedForTime){
       m_climberSubsystem.setClimberServoUnlock();
       timer.reset();
+      pendLocking = false;
     }
 
     // if( !m_climberSubsystem.getClimberSolenoidState() ){
     //   m_climberSubsystem.setClimberMotor(m_climbingSpeed);
     // }
 
-    if( timer.hasPeriodPassed(timeTillMotorReady) ){
+    if( timer.hasPeriodPassed(timeTillMotorReady) && !unlockedForTime ){
       unlockedForTime = true;
     }
 
@@ -70,6 +71,7 @@ public class Climb extends CommandBase {
 
     if(pendLocking && timerElasp.hasPeriodPassed(timeTillLockReady)){
       m_climberSubsystem.setClimberServoLock();
+      unlockedForTime = false;
     }
 
   }

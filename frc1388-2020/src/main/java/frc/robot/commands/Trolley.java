@@ -34,33 +34,41 @@ public class Trolley extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     m_trolleySpeed = RobotContainer.getOpRightXAxis();
+
     // if( !LockTrolleyGear.getTrolleySolenoidState()){
     //   m_trolleySubsystem.setTrolleyMotor(m_trolleySpeed);
     // }
 
-    if(m_trolleySpeed != 0 ){
-      m_trolleySubsystem.setTrolleyServoUnlock();
+    // unlocking the trolley servo adn beginning to start the timer for motor ready to move
+    if(m_trolleySpeed != 0.0 && !unlockedForTime ){
+      m_trolleySubsystem.setTrolleyServoUnlock();            
       timer.reset();
+      pendLocking = false;
     }
 
     // if( !m_trolleySubsystem.gettrolleySolenoidState() ){
     //   m_trolleySubsystem.settrolleyMotor(m_climbingSpeed);
     // }
 
-    if( timer.hasPeriodPassed(timeTillMotorReady) ){
+    // checking if time has passed for the motor to be ready to move
+    if( timer.hasPeriodPassed(timeTillMotorReady) && !unlockedForTime ){
       unlockedForTime = true;
     }
 
+
+    // setting the power of the motor of the climber
     if( !m_trolleySubsystem.getTrolleyServoState() && unlockedForTime ){
       m_trolleySubsystem.setTrolleyMotor(m_climbingSpeed);
     }
 
+    // 
     if( m_climbingSpeed == 0.0 && !pendLocking ){
       pendLocking = true;
       if(timerElasp.get() > 0.0 ){
@@ -70,8 +78,10 @@ public class Trolley extends CommandBase {
       }
     }
 
+    // locking if no input has been given in a certain amount of time
     if(pendLocking && timerElasp.hasPeriodPassed(timeTillLockReady)){
       m_trolleySubsystem.setTrolleyServoLock();
+      unlockedForTime = false;
     }
 
   }

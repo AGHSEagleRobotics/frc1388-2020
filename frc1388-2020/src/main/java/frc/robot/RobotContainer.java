@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 
-import frc.robot.commands.Climb;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -35,6 +34,7 @@ import frc.robot.commands.RotationalControl;
 import frc.robot.commands.SpinnerArm;
 import frc.robot.commands.Eject;
 import frc.robot.commands.RetractIntake;
+import frc.robot.commands.Climb;
 import frc.robot.commands.Trolley;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveTrain;
@@ -142,6 +142,7 @@ public class RobotContainer {
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
     CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
+
     m_climberSubsystem.setDefaultCommand(m_climbCommand);
     m_trolleySubsystem.setDefaultCommand(m_trolleyCommand);
     // Configure the button bindings
