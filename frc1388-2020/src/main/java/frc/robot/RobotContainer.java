@@ -32,6 +32,7 @@ import frc.robot.commands.DeployIntake;
 import frc.robot.commands.Drive;
 import frc.robot.commands.PositionControl;
 import frc.robot.commands.RotationalControl;
+import frc.robot.commands.Spin;
 import frc.robot.commands.SpinnerArm;
 import frc.robot.commands.Eject;
 import frc.robot.commands.RetractIntake;
@@ -91,7 +92,9 @@ public class RobotContainer {
   private PositionControl m_positionControlCmd = new PositionControl(m_colorSpinner);
   private SpinnerArm m_spinnerArmUp = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kUp);
   private SpinnerArm m_spinnerArmDown = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kDown);
-  
+  private Spin m_spinLeft = new Spin(m_colorSpinner, Spin.Direction.kLeft);
+  private Spin m_spinRight = new Spin(m_colorSpinner, Spin.Direction.kRight);
+
   // components 
   public static XboxController driveController = new XboxController(Constants.USB_driveController);
   public static XboxController opController = new XboxController(Constants.USB_opController);
@@ -175,13 +178,11 @@ public class RobotContainer {
     
     // Color Spinner Left
     new JoystickButton(opController, XboxController.Button.kBumperLeft.value)
-        .whileHeld(() -> m_colorSpinner.spinMotor(-.1), m_colorSpinner)
-        .whenReleased(() -> m_colorSpinner.spinMotor(0), m_colorSpinner);
+        .whenHeld(m_spinLeft);
 
     // Color Spinner Right
     new JoystickButton(opController, XboxController.Button.kBumperRight.value)
-        .whileHeld(() -> m_colorSpinner.spinMotor(.1), m_colorSpinner)
-        .whenReleased(() -> m_colorSpinner.spinMotor(0), m_colorSpinner);
+        .whenHeld(m_spinRight);
 
     // Color Spinner Arm Up (op)
     new POVButton( opController, Dpad.kUP.getAngle())
@@ -221,8 +222,6 @@ public class RobotContainer {
     new JoystickButton(opController, XboxController.Button.kX.value).whenPressed( new LockRackAndPinion() );
     // have a similar approach as the aboves yet using the dpad directional 
     new POVButton( opController, Dpad.kLeft.getAngle() ).whenPressed( new LockTrolleyGear() );
-    new JoystickButton(opController, XboxController.Button.kBumperRight.value)
-    .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
     new JoystickButton(opController, XboxController.Button.kBack.value).whenPressed(this::switchVideoSource );
     new JoystickButton(driveController, XboxController.Button.kBack.value).whenPressed(this::switchVideoSource );
   }
