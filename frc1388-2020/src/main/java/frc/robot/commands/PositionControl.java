@@ -15,8 +15,8 @@ import frc.robot.subsystems.ColorSpinner.ColorWheel;
 public class PositionControl extends CommandBase {
   private final ColorSpinner m_colorSpinner;
   private ColorWheel m_desiredColor = ColorWheel.UNKNOWN;
-
-  
+  private final double m_spinSpeed = 0.5;
+  private final double m_spinnerArmDown = -0.1;
 
   /**
    * Creates a new PositionControl.
@@ -37,7 +37,10 @@ public class PositionControl extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_colorSpinner.spinMotor(0.1);
+    // Operate the Spinner Wheel
+    m_colorSpinner.spinMotor(m_spinSpeed);   
+    // Make sure the Wheel on the color panel
+    m_colorSpinner.setArmMotor(m_spinnerArmDown);
   }
 
   // Called once the command ends or is interrupted.

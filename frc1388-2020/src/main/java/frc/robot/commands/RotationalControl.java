@@ -15,11 +15,11 @@ import frc.robot.subsystems.ColorSpinner.ColorWheel;
 public class RotationalControl extends CommandBase {
 
   private final static int ROTATION_STOP_COUNT = 28;
-
+  private final double m_spinSpeed = 0.5;
   private int m_changeColorCounter = 0;
   private ColorWheel m_prevColor = ColorWheel.UNKNOWN;
   private final ColorSpinner m_colorSpinner;
-
+  private final double m_spinnerArmDown = -0.1;
   /**
    * Creates a new RotationalControl.
    */
@@ -37,8 +37,8 @@ public class RotationalControl extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_colorSpinner.spinMotor(0.1);
-
+    m_colorSpinner.spinMotor(m_spinSpeed);
+    m_colorSpinner.setArmMotor(m_spinnerArmDown);
     ColorWheel curColor = m_colorSpinner.checkColor();
 
     if (curColor != m_prevColor && curColor != ColorWheel.UNKNOWN) {
