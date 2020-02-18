@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.USBLogging;
 
 
 public class ClimberSubsystem extends SubsystemBase {
@@ -37,36 +38,37 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void setClimberMotor(double speed){
+    USBLogging.debug("changing the speed: " + speed);
     m_climberMotor.set(speed);
   }
 
-  public boolean getClimberSolenoidState(){
-    return m_solenoidState;
-  }
+  // public boolean getClimberSolenoidState(){
+  //   return m_solenoidState;
+  // }
 
-  public boolean getClimberServoState(){
+  
+  // public void ClimberUnlock(){
+  //   m_solenoid.set(Relay.Value.kOff);
+  //   m_solenoidState = false;
+  // }
+
+  // public void ClimberLock(){
+  // m_solenoid.set(Relay.Value.kOn);
+  // m_solenoidState = true;
+  // }
+
+  // public void climberSolenoid( Relay.Value value){
+  //  m_solenoid.set(value);
+  //  if( Relay.Value.kOff == value){
+  //    m_solenoidState = false;
+  //  }else if( Relay.Value.kOn == value ){
+  //    m_solenoidState = true;
+  //  }
+  // }
+
+  public boolean getClimberServoState() {
     return m_servoState;
   }
-
-  public void ClimberUnlock(){
-    m_solenoid.set(Relay.Value.kOff);
-    m_solenoidState = false;
-  }
-
-  public void ClimberLock(){
-    m_solenoid.set(Relay.Value.kOn);
-    m_solenoidState = true;
-  }
-
-  public void climberSolenoid( Relay.Value value){
-    m_solenoid.set(value);
-    if( Relay.Value.kOff == value){
-      m_solenoidState = false;
-    }else if( Relay.Value.kOn == value ){
-      m_solenoidState = true;
-    }
-  }
-
   public void setClimberServoLock(){
     m_servo.set(SERVO_LOCK);
     m_servoState = true;

@@ -245,7 +245,7 @@ public class RobotContainer {
   }
 
   private static double deadBand( double input ){
-    if(input < DEADBAND_NUM && input < DEADBAND_NUM ){
+    if(input < DEADBAND_NUM && input > -DEADBAND_NUM ){
       return 0.0;
     }else{
       if( input > 0 ){
@@ -265,11 +265,11 @@ public class RobotContainer {
   }
 
   public static double getOpRightXAxis() {
-    return deadBand( driveController.getX(Hand.kRight) );
+    return deadBand( opController.getX(Hand.kRight) );
   }
 
   public static double getOpLeftYAxis() {
-    return deadBand(driveController.getY(Hand.kLeft));
+    return deadBand(opController.getY(Hand.kLeft));
   }
 
   public static boolean getAButton() {

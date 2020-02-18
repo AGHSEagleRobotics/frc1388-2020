@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Start up USB logging
     USBLogging.openLog();
-    USBLogging.setLogLevel(Level.INFO);
+    USBLogging.setLogLevel(Level.DEBUG);
 
 
     // print software version - use printLog so this always, always gets printed
