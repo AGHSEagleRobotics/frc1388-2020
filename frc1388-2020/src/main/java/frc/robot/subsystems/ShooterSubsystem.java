@@ -15,7 +15,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-import com.fasterxml.jackson.databind.util.RawValue;
 
 /**
  * Add your docs here.
@@ -34,8 +33,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double peakPercentOutReverse = -1
   */
   private final int kPIDLoopIdx = 0;
-  private final double kGains_Velocity_kF = 0;
-  private final double kGains_Velocity_kP = 0;
+  private final double kGains_Velocity_kF = 0.05;  // no load motor testing: .056=1000 .05=2000, .048=3000, .047=4000
+  private final double kGains_Velocity_kP = 0.0;
   private final double kGains_Velocity_kI = 0;
   private final double kGains_Velocity_kD = 0;
 
@@ -75,7 +74,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setShooterRpm(double RPM) {
     double speed = RPM * countsPerRev / sensorCyclesPerSecond / secPerMin;
-
+    System.out.println("speed = " + speed);
     m_shootMotor.set(ControlMode.Velocity, speed);
   }
 
@@ -94,8 +93,6 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // This variable placement ensures that the method is called every time periodic is run
-    System.out.println("RPM = " + getShooterRpm() + "  power = " + m_shootMotor.get());
-    setShooterRpm(500); // TODO: Remove testing code
-
+    System.out.println("RPM = " + getShooterRpm());
   }
 }
