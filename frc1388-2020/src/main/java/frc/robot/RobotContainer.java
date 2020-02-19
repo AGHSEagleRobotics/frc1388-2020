@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.commands.AutonMove;
 import frc.robot.commands.AutonMoveShoot;
 import frc.robot.commands.AutonShoot;
@@ -177,7 +178,7 @@ public class RobotContainer {
 
     complexWidgetAuton = shuffleboard
       .add(autonChooser)
-      .withWidget(BuiltInWidgets.kComboBoxChooser);
+      .withWidget(BuiltInWidgets.kSplitButtonChooser);
 
     MaxCapacityBox = shuffleboard
       .add("MaxCapacity", false)
@@ -188,24 +189,24 @@ public class RobotContainer {
     colorSpinnerGrid = shuffleboard
       .getLayout("Color Spinner", BuiltInLayouts.kGrid)
       .withSize( colorSpinnerGridWidth, colorSpinnerGridHeight )
-      .withProperties(Map.of( "","" ));
+      .withProperties(Map.of( "Number of columns",4, "Number of Rows",4 ));
 
     colorSpinnerGrid
-      .addBoolean("Blue", () -> m_colorSpinner.checkColor().equals(ColorWheel.BLUE))
+      .addBoolean("Blue", ()->checkBooleanSupplier(ColorWheel.BLUE))
       .withWidget(BuiltInWidgets.kBooleanBox)
       .withProperties(Map.of("colorWhenTrue", "blue", "colorWhenFalse", "grey"));
+      colorSpinnerGrid
+        .addBoolean("Yellow", () -> checkBooleanSupplier(ColorWheel.YELLOW))
+        .withWidget(BuiltInWidgets.kBooleanBox)
+        .withProperties(Map.of("colorWhenTrue", "yellow", "colorWhenFalse", "grey"));
     colorSpinnerGrid
-      .addBoolean("Red", () -> m_colorSpinner.checkColor().equals(ColorWheel.RED))
+      .addBoolean("Red", ()-> checkBooleanSupplier(ColorWheel.RED))
       .withWidget(BuiltInWidgets.kBooleanBox)
       .withProperties(Map.of("colorWhenTrue", "red", "colorWhenFalse", "grey"));
     colorSpinnerGrid
-      .addBoolean("Green", () -> m_colorSpinner.checkColor().equals(ColorWheel.GREEN))
+      .addBoolean("Green", () -> checkBooleanSupplier(ColorWheel.GREEN))
       .withWidget(BuiltInWidgets.kBooleanBox)
       .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey"));
-    colorSpinnerGrid
-      .addBoolean("Yellow", () -> m_colorSpinner.checkColor().equals(ColorWheel.YELLOW))
-      .withWidget(BuiltInWidgets.kBooleanBox)
-      .withProperties(Map.of("colorWhenTrue", "yellow", "colorWhenFalse", "grey"));
 
     // sets the pipeline of the limelight
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionDrivePipeline);
@@ -373,6 +374,31 @@ public class RobotContainer {
 
   public  Climb getClimb(){
     return m_climbCommand;
+  }
+
+  // public BooleanSupplier checkBooleanSupplier( ColorSpinner.ColorWheel checkColor){
+  //   ColorSpinner.ColorWheel color = m_colorSpinner.checkColor();
+  //   return () -> color.equals(checkColor);
+  // }
+
+  public boolean checkBooleanSupplier( ColorWheel checkColor){
+    ColorWheel color;
+    if(driveController.getXButton()){
+      color = ColorWheel.BLUE;
+      USBLogging.info("X Button pressed");
+    }else if( driveController.getBButton()){
+      color = ColorWheel.RED;
+      USBLogging.info("B Button pressed");
+    }else if( driveController.getAButton()){
+      color = ColorWheel.GREEN;
+      USBLogging.info("A Button pressed");
+    }else if( driveController.getYButton()){
+      color = ColorWheel.YELLOW;
+      USBLogging.info("Y Button pressed");
+    }else{
+      color = ColorWheel.UNKNOWN;
+    }
+    return color.equals(checkColor);
   }
 
 
