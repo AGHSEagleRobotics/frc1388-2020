@@ -24,7 +24,7 @@ public class ClimberSubsystem extends SubsystemBase {
   private Relay m_solenoid = new Relay(Constants.RELAY_climbSolenoid);
   private boolean m_solenoidState = false;
   private boolean m_servoState = false;
-  private Servo m_servo = new Servo(Constants.DIO_climbServo);
+  private Servo m_servo = new Servo(Constants.PWM_climbServo);
 
   /**
    * Creates a new ClimberSubsystem.
