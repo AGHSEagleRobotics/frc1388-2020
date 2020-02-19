@@ -52,6 +52,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.Rumble;
 import frc.robot.subsystems.TrolleySubsystem;
+import frc.robot.subsystems.ColorSpinner.ColorWheel;
 import frc.robot.subsystems.ColorSpinner;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -123,10 +124,7 @@ public class RobotContainer {
   private SendableChooser<Command> autonChooser = new SendableChooser<>();
   private NetworkTableEntry MaxCapacityBox;
   private ShuffleboardLayout colorSpinnerGrid;
-  private BooleanSupplier blueColorSupplier;
-  private BooleanSupplier redColorSupplier;
-  private BooleanSupplier yellowColorSupplier;
-  private BooleanSupplier greenColorSupplier;
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -189,21 +187,25 @@ public class RobotContainer {
 
     colorSpinnerGrid = shuffleboard
       .getLayout("Color Spinner", BuiltInLayouts.kGrid)
-      .withSize( colorSpinnerGridWidth, colorSpinnerGridHeight );
+      .withSize( colorSpinnerGridWidth, colorSpinnerGridHeight )
+      .withProperties(Map.of( "","" ));
 
-    // TODO get the suppliers to work
     colorSpinnerGrid
-      .addBoolean("Blue", blueColorSupplier )
-      .withWidget(BuiltInWidgets.kBooleanBox);
+      .addBoolean("Blue", () -> m_colorSpinner.checkColor().equals(ColorWheel.BLUE))
+      .withWidget(BuiltInWidgets.kBooleanBox)
+      .withProperties(Map.of("colorWhenTrue", "blue", "colorWhenFalse", "grey"));
     colorSpinnerGrid
-      .addBoolean("Red", redColorSupplier)
-      .withWidget(BuiltInWidgets.kBooleanBox);
+      .addBoolean("Red", () -> m_colorSpinner.checkColor().equals(ColorWheel.RED))
+      .withWidget(BuiltInWidgets.kBooleanBox)
+      .withProperties(Map.of("colorWhenTrue", "red", "colorWhenFalse", "grey"));
     colorSpinnerGrid
-      .addBoolean("Green", greenColorSupplier)
-      .withWidget(BuiltInWidgets.kBooleanBox);
+      .addBoolean("Green", () -> m_colorSpinner.checkColor().equals(ColorWheel.GREEN))
+      .withWidget(BuiltInWidgets.kBooleanBox)
+      .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey"));
     colorSpinnerGrid
-      .addBoolean("Yellow", yellowColorSupplier)
-      .withWidget(BuiltInWidgets.kBooleanBox);
+      .addBoolean("Yellow", () -> m_colorSpinner.checkColor().equals(ColorWheel.YELLOW))
+      .withWidget(BuiltInWidgets.kBooleanBox)
+      .withProperties(Map.of("colorWhenTrue", "yellow", "colorWhenFalse", "grey"));
 
     // sets the pipeline of the limelight
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionDrivePipeline);
