@@ -19,7 +19,7 @@ import frc.robot.Constants;
 
 public class TrolleySubsystem extends SubsystemBase {
   // Yes it is named the trolley. Any pizza cutter or ski lift is unacceptable
-  private WPI_TalonSRX trolleyMotor = new WPI_TalonSRX(Constants.CANID_trolleyMotor);
+  private WPI_VictorSPX trolleyMotor = new WPI_VictorSPX(Constants.CANID_trolleyMotor);
   // private final double SERVO_LOCK = 90.0;
   // private final double SERVO_UNLOCK = 0.0;
   

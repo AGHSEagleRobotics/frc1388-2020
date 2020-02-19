@@ -77,15 +77,17 @@ public final class Constants {
     public static final int CANID_trolleyMotor = 12;
 
     /**
+     * PWM channels
+     */
+    public static final int PWM_climbServo = 4;
+
+    /**
      * Digital IO
      */
 
     public static final int DIO_intakeArmTop = 0;
     public static final int DIO_intakeArmBottom = 1;
 
-    
-    public static final int DIO_climbServo = 4;
-    public static final int DIO_trolleyServo = 5;
 
     /**
      * Analog Inputs
@@ -96,7 +98,6 @@ public final class Constants {
      * Relay Channel
      */
     public static final int RELAY_climbSolenoid = 0;
-    public static final int RELAY_trolleySolenoid = 1;
 
 
     /**
