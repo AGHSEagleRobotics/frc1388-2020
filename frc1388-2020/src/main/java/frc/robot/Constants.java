@@ -57,6 +57,8 @@ public final class Constants {
      * TalonSRX Can IDs
      */
     public static final int CANID_intakeArmMotor = 6;
+
+    public static final int CANID_spinnerArmMotor = 8;
     
     /**
      * VictorSPX Can IDs
@@ -64,9 +66,8 @@ public final class Constants {
     
     // Change Id's underneath
     public static final int CANID_colorSpinnerMotor = 7;
-    public static final int CANID_spinnerArmMotor = 8;
     
-    public static final int CANID_magazineMotor = 0;
+    public static final int CANID_magazineMotor = 9;
     
     public static final int CANID_intakeShaftMotor = 5;
     
@@ -79,11 +80,8 @@ public final class Constants {
      * Digital IO
      */
 
-         public static final int DIO_intakeShaftTop = 0;
-         public static final int DIO_intakeShaftBottom = 1;
-
-    public static final int DIO_intakeArmTop = 3;
-    public static final int DIO_intakeArmBottom = 4;
+    public static final int DIO_intakeArmTop = 0;
+    public static final int DIO_intakeArmBottom = 1;
 
     
     public static final int DIO_climbServo = 4;
@@ -109,8 +107,8 @@ public final class Constants {
     /**
      * USB devices
      */
-     public static final int USB_driveController = 0;
-     public static final int USB_opController = 1; // op Controller not specifically assigned
+    public static final int USB_driveController = 0;
+    public static final int USB_opController = 1; // op Controller not specifically assigned
     public static final int USB_cameraIntake = 0;
     public static final int USB_cameraClimber = 1;
 

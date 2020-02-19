@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Start up USB logging
     USBLogging.openLog();
-    USBLogging.setLogLevel(Level.INFO);
+    USBLogging.setLogLevel(Level.DEBUG);
 
 
     // print software version - use printLog so this always, always gets printed
@@ -132,11 +132,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    if( timer.getMatchTime() > 120 && !climberOn){
-      m_robotContainer.getClimb().schedule();
-      m_robotContainer.getTrolley().schedule();
-      climberOn = true;
-    }
   }
 
   @Override
