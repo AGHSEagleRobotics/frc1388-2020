@@ -9,6 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,7 +30,7 @@ public class Robot extends TimedRobot {
   private boolean climberOn = false;
 
   private RobotContainer m_robotContainer;
-
+  private CompDashBoard m_dashboard;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -53,6 +54,8 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    m_dashboard = new CompDashBoard( m_robotContainer );
+    m_robotContainer.setCompDashBoardInstance(m_dashboard);
 
   }
 
@@ -84,6 +87,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    USBLogging.info("########  Robot disabled");
+
     // turns of limelight ledmode
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
   }
@@ -99,8 +104,25 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
+    
+    USBLogging.info("########  Autonomous enabled");
+    
+    // Get match info from FMS
+    final DriverStation driverStation = DriverStation.getInstance();
+    if (driverStation.isFMSAttached()) {
+      String fmsInfo = "FMS info: ";
+      fmsInfo += " " + driverStation.getEventName();
+      fmsInfo += " " + driverStation.getMatchType();
+      fmsInfo += " match " + driverStation.getMatchNumber();
+      fmsInfo += " replay " + driverStation.getReplayNumber();
+      fmsInfo += ";  " + driverStation.getAlliance() + " alliance";
+      fmsInfo += ",  Driver Station " + driverStation.getLocation();
+      USBLogging.info(fmsInfo);
+    } else {
+      USBLogging.info("FMS not connected");
+    }
+    
+    m_autonomousCommand = m_dashboard.getAutonCommand();
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -116,6 +138,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    USBLogging.info("########  Teleop enabled");
+
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -136,6 +160,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
+    USBLogging.info("########  Test enabled");
+
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
   }
