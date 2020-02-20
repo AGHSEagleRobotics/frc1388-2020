@@ -64,7 +64,6 @@ public final class Constants {
      * VictorSPX Can IDs
      */
     
-    // Change Id's underneath
     public static final int CANID_colorSpinnerMotor = 7;
     
     public static final int CANID_magazineMotor = 9;
@@ -92,10 +91,10 @@ public final class Constants {
     /**
      * Analog Inputs
      */
-    public static final int AIN_ballSensor = 0; // Value known
+    public static final int AIN_ballSensor = 0;
     
     /**
-     * Relay Channel
+     * Relay Channels
      */
     public static final int RELAY_climbSolenoid = 0;
 
