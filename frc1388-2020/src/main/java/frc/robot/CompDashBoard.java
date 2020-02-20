@@ -50,7 +50,9 @@ public class CompDashBoard {
     private ShuffleboardTab shuffleboard;
     private ComplexWidget complexWidgetCam;
     private ComplexWidget complexWidgetAuton;
+    private ComplexWidget complexWidgetEscape;
     private SendableChooser<Command> autonChooser = new SendableChooser<>();
+    private SendableChooser<EscapePlan> escapeChooser = new SendableChooser<>();
     private NetworkTableEntry MaxCapacityBox;
     private ShuffleboardLayout colorSpinnerGrid;
 
@@ -62,6 +64,12 @@ public class CompDashBoard {
     private VideoSink m_videoSink;
     private VideoSource[] m_videoSources;
 
+    public enum EscapePlan{
+        FOWARD,
+        REVERSE,
+        DOUBLEREVERSE,
+        NONE;
+    }
 
     public CompDashBoard(RobotContainer robotContainer) {
 
@@ -107,6 +115,10 @@ public class CompDashBoard {
             .withWidget(BuiltInWidgets.kSplitButtonChooser)
             .withSize(autonChooserWidth, autonChooserHeight);
 
+        complexWidgetAuton = shuffleboard.add(autonChooser)
+            .withWidget(BuiltInWidgets.kSplitButtonChooser)
+            .withSize(autonChooserWidth, autonChooserHeight);
+
         MaxCapacityBox = shuffleboard.add("MaxCapacity", false)
             .withWidget(BuiltInWidgets.kBooleanBox)
             .withSize(maxCapacityWidth, maxCapacityHeight)
@@ -145,6 +157,10 @@ public class CompDashBoard {
 
     public void addAutonCommand(String name, Command autonCommand) {
         autonChooser.addOption(name, autonCommand);
+    }
+
+    public void addAutonCommandDefault(String name, Command autonCommand) {
+        autonChooser.setDefaultOption(name, autonCommand);
     }
 
     public Command getAutonCommand() {
