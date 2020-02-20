@@ -131,15 +131,25 @@ public class DriveTrain extends SubsystemBase {
     return m_odometry.getPoseMeters();
   }
 
-  public long getRightEncoderInFeet(){
-    return (long)( K_CPR_TO_FT * rightEncoderDistance );
-  }
+  /**
+   * Gets the distance the right + left encoder has driven in feet
+   * @return The distance in feet
+   */
+ public double getRightEncoderDistance(){
+   return encoderDistanceRatio * m_rightFront.getSelectedSensorPosition();
+ }
 
-  public long getLeftEncoderInFeet(){
-    return (long)( K_CPR_TO_FT * leftEncoderDistance );
-  }
+ public double getLeftEncoderDistance(){
+ return  encoderDistanceRatio * m_leftFront.getSelectedSensorPosition();
+ }
 
-  
+
+  private final double encoderDistanceRatio =
+      2048 * // encoder counts per rev
+      4.67 * // cimple box 
+      5 *    // big bocs(Drive train ratio)  TODO not certain value
+      Math.PI / 2;  // "Rotation to distance by multiplying by the circumference in ft, units are important " - scottTechau
+
 
   // to be used in the future for uses like checking the gyro
   @Override
