@@ -7,33 +7,16 @@
 
 package frc.robot;
 
-import java.util.Map;
-import java.util.function.BooleanSupplier;
+
 
 import com.analog.adis16470.frc.ADIS16470_IMU;
 
-import edu.wpi.cscore.HttpCamera;
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.cscore.VideoSink;
-import edu.wpi.cscore.VideoSource;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.commands.AutonMove;
 import frc.robot.commands.AutonMoveShoot;
 import frc.robot.commands.AutonShoot;
@@ -53,10 +36,8 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.Rumble;
 import frc.robot.subsystems.TrolleySubsystem;
-import frc.robot.subsystems.ColorSpinner.ColorWheel;
 import frc.robot.subsystems.ColorSpinner;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -69,13 +50,6 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  
-  private final int visionProcessPipeline = 0;
-  private final int visionDrivePipeline = 1;
-  private final int camHeight = 5;
-  private final int camWidth = 4;
-  private final int colorSpinnerGridHeight = 10;
-  private final int colorSpinnerGridWidth = 8;
   
   private static final double DEADBAND_NUM = 0.15;
   private final double k_intakeShaftRetractSpeed = -0.2;
@@ -105,26 +79,14 @@ public class RobotContainer {
   private PositionControl m_positionControlCmd = new PositionControl(m_colorSpinner);
   private SpinnerArm m_spinnerArmUp = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kUp);
   private SpinnerArm m_spinnerArmDown = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kDown);
+
+  private CompDashBoard m_compDashboard;
   
   // components 
   public static XboxController driveController = new XboxController(Constants.USB_driveController);
   public static XboxController opController = new XboxController(Constants.USB_opController);
   private ADIS16470_IMU m_gyro;
-  // cameras
-  private UsbCamera m_cameraIntake;
-  private UsbCamera m_cameraClimber;
-  private HttpCamera m_limeLight;
-  private int m_currVideoSourceIndex = 0;
-  private VideoSink m_videoSink;
-  private VideoSource[] m_videoSources;
-
-  // shuffleboard
-  private ShuffleboardTab shuffleboard;
-  private ComplexWidget complexWidgetCam;
-  private ComplexWidget complexWidgetAuton;
-  private SendableChooser<Command> autonChooser = new SendableChooser<>();
-  private NetworkTableEntry MaxCapacityBox;
-  private ShuffleboardLayout colorSpinnerGrid;
+  
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -145,74 +107,12 @@ public class RobotContainer {
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
     CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
 
-    m_cameraIntake = CameraServer.getInstance().startAutomaticCapture(Constants.USB_cameraIntake);
-    // m_cameraClimber = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber);
 
-    m_cameraIntake.setConnectVerbose(0);
-
-    m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg");
-    
-    m_videoSources = new VideoSource[]{
-      m_limeLight, 
-      m_cameraIntake
-    };
-
-    m_videoSink = CameraServer.getInstance().getServer();
-
-    m_videoSink.setSource(m_cameraIntake);
-
-    shuffleboard = Shuffleboard.getTab("Competition");
-
-    complexWidgetCam = shuffleboard
-      .add(m_videoSink.getSource())
-      .withWidget(BuiltInWidgets.kCameraStream)
-      .withSize(camHeight, camWidth)
-      .withProperties(Map.of("Show Crosshair", true, "Show Controls", false, "Title", "Camera"));
-
-    autonChooser.addOption("Nothing", null );
-    autonChooser.addOption("Move", m_autonMove );
-    autonChooser.addOption("Shoot", m_autonShoot );
-    autonChooser.addOption("MoveShoot", m_autonMoveShoot );
-    // autonChooser.addOption("FiveShoot", "FiveShoot" );
-    // autonChooser.addOption("EightShoot", "EightShoot" );
-
-    complexWidgetAuton = shuffleboard
-      .add(autonChooser)
-      .withWidget(BuiltInWidgets.kSplitButtonChooser);
-
-    MaxCapacityBox = shuffleboard
-      .add("MaxCapacity", false)
-      .withWidget(BuiltInWidgets.kBooleanBox)
-      .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey" ))
-      .getEntry();
-
-    colorSpinnerGrid = shuffleboard
-      .getLayout("Color Spinner", BuiltInLayouts.kGrid)
-      .withSize( colorSpinnerGridWidth, colorSpinnerGridHeight )
-      .withProperties(Map.of( "Number of columns",4, "Number of Rows",4 ));
-
-    colorSpinnerGrid
-      .addBoolean("Blue", ()->checkBooleanSupplier(ColorWheel.BLUE))
-      .withWidget(BuiltInWidgets.kBooleanBox)
-      .withProperties(Map.of("colorWhenTrue", "blue", "colorWhenFalse", "grey"));
-      colorSpinnerGrid
-        .addBoolean("Yellow", () -> checkBooleanSupplier(ColorWheel.YELLOW))
-        .withWidget(BuiltInWidgets.kBooleanBox)
-        .withProperties(Map.of("colorWhenTrue", "yellow", "colorWhenFalse", "grey"));
-    colorSpinnerGrid
-      .addBoolean("Red", ()-> checkBooleanSupplier(ColorWheel.RED))
-      .withWidget(BuiltInWidgets.kBooleanBox)
-      .withProperties(Map.of("colorWhenTrue", "red", "colorWhenFalse", "grey"));
-    colorSpinnerGrid
-      .addBoolean("Green", () -> checkBooleanSupplier(ColorWheel.GREEN))
-      .withWidget(BuiltInWidgets.kBooleanBox)
-      .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey"));
-
-    // sets the pipeline of the limelight
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionDrivePipeline);
-    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionProcessPipeline);
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
-
+    m_compDashboard.addAutonCommand("Nothing", null);
+    m_compDashboard.addAutonCommand("Move", m_autonMove);
+    m_compDashboard.addAutonCommand("Shoot", m_autonShoot);
+    m_compDashboard.addAutonCommand("Move & Shoot", m_autonMoveShoot);
+   
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 
     m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
@@ -297,9 +197,9 @@ public class RobotContainer {
     new JoystickButton(opController, XboxController.Button.kBumperRight.value)
         .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
     new JoystickButton(opController, XboxController.Button.kBack.value)
-        .whenPressed(this::switchVideoSource );
+        .whenPressed( m_compDashboard::switchVideoSource );
     new JoystickButton(driveController, XboxController.Button.kBack.value)
-        .whenPressed(this::switchVideoSource );
+        .whenPressed( m_compDashboard::switchVideoSource );
   }
   
   public static enum Dpad{
@@ -376,48 +276,13 @@ public class RobotContainer {
     return m_climbCommand;
   }
 
-  // public BooleanSupplier checkBooleanSupplier( ColorSpinner.ColorWheel checkColor){
-  //   ColorSpinner.ColorWheel color = m_colorSpinner.checkColor();
-  //   return () -> color.equals(checkColor);
-  // }
-
-  public boolean checkBooleanSupplier( ColorWheel checkColor){
-    ColorWheel color;
-    if(driveController.getXButton()){
-      color = ColorWheel.BLUE;
-      USBLogging.info("X Button pressed");
-    }else if( driveController.getBButton()){
-      color = ColorWheel.RED;
-      USBLogging.info("B Button pressed");
-    }else if( driveController.getAButton()){
-      color = ColorWheel.GREEN;
-      USBLogging.info("A Button pressed");
-    }else if( driveController.getYButton()){
-      color = ColorWheel.YELLOW;
-      USBLogging.info("Y Button pressed");
-    }else{
-      color = ColorWheel.UNKNOWN;
-    }
-    return color.equals(checkColor);
+  public ColorSpinner getInstanceSpinner(){
+    return m_colorSpinner;
   }
 
 
-  // Cam stuff lol
-
-  private void switchVideoSource() {
-    m_currVideoSourceIndex = (m_currVideoSourceIndex + 1) % m_videoSources.length;
-    m_videoSink.setSource( m_videoSources[m_currVideoSourceIndex] );
+  public void setCompDashBoardInstance( CompDashBoard compDashBoard){
+    m_compDashboard = compDashBoard;
   }
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An Drive will run in autonomous 
-    return autonChooser.getSelected();
-  }
-  
 
 }

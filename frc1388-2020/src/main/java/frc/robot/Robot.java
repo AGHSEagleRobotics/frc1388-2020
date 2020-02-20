@@ -29,6 +29,7 @@ public class Robot extends TimedRobot {
   private boolean climberOn = false;
 
   private RobotContainer m_robotContainer;
+  private CompDashBoard m_dashboard;
 
 
   /**
@@ -53,6 +54,8 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    m_dashboard = new CompDashBoard( m_robotContainer );
+    m_robotContainer.setCompDashBoardInstance(m_dashboard);
 
   }
 
@@ -99,7 +102,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = m_dashboard.getAutonCommand();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
