@@ -34,8 +34,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.commands.AutonMove;
-import frc.robot.commands.AutonMoveShoot;
-import frc.robot.commands.AutonShoot;
 import frc.robot.commands.DeployIntake;
 import frc.robot.commands.Drive;
 import frc.robot.commands.PositionControl;
@@ -86,8 +84,6 @@ public class RobotContainer {
   private DeployIntake m_deployIntake;
   private RetractIntake m_retractIntake;
   private AutonMove m_autonMove;
-  private AutonShoot m_autonShoot;
-  private AutonMoveShoot m_autonMoveShoot;
   
   // Subsystems:
   private DriveTrain m_driveTrain; 
@@ -138,7 +134,13 @@ public class RobotContainer {
     m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
     m_deployIntake = new DeployIntake(m_intakeSubsystem, m_magazineSubsystem);
     m_retractIntake = new RetractIntake(m_intakeSubsystem, m_magazineSubsystem);
-    m_autonMove = new AutonMove(m_driveTrain);
+    m_autonMove = new AutonMove(
+        m_driveTrain,                     // dependecy
+        AutonMove.Mode.kDistanceDrive,    // drive mode
+        1,                                // drive distance (feet)
+        0.5,                              // drive speed (%)
+        0,                                // rotation control
+        false);                           // quick turn
 
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
@@ -170,8 +172,6 @@ public class RobotContainer {
 
     autonChooser.addOption("Nothing", null );
     autonChooser.addOption("Move", m_autonMove );
-    autonChooser.addOption("Shoot", m_autonShoot );
-    autonChooser.addOption("MoveShoot", m_autonMoveShoot );
     // autonChooser.addOption("FiveShoot", "FiveShoot" );
     // autonChooser.addOption("EightShoot", "EightShoot" );
 
