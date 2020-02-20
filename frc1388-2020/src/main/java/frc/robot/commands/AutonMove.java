@@ -8,97 +8,81 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class AutonMove extends CommandBase {
-  private final double kDRIVE = 0.5;
-  private final double kROTATION = 0.5;
 
-  private final double TIME_PERIOD_MOVE = 3.0;
-  
-  private DriveTrain m_driveTrain;
-  private Timer timer = new Timer();
-  private boolean m_hasMovePeriodPass = false;
-  private int m_distance = 0;
-  private double m_distanceInFeet = 0.0;
-  private double m_timeToRun = 0.0;
-  private boolean m_timeMode = false;
-  private boolean isInFeet = false;
-  private double m_rotation = 0.0;
-  
+  private final DriveTrain m_driveTrain;
+
+  private final Mode m_mode;
+  private final double m_cutoff;
+  private final double m_speed;
+  private final double m_rotation;
+  private final boolean m_isQuickTurn;
+
+  private final Timer m_timer = new Timer();
+
+  public enum Mode {
+
+    kTimeDrive, kDistanceDrive
+
+  }
 
   /**
    * Creates a new AutonMove.
+   * 
+   * @param driveTrain drive train subsystem
+   * @param mode       stop mode
+   * @param cutoff     timed mode cutoff = seconds, distance mode cutoff = feet
    */
-  public AutonMove( DriveTrain driveTrain) {
+  public AutonMove(DriveTrain driveTrain, Mode mode, double cutoff, double speed, double rotation,
+      boolean isQuickTurn) {
     m_driveTrain = driveTrain;
+    m_mode = mode;
+    m_cutoff = cutoff;
+    m_speed = speed;
+    m_rotation = rotation;
+    m_isQuickTurn = isQuickTurn;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements( m_driveTrain);
-    // m_targetPois = new Pose2d(10, 10, m_driveTrain.getAngle());
-    
+    addRequirements(m_driveTrain);
   }
-
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timer.start();
+    m_timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    if( m_timeMode ){
-      if(timer.hasPeriodPassed(m_timeToRun) && !m_hasMovePeriodPass)
-        m_driveTrain.curvatureDrive( kDRIVE, m_rotation, true );
-    }else{
-      if(isInFeet){
-        if( m_driveTrain.leftEncoderDistance() < m_distance && m_driveTrain.rightEncoderDistance() < m_distance )
-          m_driveTrain.curvatureDrive(kDRIVE, m_rotation, true);
-      }else{
-        if( m_driveTrain.leftEncoderDistance() < m_distanceInFeet && m_driveTrain.rightEncoderDistance() < m_distanceInFeet)
-          m_driveTrain.curvatureDrive(kDRIVE, m_rotation, true);
-      }
-    }
-  }
-   
-  
+    m_driveTrain.curvatureDrive(m_speed, m_rotation, m_isQuickTurn);
 
-  public void setTimeRun( double timeForRunning ){
-    m_timeMode = true;
-    m_timeToRun = timeForRunning;
-    m_rotation = 0.0;
-  }
-
-  public void setDistanceInUnit( int distance ){
-    m_timeMode = false;
-    m_distance = distance;
-    m_rotation = 0.0;
-  }
-
-  public void setDistanceInFeet( double distance ){
-    m_timeMode = false;
-    m_distanceInFeet = distance;
-    m_rotation = 0.0;
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    timer.stop();
+    m_timer.stop();
+    m_timer.reset();
+    m_driveTrain.curvatureDrive(0, 0, false);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(timer.getMatchTime() > 15.0 ){
-      return true;
-    }else{
-      return false;
+
+    switch (m_mode) {
+    case kTimeDrive:
+      return m_timer.hasPeriodPassed(m_cutoff);
+    case kDistanceDrive:
+      return m_driveTrain.leftEncoderDistance() < m_cutoff && m_driveTrain.rightEncoderDistance() < m_cutoff;
+    default:
+      return Timer.getMatchTime() > 15.0;
     }
+
   }
 }

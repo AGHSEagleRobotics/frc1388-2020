@@ -18,8 +18,6 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 
 import frc.robot.commands.AutonMove;
-import frc.robot.commands.AutonMoveShoot;
-import frc.robot.commands.AutonShoot;
 import frc.robot.commands.DeployIntake;
 import frc.robot.commands.Drive;
 import frc.robot.commands.PositionControl;
@@ -61,8 +59,6 @@ public class RobotContainer {
   private DeployIntake m_deployIntake;
   private RetractIntake m_retractIntake;
   private AutonMove m_autonMove;
-  private AutonShoot m_autonShoot;
-  private AutonMoveShoot m_autonMoveShoot;
   
   // Subsystems:
   private DriveTrain m_driveTrain; 
@@ -101,7 +97,13 @@ public class RobotContainer {
     m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
     m_deployIntake = new DeployIntake(m_intakeSubsystem, m_magazineSubsystem);
     m_retractIntake = new RetractIntake(m_intakeSubsystem, m_magazineSubsystem);
-    m_autonMove = new AutonMove(m_driveTrain);
+    m_autonMove = new AutonMove(
+        m_driveTrain,                     // dependecy
+        AutonMove.Mode.kDistanceDrive,    // drive mode
+        1,                                // drive distance (feet)
+        0.5,                              // drive speed (%)
+        0,                                // rotation control
+        false);                           // quick turn
 
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
@@ -110,9 +112,7 @@ public class RobotContainer {
 
     m_compDashboard.addAutonCommand("Nothing", null);
     m_compDashboard.addAutonCommand("Move", m_autonMove);
-    m_compDashboard.addAutonCommand("Shoot", m_autonShoot);
-    m_compDashboard.addAutonCommand("Move & Shoot", m_autonMoveShoot);
-   
+    
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 
     m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
