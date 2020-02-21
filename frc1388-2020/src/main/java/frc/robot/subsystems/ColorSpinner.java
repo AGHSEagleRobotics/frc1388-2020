@@ -40,6 +40,9 @@ public class ColorSpinner extends SubsystemBase {
 
   private final ColorMatch colorMatch = new ColorMatch();
 
+  private ColorWheel m_color;
+  private Color m_tempColor;
+
   public enum ColorWheel {
     UNKNOWN(ColorMatch.makeColor(0, 0, 0), "Unknown"),
     RED(kRedTarget, "Red"),
@@ -109,15 +112,18 @@ public class ColorSpinner extends SubsystemBase {
   // ======================================================
 
   public ColorWheel checkColor() {
-    final Color color = m_colorSensor.getColor();
-    ColorWheel curColor = ColorWheel.UNKNOWN;
-    USBLogging.debug("(R, G, B) = (" + color.red + ", " + color.green + ", " + color.blue + ")");
-    final ColorMatchResult result = colorMatch.matchClosestColor(color);
-    USBLogging.debug("R = " + result.color.red + "  G = " + result.color.green + "  B = " + result.color.blue
-        + " confidence = " + result.confidence);
+    return m_color;
+  }
 
-    curColor = setColor(result);
-    return curColor;
+  
+  public void internalCheckColor(){
+    m_tempColor = m_colorSensor.getColor();
+    USBLogging.debug("(R, G, B) = (" + m_tempColor.red + ", " + m_tempColor.green + ", " + m_tempColor.blue + ")");
+    final ColorMatchResult result = colorMatch.matchClosestColor(m_tempColor);
+    // USBLogging.debug("R = " + result.color.red + "  G = " + result.color.green + "  B = " + result.color.blue
+    //     + " confidence = " + result.confidence);
+
+    m_color = setColor(result);
   }
 
   private ColorWheel setColor(final ColorMatchResult result) {
@@ -165,5 +171,6 @@ public class ColorSpinner extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    internalCheckColor();
   }
 }

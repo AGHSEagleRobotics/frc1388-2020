@@ -54,8 +54,6 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    m_dashboard = new CompDashBoard( m_robotContainer );
-    m_robotContainer.setCompDashBoardInstance(m_dashboard);
 
   }
 
@@ -122,7 +120,7 @@ public class Robot extends TimedRobot {
       USBLogging.info("FMS not connected");
     }
     
-    m_autonomousCommand = m_dashboard.getAutonCommand();
+    m_autonomousCommand = m_robotContainer.getAutonCommand();
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();

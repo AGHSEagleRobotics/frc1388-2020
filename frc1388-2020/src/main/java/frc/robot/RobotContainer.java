@@ -7,10 +7,7 @@
 
 package frc.robot;
 
-
-
 import com.analog.adis16470.frc.ADIS16470_IMU;
-
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -35,7 +32,7 @@ import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.Rumble;
 import frc.robot.subsystems.TrolleySubsystem;
 import frc.robot.subsystems.ColorSpinner;
-
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -110,14 +107,14 @@ public class RobotContainer {
     CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
 
 
-    m_compDashboard.addAutonCommand("Nothing", null);
-    m_compDashboard.addAutonCommand("Move", m_autonMove);
     
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 
     m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
     m_deployIntake = new DeployIntake(m_intakeSubsystem, m_magazineSubsystem);
     m_retractIntake = new RetractIntake(m_intakeSubsystem, m_magazineSubsystem);
+
+    m_compDashboard = new CompDashBoard(m_colorSpinner);
 
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
@@ -276,13 +273,27 @@ public class RobotContainer {
     return m_climbCommand;
   }
 
-  public ColorSpinner getInstanceSpinner(){
-    return m_colorSpinner;
-  }
 
+  public Command getAutonCommand() {
 
-  public void setCompDashBoardInstance( CompDashBoard compDashBoard){
-    m_compDashboard = compDashBoard;
+    switch( m_compDashboard.getSelectedObjective() ){
+      case MOVE:
+      return new AutonMove(
+        m_driveTrain,                     // dependecy
+        AutonMove.Mode.kDistanceDrive,    // drive mode
+        1,                                // drive distance (feet)
+        0.5,                              // drive speed (%)
+        0,                                // rotation control
+        false);                           // quick turn
+      case SHOOT:
+      return null; // return m_multiShot.withTimeout( );
+      case SHOOTMOVE:
+      return null; // return m_shootMove;
+      case NOTHING:
+      return null;
+      default:
+      return null;
+    }
   }
 
 }
