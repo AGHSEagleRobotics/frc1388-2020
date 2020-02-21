@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -20,7 +21,8 @@ public class AutonShootMove extends SequentialCommandGroup {
    */
   public AutonShootMove( ShooterSubsystem shooter, DriveTrain driveTrain ) {
     
-    MultiShot multiShot = new MultiShot( shooter );
+    
+    Command multiShot = new MultiShot( shooter ).withTimeout(5);
     AutonMove autonMove = new AutonMove(
         driveTrain,                       // dependecy
         AutonMove.Mode.kDistanceDrive,    // drive mode

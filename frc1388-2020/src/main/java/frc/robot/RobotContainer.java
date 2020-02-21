@@ -11,7 +11,6 @@ package frc.robot;
 
 import com.analog.adis16470.frc.ADIS16470_IMU;
 
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
@@ -24,6 +23,7 @@ import frc.robot.commands.PositionControl;
 import frc.robot.commands.RotationalControl;
 import frc.robot.commands.SpinnerArm;
 import frc.robot.commands.Eject;
+import frc.robot.commands.MultiShot;
 import frc.robot.commands.RetractIntake;
 import frc.robot.commands.Climb;
 import frc.robot.commands.Trolley;
@@ -112,7 +112,7 @@ public class RobotContainer {
 
     m_compDashboard.addAutonCommand("Nothing", null);
     m_compDashboard.addAutonCommand("Move", m_autonMove);
-    
+
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 
     m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
