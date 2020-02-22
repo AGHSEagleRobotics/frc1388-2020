@@ -144,6 +144,7 @@ public class MagazineSubsystem extends SubsystemBase {
       System.out.println("Ejecting");
     } else if (m_magazineIsFull) {
       m_magazineMotor.set(0);
+      System.out.println("Magazine is full");
     } else if (m_intake) {
       m_magazineMotor.set(k_magazineIntakeSpeed);
       System.out.println("Intaking");

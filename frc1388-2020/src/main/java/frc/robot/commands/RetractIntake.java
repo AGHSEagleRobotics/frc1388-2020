@@ -57,6 +57,7 @@ public class RetractIntake extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_intakeSubsystem.setIntakeArmMotor(0);
+    m_intakeSubsystem.setIntakeShaftMotor(0);
 
     m_retractIntakeTimer.stop();
     m_retractIntakeTimer.reset();

@@ -7,10 +7,7 @@
 
 package frc.robot;
 
-
-
 import com.analog.adis16470.frc.ADIS16470_IMU;
-
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -26,6 +23,7 @@ import frc.robot.commands.PositionControl;
 import frc.robot.commands.RotationalControl;
 import frc.robot.commands.SpinnerArm;
 import frc.robot.commands.Eject;
+import frc.robot.commands.IntakeDefault;
 import frc.robot.commands.RetractIntake;
 import frc.robot.commands.Climb;
 import frc.robot.commands.MultiShot;
@@ -112,6 +110,8 @@ public class RobotContainer {
 
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
+    m_intakeSubsystem.setDefaultCommand(new IntakeDefault(m_intakeSubsystem, m_magazineSubsystem, m_retractIntake));
+    // register subsystems so the scheduler runs periodically
     CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
 
 
