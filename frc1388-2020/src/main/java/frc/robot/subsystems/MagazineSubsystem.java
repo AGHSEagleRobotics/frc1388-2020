@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CompDashBoard;
 import frc.robot.Constants;
 import java.lang.Math;
 
@@ -21,6 +22,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 public class MagazineSubsystem extends SubsystemBase {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
+  private CompDashBoard m_dashboard;
 
   // Method Fields
   private final WPI_VictorSPX m_magazineMotor;
@@ -52,9 +54,10 @@ public class MagazineSubsystem extends SubsystemBase {
   // TODO: In need of testing to define optimal distance
   final double BALL_PRESENT_DISTANCE = 10;
 
-  public MagazineSubsystem() {
+  public MagazineSubsystem( CompDashBoard compDashBoard) {
     m_ballSensor = new AnalogInput(Constants.AIN_ballSensor);
     m_magazineMotor = new WPI_VictorSPX(Constants.CANID_magazineMotor);
+    m_dashboard = compDashBoard;
   }
 
   // TODO change number of motors for magazine; number of motors for magazine is TBD
@@ -147,5 +150,7 @@ public class MagazineSubsystem extends SubsystemBase {
     } else { // Run the motors at default speed
       m_magazineMotor.set(k_magazineDefaultSpeed);
     }
+
+    m_dashboard.setMaxCapacity(m_magazineIsFull);
   }
 }

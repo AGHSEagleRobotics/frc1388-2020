@@ -17,6 +17,7 @@ import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.CompDashBoard;
 import frc.robot.Constants;
 import frc.robot.USBLogging;
 
@@ -34,6 +35,8 @@ public class ColorSpinner extends SubsystemBase {
   private final double m_armSpeed = 0.5;
 
   private int tickCount = 0;
+
+  private CompDashBoard m_dashboard;
 
   private static final Color kRedTarget = ColorMatch.makeColor(0.517, 0.343, 0.141);
   private static final Color kBlueTarget = ColorMatch.makeColor(0.123, 0.415, 0.461);
@@ -94,7 +97,7 @@ public class ColorSpinner extends SubsystemBase {
   // Constructors
   // ======================================================
 
-  public ColorSpinner() {
+  public ColorSpinner( CompDashBoard compDashBoard ) {
 
     m_colorSensor = new ColorSensorV3(Constants.I2C_Port_ColorSensor);
     m_spinnerMotor = new WPI_VictorSPX(Constants.CANID_colorSpinnerMotor);
@@ -107,6 +110,8 @@ public class ColorSpinner extends SubsystemBase {
     colorMatch.addColorMatch(kGreenTarget);
     colorMatch.addColorMatch(kBlueTarget);
     colorMatch.addColorMatch(kYellowTarget);
+
+    m_dashboard = compDashBoard;
   }
 
   // ======================================================
@@ -117,6 +122,21 @@ public class ColorSpinner extends SubsystemBase {
     return m_color;
   }
 
+  public boolean isRed(){
+    return m_color.equals(ColorWheel.RED);
+  }
+
+  public boolean isBlue(){
+    return m_color.equals(ColorWheel.BLUE);
+  }
+
+  public boolean isYellow(){
+    return m_color.equals(ColorWheel.YELLOW);
+  }
+
+  public boolean isGreen(){
+    return m_color.equals(ColorWheel.GREEN);
+  }
   
   public void internalCheckColor(){
     m_tempColor = m_colorSensor.getColor();
@@ -178,5 +198,11 @@ public class ColorSpinner extends SubsystemBase {
     // This method will be called once per scheduler run
     tickCount++;
     internalCheckColor();
+    m_dashboard.setRed(isRed());
+    m_dashboard.setBlue(isBlue());
+    m_dashboard.setYellow(isYellow());
+    m_dashboard.setGreen(isGreen());
+
+    
   }
 }

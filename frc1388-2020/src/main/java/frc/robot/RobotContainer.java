@@ -59,19 +59,19 @@ public class RobotContainer {
   
   // Subsystems:
   private DriveTrain m_driveTrain; 
+  private ColorSpinner m_colorSpinner;
+  private MagazineSubsystem m_magazineSubsystem;
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
-  private MagazineSubsystem m_magazineSubsystem = new MagazineSubsystem();
-  private ColorSpinner m_colorSpinner = new ColorSpinner();
   private Rumble m_driveRumble = new Rumble(driveController);
   private Rumble m_opRumble = new Rumble(opController);
   private TrolleySubsystem m_trolleySubsystem = new TrolleySubsystem();
   private ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
   private Trolley m_trolleyCommand = new Trolley(m_trolleySubsystem);
   private Climb m_climbCommand = new Climb(m_climberSubsystem);
-  private RotationalControl m_rotationControlCmd = new RotationalControl(m_colorSpinner);
-  private PositionControl m_positionControlCmd = new PositionControl(m_colorSpinner);
-  private SpinnerArm m_spinnerArmUp = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kUp);
-  private SpinnerArm m_spinnerArmDown = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kDown);
+  private RotationalControl m_rotationControlCmd;
+  private PositionControl m_positionControlCmd;
+  private SpinnerArm m_spinnerArmUp;
+  private SpinnerArm m_spinnerArmDown;
 
   private CompDashBoard m_compDashboard;
   
@@ -80,17 +80,20 @@ public class RobotContainer {
   public static XboxController opController = new XboxController(Constants.USB_opController);
   private ADIS16470_IMU m_gyro;
   
-
+  
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    m_compDashboard = new CompDashBoard();
 
     m_gyro = new ADIS16470_IMU();
     m_gyro.calibrate();
 
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 
+    m_magazineSubsystem = new MagazineSubsystem( m_compDashboard );
+    m_colorSpinner = new ColorSpinner( m_compDashboard );
     m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
     m_deployIntake = new DeployIntake(m_intakeSubsystem, m_magazineSubsystem);
     m_retractIntake = new RetractIntake(m_intakeSubsystem, m_magazineSubsystem);
@@ -102,6 +105,10 @@ public class RobotContainer {
         0,                                // rotation control
         false);                           // quick turn
 
+    m_rotationControlCmd  = new RotationalControl(m_colorSpinner);
+    m_positionControlCmd = new PositionControl(m_colorSpinner);
+    m_spinnerArmUp = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kUp);
+    m_spinnerArmDown = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kDown);
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
     CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
@@ -114,7 +121,6 @@ public class RobotContainer {
     m_deployIntake = new DeployIntake(m_intakeSubsystem, m_magazineSubsystem);
     m_retractIntake = new RetractIntake(m_intakeSubsystem, m_magazineSubsystem);
 
-    m_compDashboard = new CompDashBoard(m_colorSpinner);
 
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );

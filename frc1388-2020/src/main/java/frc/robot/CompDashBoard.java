@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.ColorSpinner;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ColorSpinner.ColorWheel;
@@ -53,8 +54,6 @@ public class CompDashBoard {
     private final int shooterRowIndex = 5;
 
     private RobotContainer m_robotContainer;
-    private ColorSpinner m_colorSpinner;
-    private ShooterSubsystem m_shooter;
 
     private ShuffleboardTab shuffleboard;
     private ComplexWidget complexWidgetCam;
@@ -62,9 +61,13 @@ public class CompDashBoard {
     private ComplexWidget complexWidgetEscape;
     private SendableChooser<Objective> autonChooser = new SendableChooser<>();
     private SendableChooser<EscapePlan> escapeChooser = new SendableChooser<>();
-    private SimpleWidget maxCapacityBox;
+    private NetworkTableEntry maxCapacityBox;
     private ShuffleboardLayout colorSpinnerGrid;
-    private SimpleWidget shooterRPM;
+    private NetworkTableEntry shooterRPM;
+    private NetworkTableEntry colorGridRed;
+    private NetworkTableEntry colorGridGreen;
+    private NetworkTableEntry colorGridYellow;
+    private NetworkTableEntry colorGridBlue;
 
     // Cam
     private UsbCamera m_cameraIntake;
@@ -112,8 +115,7 @@ public class CompDashBoard {
         }
     }
 
-    public CompDashBoard(ColorSpinner colorSpinner ) { 
-        m_colorSpinner = colorSpinner;
+    public CompDashBoard() { 
         camStuff();
         constructShuffleLayout();
     }
@@ -172,38 +174,39 @@ public class CompDashBoard {
         maxCapacityBox = shuffleboard.add("MaxCapacity", false)
             .withWidget(BuiltInWidgets.kBooleanBox)
             .withSize(maxCapacityWidth, maxCapacityHeight)
-            .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey"));
+            .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey"))
+            .getEntry();
 
         colorSpinnerGrid = shuffleboard.getLayout("Color Spinner", BuiltInLayouts.kGrid)
             .withSize(colorSpinnerGridWidth, colorSpinnerGridHeight)
             .withProperties(Map.of("Number of columns", 4, "Number of Rows", 1));
 
-        colorSpinnerGrid.addBoolean("Blue", () -> checkColor(ColorWheel.BLUE))
+        colorGridBlue = colorSpinnerGrid.add("Blue", false)
             .withWidget(BuiltInWidgets.kBooleanBox)
-            .withProperties(Map.of("colorWhenTrue", "blue", "colorWhenFalse", "grey"));
+            .withProperties(Map.of("colorWhenTrue", "blue", "colorWhenFalse", "grey"))
+            .getEntry();
 
-        colorSpinnerGrid.addBoolean("Yellow", () -> checkColor(ColorWheel.YELLOW))
+        colorGridYellow = colorSpinnerGrid.add("Yellow", false)
             .withWidget(BuiltInWidgets.kBooleanBox)
-            .withProperties(Map.of("colorWhenTrue", "yellow", "colorWhenFalse", "grey"));
+            .withProperties(Map.of("colorWhenTrue", "yellow", "colorWhenFalse", "grey"))
+            .getEntry();
 
-        colorSpinnerGrid.addBoolean("Red", () -> checkColor(ColorWheel.RED))
+        colorGridRed = colorSpinnerGrid.add("Red" , false)
             .withWidget(BuiltInWidgets.kBooleanBox)
-            .withProperties(Map.of("colorWhenTrue", "red", "colorWhenFalse", "grey"));
+            .withProperties(Map.of("colorWhenTrue", "red", "colorWhenFalse", "grey"))
+            .getEntry();
 
-        colorSpinnerGrid.addBoolean("Green", () -> checkColor(ColorWheel.GREEN))
+        colorGridGreen = colorSpinnerGrid.add("Green", false)
             .withWidget(BuiltInWidgets.kBooleanBox)
-            .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey"));
+            .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey"))
+            .getEntry();
         
         shooterRPM = shuffleboard.add("ShooterRPM", 0 ) // m_shooter.getShooterRPM())
             .withWidget(BuiltInWidgets.kTextView)
             .withSize( shooterRPMHeight, shooterRPMWidth )
-            .withPosition( shooterColumnIndex, shooterRowIndex );
-    
-    }
-
-    public boolean checkColor(ColorSpinner.ColorWheel checkColor) {
-        ColorSpinner.ColorWheel color = m_colorSpinner.checkColor();
-        return color.equals(checkColor);
+            .withPosition( shooterColumnIndex, shooterRowIndex )
+            .getEntry();
+        
     }
 
     public void switchVideoSource() {
@@ -211,6 +214,30 @@ public class CompDashBoard {
         if( m_videoSources[m_currVideoSourceIndex] != null ){
             m_videoSink.setSource(m_videoSources[m_currVideoSourceIndex]);
         }
+    }
+
+    public void setShooterRPMEntry( String value ){
+        shooterRPM.setString(value);
+    }
+
+    public void setMaxCapacity( boolean isFull ){
+        shooterRPM.setBoolean(isFull);
+    }
+
+    public void setRed( boolean colorIsPresent ){
+        colorGridRed.setBoolean(colorIsPresent);
+    }
+
+    public void setBlue( boolean colorIsPresent ){
+        colorGridBlue.setBoolean(colorIsPresent);
+    }
+
+    public void setYellow( boolean colorIsPresent ){
+        colorGridYellow.setBoolean(colorIsPresent);
+    }
+
+    public void setGreen( boolean colorIsPresent ){
+        colorGridGreen.setBoolean(colorIsPresent);
     }
 
     public Objective getSelectedObjective(){
