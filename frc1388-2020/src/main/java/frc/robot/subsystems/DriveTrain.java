@@ -103,10 +103,10 @@ public class DriveTrain extends SubsystemBase {
     m_rightBack.setNeutralMode( NeutralMode.Coast);
   }
 
-  // public void configFalconFX(){
-  //   m_leftFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-  //   m_rightFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-  // }
+  public void configFalconFX(){
+    m_leftFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    m_rightFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+  }
 
   // Creates Options for drive method
   public void arcadeDrive( double speed, double rotation ) {
@@ -125,6 +125,23 @@ public class DriveTrain extends SubsystemBase {
   public void followMode() {
     m_leftBack.follow( m_leftFront );
     m_rightBack.follow( m_rightFront );
+  }
+  public Pose2d getDriveOdemetry(){
+    return m_odometry.getPoseMeters();  
+  }
+  public Pose2d compareTo(Pose2d pose2d){
+    return m_odometry.getPoseMeters().relativeTo(pose2d);
+  }
+  public Rotation2d getAngle(){
+    return m_angleSupplier.get();
+  }
+
+  public int leftEncoderDistance(){
+    return m_rightFront.getSelectedSensorPosition();
+  }
+
+  public int rightEncoderDistance(){
+    return m_leftFront.getSelectedSensorPosition();
   }
 
   public Pose2d getOdometry(){

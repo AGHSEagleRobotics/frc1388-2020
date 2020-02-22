@@ -7,44 +7,36 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
+import frc.robot.subsystems.DriveTrain;
 
-public class LockTrolleyGear extends CommandBase {
-  private Solenoid m_solenoid = new Solenoid(Constants.RELAY_trolleySolenoid);
-  private static boolean m_solenoidState = false;
+public class AutonMoveShoot extends CommandBase {
+  private DriveTrain m_driveTrain;
+  private Timer timer = new Timer();
+  private boolean hasMovePeriodPass = false;
   
+  private final double kDRIVE = 0.5;
+  private final double kROTATION = 0.5;
+  private final double TIME_PERIOD_MOVE = 3.0;
+
+
   /**
-   * Creates a new LockTrolleyGear.
+   * Creates a new AutonMoveShoot.
    */
-  public LockTrolleyGear() {
+  public AutonMoveShoot( DriveTrain driveTrain) {
     // Use addRequirements() here to declare subsystem dependencies.
+
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // changes and sets the trolley gear solenoid state
-    m_solenoidState = !m_solenoidState;
-    m_solenoid.set(m_solenoidState);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-  }
-
-  public static boolean getTrolleySolenoidState(){
-    return m_solenoidState;
-  }
-
-  public static void trolleyUnlock(){
-    m_solenoidState = false;
-  }
-
-  public static void trolleyLock(){
-    m_solenoidState = true;
   }
 
   // Called once the command ends or is interrupted.
@@ -55,6 +47,6 @@ public class LockTrolleyGear extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }

@@ -7,23 +7,30 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-
+import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.USBLogging;
+
 
 public class ClimberSubsystem extends SubsystemBase {
   private WPI_VictorSPX m_climberMotor = new WPI_VictorSPX(Constants.CANID_climbMotor);
+  private final double SERVO_LOCK = 90.0;
+  private final double SERVO_UNLOCK = 0.0;
+  
+  private Relay m_solenoid = new Relay(Constants.RELAY_climbSolenoid);
+  private boolean m_solenoidState = false;
+  private boolean m_servoState = false;
+  private Servo m_servo = new Servo(Constants.PWM_climbServo);
 
   /**
    * Creates a new ClimberSubsystem.
    */
   public ClimberSubsystem() {
     setBrakeMode();
-    configClimberMotor();
   }
 
   public void setBrakeMode(){
@@ -31,12 +38,57 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void setClimberMotor(double speed){
+    USBLogging.debug("changing the speed: " + speed);
     m_climberMotor.set(speed);
   }
 
-  private void configClimberMotor(){
-    m_climberMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+  // public boolean getClimberSolenoidState(){
+  //   return m_solenoidState;
+  // }
+
+  
+  // public void ClimberUnlock(){
+  //   m_solenoid.set(Relay.Value.kOff);
+  //   m_solenoidState = false;
+  // }
+
+  // public void ClimberLock(){
+  // m_solenoid.set(Relay.Value.kOn);
+  // m_solenoidState = true;
+  // }
+
+  // public void climberSolenoid( Relay.Value value){
+  //  m_solenoid.set(value);
+  //  if( Relay.Value.kOff == value){
+  //    m_solenoidState = false;
+  //  }else if( Relay.Value.kOn == value ){
+  //    m_solenoidState = true;
+  //  }
+  // }
+
+  public boolean getClimberServoState() {
+    return m_servoState;
   }
+  public void setClimberServoLock(){
+    m_servo.set(SERVO_LOCK);
+    m_servoState = true;
+  }
+
+  public void setClimberServoUnlock(){
+    m_servo.set(SERVO_UNLOCK);
+    m_servoState = false;
+  }
+
+  public void setClimberServo( double value){
+    m_servo.set(value);
+    if( value > SERVO_UNLOCK ){
+      m_servoState = true;
+    }else{
+      m_servoState = false;
+    }
+  }
+
+
 
   @Override
   public void periodic() {

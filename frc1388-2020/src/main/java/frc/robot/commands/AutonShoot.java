@@ -7,44 +7,29 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
+import frc.robot.subsystems.ShooterSubsystem;
 
-public class LockRackAndPinion extends CommandBase {
-  private Solenoid m_solenoid = new Solenoid(Constants.RELAY_climbSolenoid);
-  private static boolean m_solenoidState = false;
-
+public class AutonShoot extends CommandBase {
+  private ShooterSubsystem m_shoot;
+  
   /**
-   * Creates a new LockRackAndPinion.
+   * Creates a new AutonShoot.
    */
-  public LockRackAndPinion() {
+  public AutonShoot( ShooterSubsystem shooter ) {
     // Use addRequirements() here to declare subsystem dependencies.
+    m_shoot = shooter;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // changing the state of the solenoid for the rack and pinion and then setting the solenoid to the switched state
-    m_solenoidState = !m_solenoidState;
-    m_solenoid.set(m_solenoidState);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-  }
-
-  public static boolean getRPSolenoidState(){
-    return m_solenoidState;
-  }
-
-  public static void RPUnlock(){
-    m_solenoidState = false;
-  }
-
-  public static void RPLock(){
-    m_solenoidState = true;
+    
   }
 
   // Called once the command ends or is interrupted.
@@ -55,6 +40,6 @@ public class LockRackAndPinion extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }
