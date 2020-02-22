@@ -156,6 +156,14 @@ public class RobotContainer {
     // Shooter
     // ========================================
     
+        // Multi Shot (drive)
+    new JoystickButton(driveController, XboxController.Button.kBumperRight.value)
+        .whenHeld(m_multiShot);
+    new JoystickButton(opController, XboxController.Button.kY.value)
+       .whenPressed(() -> m_shooterSubsystem.presetRPMUp(), m_shooterSubsystem);
+    new JoystickButton(opController, XboxController.Button.kX.value)
+       .whenPressed(() -> m_shooterSubsystem.presetRPMDown(), m_shooterSubsystem);
+  
     // ========================================
     // Intake
     // ========================================
