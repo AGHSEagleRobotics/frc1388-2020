@@ -9,12 +9,14 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.USBLogging;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
 
 /**
  * Add your docs here.
@@ -43,6 +45,32 @@ public class ShooterSubsystem extends SubsystemBase {
   private final int secPerMin = 60;
   private final int countsPerRev = 2048;
 
+  private double m_rpm = 0;
+
+
+  // Developer mode should be removed after the shooter has been characterized.
+  private boolean developerMode = true;   // Make sure this is set to false when not testing code!
+
+  private final double shooterRpmFromStartingLine = 1000;   // TODO: determine value wanted
+  private final double shooterRpmFromNearTrench = 2000;     // TODO: determine value wanted
+  private final double shooterRpmFromFarTrench = 3000;      // TODO: determine value wanted
+
+  private final double[] presetList = {   // make sure these values are in increasing order!
+    shooterRpmFromStartingLine,
+    shooterRpmFromNearTrench,
+    shooterRpmFromFarTrench,
+  };
+
+  private final double[] developerPresetList = {    // Temporary list for characterizing the shooter
+    3000, 3100, 3200, 3300, 3400, 3500, 3600, 3700, 3800, 3900,
+    4000, 4100, 4200, 4300, 4400, 4500, 4600, 4700, 4800, 4900,
+  };
+
+  /** List of presets available to the operator */
+  private double[] m_rpmPresetList;
+
+  /** Index of the current preset */
+  private int m_presetIndex = 0;
 
   public ShooterSubsystem() {
     m_shootMotor = new WPI_TalonFX(Constants.CANID_shootMotor);
@@ -69,30 +97,59 @@ public class ShooterSubsystem extends SubsystemBase {
     m_shootMotor.config_kI(kPIDLoopIdx, kGains_Velocity_kI, timeoutMs);
     m_shootMotor.config_kD(kPIDLoopIdx, kGains_Velocity_kD, timeoutMs);
 
+    if (developerMode) {
+      m_rpmPresetList = developerPresetList;
+      USBLogging.warning("SHOOTER DEVELOPMENT MODE!");
+    }
+    else {
+      m_rpmPresetList = presetList;
+    }
+
 
   }
 
-  public void setShooterRpm(double RPM) {
-    double speed = RPM * countsPerRev / sensorCyclesPerSecond / secPerMin;
-    System.out.println("speed = " + speed);
+  public void startShooter() {
+    double speed = m_rpm * countsPerRev / sensorCyclesPerSecond / secPerMin;
     m_shootMotor.set(ControlMode.Velocity, speed);
   }
 
-  public void setFeedMotor(double speed) {
+  public void setShooterRPM(double rpm) {
+    m_rpm = rpm;
+  }
+
+  /**
+   * Get the actual, current shooter RPM
+   * @return double Current RPM of the shooter
+   */
+
+  public double getShooterRPM() {
+    double rawVelocity = m_shootMotor.getSelectedSensorVelocity();   // counts per cycle (100 ms)
+
+    double rpmActual = rawVelocity * sensorCyclesPerSecond * secPerMin / countsPerRev;
+    return rpmActual;
+  }
+
+  public void usePresetRPM() {
+    // TODO: create preset list of RPM values for shooter
+  }
+
+  public void stopShooter() {
+    m_shootMotor.set(0);
+  }
+
+  public void setFeeder(double speed) {
     m_feedMotor.set(speed);
   }
 
-  public double getShooterRpm() {
-    double rawVelocity = m_shootMotor.getSelectedSensorVelocity();   // counts per cycle (100 ms)
-
-    double rpm = rawVelocity * sensorCyclesPerSecond * secPerMin / countsPerRev;
-    return rpm;
+  public void stopFeeder() {
+    m_feedMotor.set(0);
   }
+
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     // This variable placement ensures that the method is called every time periodic is run
-    System.out.println("RPM = " + getShooterRpm());
+    System.out.println("RPM = " + getShooterRPM());
   }
 }

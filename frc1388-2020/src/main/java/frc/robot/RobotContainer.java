@@ -37,6 +37,7 @@ import frc.robot.commands.Eject;
 import frc.robot.commands.RetractIntake;
 import frc.robot.commands.LockRackAndPinion;
 import frc.robot.commands.LockTrolleyGear;
+import frc.robot.commands.MultiShot;
 import frc.robot.commands.Trolley;
 
 import frc.robot.subsystems.ClimberSubsystem;
@@ -87,12 +88,15 @@ public class RobotContainer {
   private Rumble m_opRumble = new Rumble(opController);
   private TrolleySubsystem m_trolleySubsystem = new TrolleySubsystem();
   private ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
+
+  // Commands:
   private Trolley m_trolleyCommand = new Trolley(m_trolleySubsystem);
   private Climb m_climbCommand = new Climb(m_climberSubsystem);
   private RotationalControl m_rotationControlCmd = new RotationalControl(m_colorSpinner);
   private PositionControl m_positionControlCmd = new PositionControl(m_colorSpinner);
   private SpinnerArm m_spinnerArmUp = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kUp);
   private SpinnerArm m_spinnerArmDown = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kDown);
+  private MultiShot m_multiShot = new MultiShot(m_shooterSubsystem);
   
   // components 
   public static XboxController driveController = new XboxController(Constants.USB_driveController);
@@ -175,13 +179,18 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
+    // Multi Shot (drive)
+    new JoystickButton(driveController, XboxController.Button.kBumperRight.value)
+        .whenHeld(m_multiShot);
+
     
-    // Color Spinner Left
+    // Color Spinner Left (op)
     new JoystickButton(opController, XboxController.Button.kBumperLeft.value)
         .whileHeld(() -> m_colorSpinner.spinMotor(-.1), m_colorSpinner)
         .whenReleased(() -> m_colorSpinner.spinMotor(0), m_colorSpinner);
 
-    // Color Spinner Right
+    // Color Spinner Right (op)
     new JoystickButton(opController, XboxController.Button.kBumperRight.value)
         .whileHeld(() -> m_colorSpinner.spinMotor(.1), m_colorSpinner)
         .whenReleased(() -> m_colorSpinner.spinMotor(0), m_colorSpinner);
