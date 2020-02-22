@@ -149,7 +149,6 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-
     // ========================================
     // Shooter
     // ========================================
