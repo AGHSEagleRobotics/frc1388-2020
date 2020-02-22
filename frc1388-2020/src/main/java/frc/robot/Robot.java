@@ -7,6 +7,10 @@
 
 package frc.robot;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.Thread.UncaughtExceptionHandler;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -40,7 +44,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Start up USB logging
     USBLogging.openLog();
-    USBLogging.setLogLevel(Level.DEBUG);
+    USBLogging.setLogLevel(Level.INFO);
 
 
     // print software version - use printLog so this always, always gets printed
@@ -50,6 +54,15 @@ public class Robot extends TimedRobot {
 
     USBLogging.info("Robot.robotInit()");
     
+    Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler(){
+      @Override
+      public void uncaughtException(Thread thread, Throwable error) {
+          StringWriter sw = new StringWriter();
+          error.printStackTrace(new PrintWriter(sw));
+          USBLogging.error(sw.toString());
+      }
+    });
+
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
@@ -103,6 +116,9 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     
+    USBLogging.info("Crashing Robot...");
+    if (true) throw new RuntimeException("I Failed");
+
     USBLogging.info("########  Autonomous enabled");
     
     // Get match info from FMS
