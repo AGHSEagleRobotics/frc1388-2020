@@ -7,27 +7,19 @@
 
 package frc.robot;
 
-import java.util.Map;
+
 
 import com.analog.adis16470.frc.ADIS16470_IMU;
 
-import edu.wpi.cscore.HttpCamera;
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.cscore.VideoSink;
-import edu.wpi.cscore.VideoSource;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.networktables.NetworkTableInstance;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 
-import frc.robot.commands.Climb;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.robot.commands.AutonMove;
+import frc.robot.commands.AutonMoveShoot;
+import frc.robot.commands.AutonShoot;
 import frc.robot.commands.DeployIntake;
 import frc.robot.commands.Drive;
 import frc.robot.commands.PositionControl;
@@ -35,8 +27,7 @@ import frc.robot.commands.RotationalControl;
 import frc.robot.commands.SpinnerArm;
 import frc.robot.commands.Eject;
 import frc.robot.commands.RetractIntake;
-import frc.robot.commands.LockRackAndPinion;
-import frc.robot.commands.LockTrolleyGear;
+import frc.robot.commands.Climb;
 import frc.robot.commands.MultiShot;
 import frc.robot.commands.Trolley;
 
@@ -49,7 +40,6 @@ import frc.robot.subsystems.TrolleySubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ColorSpinner;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -62,12 +52,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-
-
   
-  private final int visionProcessPipeline = 0;
-  private final int visionDrivePipeline = 1;
-
   private static final double DEADBAND_NUM = 0.15;
   private final double k_intakeShaftRetractSpeed = -0.2;
   
@@ -77,6 +62,9 @@ public class RobotContainer {
   private Eject m_eject;
   private DeployIntake m_deployIntake;
   private RetractIntake m_retractIntake;
+  private AutonMove m_autonMove;
+  private AutonShoot m_autonShoot;
+  private AutonMoveShoot m_autonMoveShoot;
   
   // Subsystems:
   private DriveTrain m_driveTrain; 
@@ -97,53 +85,41 @@ public class RobotContainer {
   private SpinnerArm m_spinnerArmUp = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kUp);
   private SpinnerArm m_spinnerArmDown = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kDown);
   private MultiShot m_multiShot = new MultiShot(m_shooterSubsystem);
+
+  private CompDashBoard m_compDashboard;
   
   // components 
   public static XboxController driveController = new XboxController(Constants.USB_driveController);
   public static XboxController opController = new XboxController(Constants.USB_opController);
   private ADIS16470_IMU m_gyro;
   
-  private UsbCamera m_cameraIntake;
-  private UsbCamera m_cameraClimber;
-  private HttpCamera m_limeLight;
-  private int m_currVideoSourceIndex = 0;
-  private VideoSink m_videoSink;
-  private VideoSource[] m_videoSources;
-  private ComplexWidget complexWidget;
 
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+
     m_gyro = new ADIS16470_IMU();
     m_gyro.calibrate();
 
-    m_cameraIntake = CameraServer.getInstance().startAutomaticCapture(Constants.USB_cameraIntake);
-    // m_cameraClimber = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber);
+    m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 
-    m_cameraIntake.setConnectVerbose(0);
+    m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
+    m_deployIntake = new DeployIntake(m_intakeSubsystem, m_magazineSubsystem);
+    m_retractIntake = new RetractIntake(m_intakeSubsystem, m_magazineSubsystem);
+    m_autonMove = new AutonMove(m_driveTrain);
 
-    m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg");
-    
-    m_videoSources = new VideoSource[]{
-      m_limeLight, 
-      m_cameraIntake
-    };
+    // set default commands here
+    m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
+    CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
 
-    m_videoSink = CameraServer.getInstance().getServer();
-    m_videoSink.setSource(m_cameraIntake);
-    ShuffleboardTab shuffleboard = Shuffleboard.getTab("SmartDashboard");
-    complexWidget = shuffleboard
-      .add(m_videoSink.getSource())
-      .withWidget(BuiltInWidgets.kCameraStream)
-      .withProperties(Map.of("Show Crosshair", true, "Show Controls", false));
 
-    // sets the pipeline of the limelight
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionDrivePipeline);
-    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionProcessPipeline);
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
-
+    m_compDashboard.addAutonCommand("Nothing", null);
+    m_compDashboard.addAutonCommand("Move", m_autonMove);
+    m_compDashboard.addAutonCommand("Shoot", m_autonShoot);
+    m_compDashboard.addAutonCommand("Move & Shoot", m_autonMoveShoot);
+   
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 
     m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
@@ -153,9 +129,9 @@ public class RobotContainer {
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
     CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
-    CommandScheduler.getInstance().registerSubsystem(m_shooterSubsystem);
-    // m_climberSubsystem.setDefaultCommand(m_climbCommand);
-    // m_trolleySubsystem.setDefaultCommand(m_trolleyCommand);
+
+    m_climberSubsystem.setDefaultCommand(m_climbCommand);
+    m_trolleySubsystem.setDefaultCommand(m_trolleyCommand);
     // Configure the button bindings
     configureButtonBindings();
 
@@ -230,13 +206,12 @@ public class RobotContainer {
     new JoystickButton(opController, XboxController.Button.kY.value)
         .whileHeld(m_eject);
 
-    new JoystickButton(opController, XboxController.Button.kX.value).whenPressed( new LockRackAndPinion() );
-    // have a similar approach as the aboves yet using the dpad directional 
-    new POVButton( opController, Dpad.kLeft.getAngle() ).whenPressed( new LockTrolleyGear() );
     new JoystickButton(opController, XboxController.Button.kBumperRight.value)
         .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
-    new JoystickButton(opController, XboxController.Button.kBack.value).whenPressed(this::switchVideoSource );
-    new JoystickButton(driveController, XboxController.Button.kBack.value).whenPressed(this::switchVideoSource );
+    new JoystickButton(opController, XboxController.Button.kBack.value)
+        .whenPressed( m_compDashboard::switchVideoSource );
+    new JoystickButton(driveController, XboxController.Button.kBack.value)
+        .whenPressed( m_compDashboard::switchVideoSource );
   }
 
   public static enum Dpad{
@@ -260,9 +235,9 @@ public class RobotContainer {
       return angle;
     }
   }
-
+  
   private static double deadBand( double input ){
-    if(input < DEADBAND_NUM && input < DEADBAND_NUM ){
+    if(input < DEADBAND_NUM && input > -DEADBAND_NUM ){
       return 0.0;
     }else{
       if( input > 0 ){
@@ -282,11 +257,11 @@ public class RobotContainer {
   }
 
   public static double getOpRightXAxis() {
-    return deadBand( driveController.getX(Hand.kRight) );
+    return deadBand( opController.getX(Hand.kRight) );
   }
 
   public static double getOpLeftYAxis() {
-    return deadBand(driveController.getY(Hand.kLeft));
+    return deadBand(opController.getY(Hand.kLeft));
   }
 
   public static boolean getAButton() {
@@ -313,27 +288,14 @@ public class RobotContainer {
     return m_climbCommand;
   }
 
-
-  // Cam stuff lol
-
-  private void switchVideoSource() {
-    m_currVideoSourceIndex = (m_currVideoSourceIndex+1) % m_videoSources.length;
-    m_videoSink.setSource( m_videoSources[m_currVideoSourceIndex] );
-    complexWidget.withProperties(Map.of("Title", m_videoSink.getSource().getName()));
+  public ColorSpinner getInstanceSpinner(){
+    return m_colorSpinner;
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An Drive will run in autonomous 
-    return null; //m_autoCommand; // for the time being no Autonomous Command
- 
-    /*
-     * Victor speed control, work on robo arm motor,
-     */
+
+  public void setCompDashBoardInstance( CompDashBoard compDashBoard){
+    m_compDashboard = compDashBoard;
+  }
 
 }
-}
+

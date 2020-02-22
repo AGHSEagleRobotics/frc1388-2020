@@ -57,16 +57,16 @@ public final class Constants {
      * TalonSRX Can IDs
      */
     public static final int CANID_intakeArmMotor = 6;
+
+    public static final int CANID_spinnerArmMotor = 8;
     
     /**
      * VictorSPX Can IDs
      */
     
-    // Change Id's underneath
     public static final int CANID_colorSpinnerMotor = 7;
-    public static final int CANID_spinnerArmMotor = 8;
     
-    public static final int CANID_magazineMotor = 0;
+    public static final int CANID_magazineMotor = 9;
     
     public static final int CANID_intakeShaftMotor = 5;
     
@@ -76,29 +76,27 @@ public final class Constants {
     public static final int CANID_trolleyMotor = 12;
 
     /**
+     * PWM channels
+     */
+    public static final int PWM_climbServo = 4;
+
+    /**
      * Digital IO
      */
 
-         public static final int DIO_intakeShaftTop = 0;
-         public static final int DIO_intakeShaftBottom = 1;
+    public static final int DIO_intakeArmTop = 0;
+    public static final int DIO_intakeArmBottom = 1;
 
-    public static final int DIO_intakeArmTop = 3;
-    public static final int DIO_intakeArmBottom = 4;
-
-    
-    public static final int DIO_climbServo = 4;
-    public static final int DIO_trolleyServo = 5;
 
     /**
      * Analog Inputs
      */
-    public static final int AIN_ballSensor = 0; // Value known
+    public static final int AIN_ballSensor = 0;
     
     /**
-     * Relay Channel
+     * Relay Channels
      */
     public static final int RELAY_climbSolenoid = 0;
-    public static final int RELAY_trolleySolenoid = 1;
 
 
     /**
@@ -109,8 +107,8 @@ public final class Constants {
     /**
      * USB devices
      */
-     public static final int USB_driveController = 0;
-     public static final int USB_opController = 1; // op Controller not specifically assigned
+    public static final int USB_driveController = 0;
+    public static final int USB_opController = 1; // op Controller not specifically assigned
     public static final int USB_cameraIntake = 0;
     public static final int USB_cameraClimber = 1;
 
