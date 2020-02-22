@@ -57,11 +57,6 @@ public class RobotContainer {
   private final double k_intakeShaftRetractSpeed = -0.2;
   
   // The robot's subsystems and commands are defined here...
-
-  // Commands:
-  private Eject m_eject;
-  private DeployIntake m_deployIntake;
-  private RetractIntake m_retractIntake;
   private AutonMove m_autonMove;
   private AutonShoot m_autonShoot;
   private AutonMoveShoot m_autonMoveShoot;
@@ -88,6 +83,11 @@ public class RobotContainer {
 
   private CompDashBoard m_compDashboard;
   
+  // Commands:
+  private Eject m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
+  private DeployIntake m_deployIntake = new DeployIntake(m_intakeSubsystem, m_magazineSubsystem);
+  private RetractIntake m_retractIntake = new RetractIntake(m_intakeSubsystem, m_magazineSubsystem);
+
   // components 
   public static XboxController driveController = new XboxController(Constants.USB_driveController);
   public static XboxController opController = new XboxController(Constants.USB_opController);
@@ -121,11 +121,7 @@ public class RobotContainer {
     //m_compDashboard.addAutonCommand("Move & Shoot", m_autonMoveShoot);
    
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
-
-    m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
-    m_deployIntake = new DeployIntake(m_intakeSubsystem, m_magazineSubsystem);
-    m_retractIntake = new RetractIntake(m_intakeSubsystem, m_magazineSubsystem);
-
+    
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
     CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
@@ -198,6 +194,7 @@ public class RobotContainer {
     // toggle Positional Control on/off
     //new JoystickButton(opController, XboxController.Button.kY.value)
     //    .toggleWhenPressed(m_positionControlCmd);
+        
     new JoystickButton(driveController, XboxController.Button.kA.value)
         .whenPressed(m_deployIntake);
     new JoystickButton(driveController, XboxController.Button.kB.value)
