@@ -33,6 +33,8 @@ public class ColorSpinner extends SubsystemBase {
 
   private final double m_armSpeed = 0.5;
 
+  private int tickCount = 0;
+
   private static final Color kRedTarget = ColorMatch.makeColor(0.517, 0.343, 0.141);
   private static final Color kBlueTarget = ColorMatch.makeColor(0.123, 0.415, 0.461);
   private static final Color kGreenTarget = ColorMatch.makeColor(0.165, 0.576, 0.258);
@@ -40,7 +42,7 @@ public class ColorSpinner extends SubsystemBase {
 
   private final ColorMatch colorMatch = new ColorMatch();
 
-  private ColorWheel m_color;
+  private ColorWheel m_color = ColorWheel.UNKNOWN;
   private Color m_tempColor;
 
   public enum ColorWheel {
@@ -118,11 +120,14 @@ public class ColorSpinner extends SubsystemBase {
   
   public void internalCheckColor(){
     m_tempColor = m_colorSensor.getColor();
-    USBLogging.debug("(R, G, B) = (" + m_tempColor.red + ", " + m_tempColor.green + ", " + m_tempColor.blue + ")");
     final ColorMatchResult result = colorMatch.matchClosestColor(m_tempColor);
-    // USBLogging.debug("R = " + result.color.red + "  G = " + result.color.green + "  B = " + result.color.blue
-    //     + " confidence = " + result.confidence);
-
+    // output debugging once per second
+    if (tickCount > 50) {
+      USBLogging.debug("(R, G, B) = (" + m_tempColor.red + ", " + m_tempColor.green + ", " + m_tempColor.blue + ")");
+      USBLogging.debug("R = " + result.color.red + "  G = " + result.color.green + "  B = " + result.color.blue
+          + " confidence = " + result.confidence);
+      tickCount = 0;
+    }
     m_color = setColor(result);
   }
 
@@ -171,6 +176,7 @@ public class ColorSpinner extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    tickCount++;
     internalCheckColor();
   }
 }

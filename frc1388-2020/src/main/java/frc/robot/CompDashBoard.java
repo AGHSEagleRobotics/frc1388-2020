@@ -62,9 +62,9 @@ public class CompDashBoard {
     private ComplexWidget complexWidgetEscape;
     private SendableChooser<Objective> autonChooser = new SendableChooser<>();
     private SendableChooser<EscapePlan> escapeChooser = new SendableChooser<>();
-    private NetworkTableEntry MaxCapacityBox;
+    private SimpleWidget maxCapacityBox;
     private ShuffleboardLayout colorSpinnerGrid;
-    private SuppliedValueWidget<Double> shooterRPM;
+    private SimpleWidget shooterRPM;
 
     // Cam
     private UsbCamera m_cameraIntake;
@@ -112,13 +112,10 @@ public class CompDashBoard {
         }
     }
 
-    // TODO add the shooter subsystem
     public CompDashBoard(ColorSpinner colorSpinner ) { 
         m_colorSpinner = colorSpinner;
-        // m_shooter = shooterSubsystem;
         camStuff();
         constructShuffleLayout();
-
     }
 
     private void camStuff() {
@@ -131,7 +128,7 @@ public class CompDashBoard {
 
         m_videoSources = new VideoSource[] { 
             m_limeLight, 
-            m_cameraIntake,
+            m_cameraIntake, 
             m_cameraClimber
          };
 
@@ -159,8 +156,8 @@ public class CompDashBoard {
         }
         autonChooser.setDefaultOption(Objective.DEFAULT.getName(), Objective.DEFAULT);
 
-        complexWidgetAuton = shuffleboard.add(autonChooser)
-            .withWidget(BuiltInWidgets.kSplitButtonChooser)
+        complexWidgetAuton = shuffleboard.add( "AutonChooser", autonChooser)
+            .withWidget(BuiltInWidgets.kComboBoxChooser)
             .withSize(autonChooserWidth, autonChooserHeight);
 
         for( EscapePlan ep: EscapePlan.values()){
@@ -168,14 +165,14 @@ public class CompDashBoard {
         }
         escapeChooser.setDefaultOption( EscapePlan.DEFAULT.getName(), EscapePlan.DEFAULT );
 
-        complexWidgetEscape = shuffleboard.add(escapeChooser)
+        complexWidgetEscape = shuffleboard.add( "EscapeOption",escapeChooser)
             .withWidget(BuiltInWidgets.kSplitButtonChooser)
             .withSize(autonChooserWidth, autonChooserHeight);
 
-        MaxCapacityBox = shuffleboard.add("MaxCapacity", false)
+        maxCapacityBox = shuffleboard.add("MaxCapacity", false)
             .withWidget(BuiltInWidgets.kBooleanBox)
             .withSize(maxCapacityWidth, maxCapacityHeight)
-            .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey")).getEntry();
+            .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey"));
 
         colorSpinnerGrid = shuffleboard.getLayout("Color Spinner", BuiltInLayouts.kGrid)
             .withSize(colorSpinnerGridWidth, colorSpinnerGridHeight)
@@ -197,9 +194,8 @@ public class CompDashBoard {
             .withWidget(BuiltInWidgets.kBooleanBox)
             .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey"));
         
-        shooterRPM = shuffleboard.addNumber("ShooterRPM", () -> 0 )// m_shooter.getShooterRPM())
+        shooterRPM = shuffleboard.add("ShooterRPM", 0 ) // m_shooter.getShooterRPM())
             .withWidget(BuiltInWidgets.kTextView)
-            .withProperties(Map.of())
             .withSize( shooterRPMHeight, shooterRPMWidth )
             .withPosition( shooterColumnIndex, shooterRowIndex );
     
@@ -212,7 +208,9 @@ public class CompDashBoard {
 
     public void switchVideoSource() {
         m_currVideoSourceIndex = (m_currVideoSourceIndex + 1) % m_videoSources.length;
-        m_videoSink.setSource(m_videoSources[m_currVideoSourceIndex]);
+        if( m_videoSources[m_currVideoSourceIndex] != null ){
+            m_videoSink.setSource(m_videoSources[m_currVideoSourceIndex]);
+        }
     }
 
     public Objective getSelectedObjective(){

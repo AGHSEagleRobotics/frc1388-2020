@@ -145,7 +145,33 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
+    // ========================================
+    // Shooter
+    // ========================================
     
+    // ========================================
+    // Intake
+    // ========================================
+
+    // Deploy Intake Arm
+    new JoystickButton(driveController, XboxController.Button.kA.value)
+        .whenPressed(m_deployIntake);
+    new JoystickButton(opController, XboxController.Button.kA.value)
+        .whenPressed(m_deployIntake);
+    // Retract Intake Arm
+    new JoystickButton(driveController, XboxController.Button.kB.value)
+        .whenPressed(m_retractIntake);
+    new JoystickButton(opController, XboxController.Button.kB.value)
+        .whenPressed(m_retractIntake);
+    // Eject
+    new JoystickButton(opController, XboxController.Button.kStickRight.value)
+        .whileHeld(m_eject);
+    
+    // ========================================
+    // Color Spinner
+    // ========================================
+
     // Color Spinner Left
     new JoystickButton(opController, XboxController.Button.kBumperLeft.value)
         .whileHeld(() -> m_colorSpinner.spinMotor(-.1), m_colorSpinner)
@@ -159,42 +185,33 @@ public class RobotContainer {
     // Color Spinner Arm Up (op)
     new POVButton( opController, Dpad.kUP.getAngle())
         .whenHeld(m_spinnerArmUp);
-        
-        // Color Spinner Arm Down (op)
-    new POVButton( opController, Dpad.kDown.getAngle())
-        .whenHeld(m_spinnerArmDown);
-        
-        // Color Spinner Arm Up (drive)    
+    // Color Spinner Arm Up (drive)    
     new POVButton( driveController, Dpad.kUP.getAngle())
         .whenHeld(m_spinnerArmUp);
-
+        
+    // Color Spinner Arm Down (op)
+    new POVButton( opController, Dpad.kDown.getAngle())
+        .whenHeld(m_spinnerArmDown);
     // Color Spinner Arm Down (drive)
     new POVButton( driveController, Dpad.kDown.getAngle())
         .whenHeld(m_spinnerArmDown);
     
     // toggle Rotational Control on/off
-    new JoystickButton(opController, XboxController.Button.kX.value)
+    new JoystickButton(driveController, XboxController.Button.kX.value)
         .toggleWhenPressed(m_rotationControlCmd);
-  
     // toggle Positional Control on/off
-    new JoystickButton(opController, XboxController.Button.kY.value)
+    new JoystickButton(driveController, XboxController.Button.kY.value)
         .toggleWhenPressed(m_positionControlCmd);
-    new JoystickButton(driveController, XboxController.Button.kA.value)
-        .whenPressed(m_deployIntake);
-    new JoystickButton(driveController, XboxController.Button.kB.value)
-        .whenPressed(m_retractIntake);
-    new JoystickButton(opController, XboxController.Button.kA.value)
-        .whenPressed(m_deployIntake);
-    new JoystickButton(opController, XboxController.Button.kB.value)
-        .whenPressed(m_retractIntake);
 
-    new JoystickButton(opController, XboxController.Button.kY.value)
-        .whileHeld(m_eject);
 
-    new JoystickButton(opController, XboxController.Button.kBumperRight.value)
-        .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
+    // ========================================
+    // View Camera Toggle
+    // ========================================
+
+    // Toggle Camera Source (op)
     new JoystickButton(opController, XboxController.Button.kBack.value)
         .whenPressed( m_compDashboard::switchVideoSource );
+    // Toggle Camera Source (drive)
     new JoystickButton(driveController, XboxController.Button.kBack.value)
         .whenPressed( m_compDashboard::switchVideoSource );
   }
