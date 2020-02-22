@@ -11,6 +11,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+
 import java.lang.Math;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
@@ -33,7 +34,7 @@ public class MagazineSubsystem extends SubsystemBase {
   private boolean m_intake = false;
   private boolean m_eject = false;
   private boolean m_magazineIsFull = false;
-
+  
   // Periodic Variables
   private final double k_magazineShootSpeed = 0.5;
   private final double k_magazineEjectSpeed = -0.5;
@@ -44,8 +45,8 @@ public class MagazineSubsystem extends SubsystemBase {
   private final AnalogInput m_ballSensor;
   
   private final double MIN_VOLTAGE = 0.00001;
-  private final double MAX_DISTANCE = 35; // This is the maximum accurate distace the sensor can read in centimeters
-  private final double MIN_DISTANCE = 4.5; // This is the minimum accurate distace the sensor can read in centimeters
+  private final double MAX_DISTANCE = 35; // This is the maximum accurate distace the sensor can read in inches
+  private final double MIN_DISTANCE = 4.5; // This is the minimum accurate distace the sensor can read in inches
   private final double DISTANCE_MULTIPLIER = 12.84;
   private final double VOLTAGE_EXPONENT = -0.9824;
 
@@ -86,7 +87,7 @@ public class MagazineSubsystem extends SubsystemBase {
     // ballPresent = true;
     // }
     return getDistance() < BALL_PRESENT_DISTANCE;
-    }
+  }
 
   public void startShooting() {
     m_shooting = true;
@@ -128,7 +129,7 @@ public class MagazineSubsystem extends SubsystemBase {
     // }
     // return magazineIsFull;
     return m_ballPresentCounter >= BALL_STOPPED_VALUE;
-    }
+  }
 
   @Override
   public void periodic() {
@@ -140,12 +141,15 @@ public class MagazineSubsystem extends SubsystemBase {
       m_magazineMotor.set(k_magazineShootSpeed);
     } else if (m_eject) {
       m_magazineMotor.set(k_magazineEjectSpeed);
+      System.out.println("Ejecting");
     } else if (m_magazineIsFull) {
       m_magazineMotor.set(0);
     } else if (m_intake) {
       m_magazineMotor.set(k_magazineIntakeSpeed);
+      System.out.println("Intaking");
     } else { // Run the motors at default speed
       m_magazineMotor.set(k_magazineDefaultSpeed);
+      // System.out.println("Defaulting");
     }
   }
 }

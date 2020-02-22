@@ -93,6 +93,6 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // This variable placement ensures that the method is called every time periodic is run
-    System.out.println("RPM = " + getShooterRpm());
+    // System.out.println("RPM = " + getShooterRpm());
   }
 }

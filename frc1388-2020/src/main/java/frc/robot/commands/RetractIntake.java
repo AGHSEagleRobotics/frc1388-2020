@@ -19,8 +19,8 @@ public class RetractIntake extends CommandBase {
   private final double k_intakeArmMotorUp = 0.2;
   private final Timer m_retractIntakeTimer = new Timer();
   private final double k_retractIntakeTimeout = 1;
-  private final double k_intakeShaftUnjamSpeed = -0.5;    //speed when arm is retracting
-  private final double k_intakeShaftRetractSpeed = -0.2;  //speed when arm fully retracted
+  private final double k_intakeShaftRetractSpeed = 0;  //speed when arm fully retracted
+  // private final double k_intakeShaftUnjamSpeed = -0.5;    //speed when arm is retracting
 
   // TODO The speed of the intake arm motor and the time it takes for the
   // arm to lower itself to the correct angle
@@ -41,8 +41,8 @@ public class RetractIntake extends CommandBase {
   @Override
   public void initialize() {
     m_intakeSubsystem.setIntakeArmMotor(k_intakeArmMotorUp);
-    m_intakeSubsystem.setIntakeShaftMotor(k_intakeShaftUnjamSpeed);
-
+    m_intakeSubsystem.setIntakeShaftMotor(k_intakeShaftRetractSpeed);
+    System.out.println("Retracting");
     m_retractIntakeTimer.start();
 
     m_magazineSubsystem.stopIntakeMode(); //for magazine behavior
@@ -57,7 +57,6 @@ public class RetractIntake extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_intakeSubsystem.setIntakeArmMotor(0);
-    m_intakeSubsystem.setIntakeShaftMotor(k_intakeShaftRetractSpeed);
 
     m_retractIntakeTimer.stop();
     m_retractIntakeTimer.reset();
