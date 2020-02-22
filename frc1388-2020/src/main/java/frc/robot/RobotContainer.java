@@ -7,10 +7,7 @@
 
 package frc.robot;
 
-
-
 import com.analog.adis16470.frc.ADIS16470_IMU;
-
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -18,8 +15,6 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 
 import frc.robot.commands.AutonMove;
-import frc.robot.commands.AutonMoveShoot;
-import frc.robot.commands.AutonShoot;
 import frc.robot.commands.DeployIntake;
 import frc.robot.commands.Drive;
 import frc.robot.commands.PositionControl;
@@ -39,7 +34,7 @@ import frc.robot.subsystems.Rumble;
 import frc.robot.subsystems.TrolleySubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ColorSpinner;
-
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -58,8 +53,6 @@ public class RobotContainer {
   
   // The robot's subsystems and commands are defined here...
   private AutonMove m_autonMove;
-  private AutonShoot m_autonShoot;
-  private AutonMoveShoot m_autonMoveShoot;
   
   // Subsystems:
   private DriveTrain m_driveTrain; 
@@ -108,20 +101,24 @@ public class RobotContainer {
     m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
     m_deployIntake = new DeployIntake(m_intakeSubsystem, m_magazineSubsystem);
     m_retractIntake = new RetractIntake(m_intakeSubsystem, m_magazineSubsystem);
-    m_autonMove = new AutonMove(m_driveTrain);
+    m_autonMove = new AutonMove(
+        m_driveTrain,                     // dependecy
+        AutonMove.Mode.kDistanceDrive,    // drive mode
+        1,                                // drive distance (feet)
+        0.5,                              // drive speed (%)
+        0,                                // rotation control
+        false);                           // quick turn
 
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
     CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
 
 
-    //m_compDashboard.addAutonCommand("Nothing", null);
-    //m_compDashboard.addAutonCommand("Move", m_autonMove);
-    //m_compDashboard.addAutonCommand("Shoot", m_autonShoot);
-    //m_compDashboard.addAutonCommand("Move & Shoot", m_autonMoveShoot);
    
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
     
+    m_compDashboard = new CompDashBoard(m_colorSpinner);
+
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
     CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
@@ -152,16 +149,33 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    // Multi Shot (drive)
-    new JoystickButton(driveController, XboxController.Button.kBumperRight.value)
-        .whenHeld(m_multiShot);
-    new JoystickButton(opController, XboxController.Button.kY.value)
-       .whenPressed(() -> m_shooterSubsystem.presetRPMUp(), m_shooterSubsystem);
-    new JoystickButton(opController, XboxController.Button.kX.value)
-       .whenPressed(() -> m_shooterSubsystem.presetRPMDown(), m_shooterSubsystem);
+    // ========================================
+    // Shooter
+    // ========================================
+    
+    // ========================================
+    // Intake
+    // ========================================
 
+    // Deploy Intake Arm
+    new JoystickButton(driveController, XboxController.Button.kA.value)
+        .whenPressed(m_deployIntake);
+    new JoystickButton(opController, XboxController.Button.kA.value)
+        .whenPressed(m_deployIntake);
+    // Retract Intake Arm
+    new JoystickButton(driveController, XboxController.Button.kB.value)
+        .whenPressed(m_retractIntake);
+    new JoystickButton(opController, XboxController.Button.kB.value)
+        .whenPressed(m_retractIntake);
+    // Eject
+    new JoystickButton(opController, XboxController.Button.kStickRight.value)
+        .whileHeld(m_eject);
+    
+    // ========================================
+    // Color Spinner
+    // ========================================
 
-    // Color Spinner Left (op)
+    // Color Spinner Left
     new JoystickButton(opController, XboxController.Button.kBumperLeft.value)
         .whileHeld(() -> m_colorSpinner.spinMotor(-.1), m_colorSpinner)
         .whenReleased(() -> m_colorSpinner.spinMotor(0), m_colorSpinner);
@@ -174,45 +188,35 @@ public class RobotContainer {
     // Color Spinner Arm Up (op)
     new POVButton( opController, Dpad.kUP.getAngle())
         .whenHeld(m_spinnerArmUp);
+    // Color Spinner Arm Up (drive)    
+    new POVButton( driveController, Dpad.kUP.getAngle())
+        .whenHeld(m_spinnerArmUp);
         
         // Color Spinner Arm Down (op)
     new POVButton( opController, Dpad.kDown.getAngle())
         .whenHeld(m_spinnerArmDown);
-        
-        // Color Spinner Arm Up (drive)    
-    new POVButton( driveController, Dpad.kUP.getAngle())
-        .whenHeld(m_spinnerArmUp);
-
     // Color Spinner Arm Down (drive)
     new POVButton( driveController, Dpad.kDown.getAngle())
         .whenHeld(m_spinnerArmDown);
     
     // toggle Rotational Control on/off
-    new JoystickButton(opController, XboxController.Button.kX.value)
+    new JoystickButton(driveController, XboxController.Button.kX.value)
         .toggleWhenPressed(m_rotationControlCmd);
-  
     // toggle Positional Control on/off
-    //new JoystickButton(opController, XboxController.Button.kY.value)
-    //    .toggleWhenPressed(m_positionControlCmd);
-        
-    new JoystickButton(driveController, XboxController.Button.kA.value)
-        .whenPressed(m_deployIntake);
-    new JoystickButton(driveController, XboxController.Button.kB.value)
-        .whenPressed(m_retractIntake);
-    new JoystickButton(opController, XboxController.Button.kA.value)
-        .whenPressed(m_deployIntake);
-    new JoystickButton(opController, XboxController.Button.kB.value)
-        .whenPressed(m_retractIntake);
+    new JoystickButton(driveController, XboxController.Button.kY.value)
+        .toggleWhenPressed(m_positionControlCmd);
 
-    //new JoystickButton(opController, XboxController.Button.kY.value)
-    //    .whileHeld(m_eject);
 
-    new JoystickButton(opController, XboxController.Button.kBumperRight.value)
-        .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
-    //new JoystickButton(opController, XboxController.Button.kBack.value)
-    //    .whenPressed( m_compDashboard::switchVideoSource );
-    //new JoystickButton(driveController, XboxController.Button.kBack.value)
-    //    .whenPressed( m_compDashboard::switchVideoSource );
+    // ========================================
+    // View Camera Toggle
+    // ========================================
+
+    // Toggle Camera Source (op)
+    new JoystickButton(opController, XboxController.Button.kBack.value)
+        .whenPressed( m_compDashboard::switchVideoSource );
+    // Toggle Camera Source (drive)
+    new JoystickButton(driveController, XboxController.Button.kBack.value)
+        .whenPressed( m_compDashboard::switchVideoSource );
   }
 
   public static enum Dpad{
@@ -289,13 +293,27 @@ public class RobotContainer {
     return m_climbCommand;
   }
 
-  public ColorSpinner getInstanceSpinner(){
-    return m_colorSpinner;
+
+  public Command getAutonCommand() {
+
+    switch( m_compDashboard.getSelectedObjective() ){
+      case MOVE:
+      return new AutonMove(
+        m_driveTrain,                     // dependecy
+        AutonMove.Mode.kDistanceDrive,    // drive mode
+        1,                                // drive distance (feet)
+        0.5,                              // drive speed (%)
+        0,                                // rotation control
+        false);                           // quick turn
+      case SHOOT:
+      return null; // return m_multiShot.withTimeout( );
+      case SHOOTMOVE:
+      return null; // return m_shootMove;
+      case NOTHING:
+      return null;
+      default:
+      return null;
   }
-
-
-  public void setCompDashBoardInstance( CompDashBoard compDashBoard){
-    m_compDashboard = compDashBoard;
   }
 
 }
