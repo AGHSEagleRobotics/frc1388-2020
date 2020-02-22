@@ -115,10 +115,10 @@ public class RobotContainer {
     CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
 
 
-    m_compDashboard.addAutonCommand("Nothing", null);
-    m_compDashboard.addAutonCommand("Move", m_autonMove);
-    m_compDashboard.addAutonCommand("Shoot", m_autonShoot);
-    m_compDashboard.addAutonCommand("Move & Shoot", m_autonMoveShoot);
+    //m_compDashboard.addAutonCommand("Nothing", null);
+    //m_compDashboard.addAutonCommand("Move", m_autonMove);
+    //m_compDashboard.addAutonCommand("Shoot", m_autonShoot);
+    //m_compDashboard.addAutonCommand("Move & Shoot", m_autonMoveShoot);
    
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 
@@ -159,8 +159,12 @@ public class RobotContainer {
     // Multi Shot (drive)
     new JoystickButton(driveController, XboxController.Button.kBumperRight.value)
         .whenHeld(m_multiShot);
+    new JoystickButton(opController, XboxController.Button.kX.value)
+       .whenPressed(() -> m_shooterSubsystem.presetRPMUp(), m_shooterSubsystem);
+    new JoystickButton(opController, XboxController.Button.kY.value)
+       .whenPressed(() -> m_shooterSubsystem.presetRPMDown(), m_shooterSubsystem);
 
-    
+
     // Color Spinner Left (op)
     new JoystickButton(opController, XboxController.Button.kBumperLeft.value)
         .whileHeld(() -> m_colorSpinner.spinMotor(-.1), m_colorSpinner)
@@ -192,8 +196,8 @@ public class RobotContainer {
         .toggleWhenPressed(m_rotationControlCmd);
   
     // toggle Positional Control on/off
-    new JoystickButton(opController, XboxController.Button.kY.value)
-        .toggleWhenPressed(m_positionControlCmd);
+    //new JoystickButton(opController, XboxController.Button.kY.value)
+    //    .toggleWhenPressed(m_positionControlCmd);
     new JoystickButton(driveController, XboxController.Button.kA.value)
         .whenPressed(m_deployIntake);
     new JoystickButton(driveController, XboxController.Button.kB.value)
@@ -203,15 +207,15 @@ public class RobotContainer {
     new JoystickButton(opController, XboxController.Button.kB.value)
         .whenPressed(m_retractIntake);
 
-    new JoystickButton(opController, XboxController.Button.kY.value)
-        .whileHeld(m_eject);
+    //new JoystickButton(opController, XboxController.Button.kY.value)
+    //    .whileHeld(m_eject);
 
     new JoystickButton(opController, XboxController.Button.kBumperRight.value)
         .whileHeld(() -> m_colorSpinner.spinMotor(-1) );
-    new JoystickButton(opController, XboxController.Button.kBack.value)
-        .whenPressed( m_compDashboard::switchVideoSource );
-    new JoystickButton(driveController, XboxController.Button.kBack.value)
-        .whenPressed( m_compDashboard::switchVideoSource );
+    //new JoystickButton(opController, XboxController.Button.kBack.value)
+    //    .whenPressed( m_compDashboard::switchVideoSource );
+    //new JoystickButton(driveController, XboxController.Button.kBack.value)
+    //    .whenPressed( m_compDashboard::switchVideoSource );
   }
 
   public static enum Dpad{

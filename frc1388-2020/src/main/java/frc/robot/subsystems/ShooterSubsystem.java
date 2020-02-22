@@ -105,6 +105,7 @@ public class ShooterSubsystem extends SubsystemBase {
       m_rpmPresetList = presetList;
     }
 
+    m_rpm = m_rpmPresetList[m_presetIndex];
 
   }
 
@@ -130,7 +131,21 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void usePresetRPM() {
-    // TODO: create preset list of RPM values for shooter
+    m_rpm = m_rpmPresetList[m_presetIndex];
+  }
+
+  public void presetRPMUp() {
+    if(m_presetIndex < (m_rpmPresetList.length -1)) {
+      m_presetIndex++;
+    }
+    usePresetRPM();
+  }
+
+  public void presetRPMDown() {
+    if(m_presetIndex > 0) {
+      m_presetIndex--;
+    }
+    usePresetRPM();
   }
 
   public void stopShooter() {
