@@ -30,6 +30,7 @@ public class MultiShot extends CommandBase {
     m_rpm = -1; // Invalid value used to differentiate constructors
   }
 
+  // Second constructor intended for use by autonomous commands
   public MultiShot(ShooterSubsystem subsystem, double rpm) {
     m_shooterSubsystem = subsystem;
     addRequirements(m_shooterSubsystem);
@@ -39,12 +40,14 @@ public class MultiShot extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    // Decides whether to use a preset RPM or not
     if (m_rpm > 0) {
       m_shooterSubsystem.setShooterRPM(m_rpm);
     }
     else {
       m_shooterSubsystem.usePresetRPM();
     }
+    //Starts the shooter, and a timer to let it get up to speed
     m_shooterSubsystem.startShooter();
     m_spinUpTimer.start();
   }
@@ -52,6 +55,8 @@ public class MultiShot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // Once the time needed for the shooter to get to the RPM is reached,
+    //balls will be fed by the feeder into the shooter, timer is stopped
     if (m_spinUpTimer.hasPeriodPassed(k_shooterSpinUpTime) == true) {
       m_shooterSubsystem.setFeeder(1);
       m_spinUpTimer.stop();
@@ -62,6 +67,7 @@ public class MultiShot extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    // Stops the shooter and feeder once bumper is released
     m_shooterSubsystem.stopShooter();
     m_shooterSubsystem.stopFeeder();
   }
