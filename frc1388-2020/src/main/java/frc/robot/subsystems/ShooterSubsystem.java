@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CompDashBoard;
 import frc.robot.Constants;
 import frc.robot.USBLogging;
 
@@ -24,6 +25,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 public class ShooterSubsystem extends SubsystemBase {
   private final WPI_TalonFX m_shootMotor;
   private final WPI_VictorSPX m_feedMotor;
+
+  private CompDashBoard m_compDashBoard;
 
   private final int pidIdx = 0;
   private final int timeoutMs = 0;
@@ -86,10 +89,11 @@ public class ShooterSubsystem extends SubsystemBase {
   // Constructor: ShooterSubsystem
   // =======================================
 
-  public ShooterSubsystem() {
+  public ShooterSubsystem(CompDashBoard compDashBoard) {
     m_shootMotor = new WPI_TalonFX(Constants.CANID_shootMotor);
     m_feedMotor = new WPI_VictorSPX(Constants.CANID_feedMotor);
-  
+    m_compDashBoard = compDashBoard;
+
     
 
     // Factory Default all hardware to prevent unexpected behaviour
@@ -205,7 +209,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     // Show current RPM on the Dashboard
-    // TODO: 
+    //m_compDashBoard.set
 
   }
 

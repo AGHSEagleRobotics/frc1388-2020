@@ -54,11 +54,13 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private AutonMove m_autonMove;
   
+  private CompDashBoard m_compDashboard;
+
   // Subsystems:
   private DriveTrain m_driveTrain; 
   private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private MagazineSubsystem m_magazineSubsystem = new MagazineSubsystem();
-  private ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+  private ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(m_compDashboard);
   private ColorSpinner m_colorSpinner = new ColorSpinner();
   private Rumble m_driveRumble = new Rumble(driveController);
   private Rumble m_opRumble = new Rumble(opController);
@@ -74,8 +76,6 @@ public class RobotContainer {
   private SpinnerArm m_spinnerArmDown = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kDown);
   private MultiShot m_multiShot = new MultiShot(m_shooterSubsystem, m_magazineSubsystem);
 
-  private CompDashBoard m_compDashboard;
-  
   // Commands:
   private Eject m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
   private DeployIntake m_deployIntake = new DeployIntake(m_intakeSubsystem, m_magazineSubsystem);
