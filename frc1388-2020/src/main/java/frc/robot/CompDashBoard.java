@@ -16,6 +16,7 @@ import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -23,13 +24,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
-import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.ColorSpinner;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.ColorSpinner.ColorWheel;
 
 /**
  * Add your docs here.
@@ -37,29 +32,32 @@ import frc.robot.subsystems.ColorSpinner.ColorWheel;
 public class CompDashBoard {
     private final int visionProcessPipeline = 0;
     private final int visionDrivePipeline = 1;
-    private final int camHeight = 5;
-    private final int camWidth = 4;
-    private final int colorSpinnerGridHeight = 10;
-    private final int colorSpinnerGridWidth = 8;
-    private final int maxCapacityHeight = 4;
-    private final int maxCapacityWidth = 4;
-    private final int autonChooserHeight = 5;
-    private final int autonChooserWidth = 5;
-    private final int camColumnIndex = 5;
-    private final int camRowIndex = 5;
-    private final int shooterRPMHeight = 5;
-    private final int shooterRPMWidth = 5;
-    private final int shooterColumnIndex = 5;
-    private final int shooterRowIndex = 5;
-    private final int desiredColorHeight = 5;
-    private final int desiredColorWidth = 5;
-    private final int desiredColorColumnIndex = 5;
-    private final int desiredColorRowIndex = 5;
-
+    private final int camHeight = 256;
+    private final int camWidth = 256;
+    private final int camColumnIndex = 256;
+    private final int camRowIndex = 256;
+    private final int colorSpinnerGridHeight = 48;
+    private final int colorSpinnerGridWidth = 128;
+    private final int maxCapacityHeight = 32;
+    private final int maxCapacityWidth = 32;
+    private final int autonChooserHeight = 32;
+    private final int autonChooserWidth = 32;
+    private final int shooterRPMHeight = 32;
+    private final int shooterRPMWidth = 48;
+    private final int shooterColumnIndex = 32;
+    private final int shooterRowIndex = 256;
+    private final int desiredColorHeight = 32;
+    private final int desiredColorWidth = 48;
+    private final int desiredColorColumnIndex = 64;
+    private final int desiredColorRowIndex = 32;
+    private final int cam2Height = 256;
+    private final int cam2Width = 256;
+    
     private RobotContainer m_robotContainer;
 
     private ShuffleboardTab shuffleboard;
     private ComplexWidget complexWidgetCam;
+    private ComplexWidget complexWidgetCam2;
     private ComplexWidget complexWidgetAuton;
     private ComplexWidget complexWidgetEscape;
     private SendableChooser<Objective> autonChooser = new SendableChooser<>();
@@ -135,22 +133,20 @@ public class CompDashBoard {
         // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionProcessPipeline);
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
         
-        m_videoSources = new VideoSource[] { 
-            m_limeLight, 
+        // m_videoSources = new VideoSource[] { 
+        //     m_limeLight, 
+        //     m_cameraIntake, 
+        //     m_cameraClimber
+        // };
+
+        m_videoSources = new VideoSource[] {
             m_cameraIntake, 
             m_cameraClimber
         };
 
-        // m_videoSources = new VideoSource[] {
-        //     m_cameraIntake, 
-        //     m_cameraClimber
-        // };
-        // m_videoSink2 = CameraServer.getInstance().getServer();
-
         m_videoSink = CameraServer.getInstance().getServer();
 
         m_videoSink.setSource(m_cameraIntake);
-
 
     }
 
@@ -158,15 +154,16 @@ public class CompDashBoard {
     public void constructShuffleLayout() {
         shuffleboard = Shuffleboard.getTab("Competition");
 
-        complexWidgetCam = shuffleboard.add(m_videoSink.getSource()).withWidget(BuiltInWidgets.kCameraStream)
+        complexWidgetCam = shuffleboard.add( "Cams", m_videoSink.getSource())
+            .withWidget(BuiltInWidgets.kCameraStream)
             .withSize(camHeight, camWidth)
             .withPosition(camColumnIndex, camRowIndex)
-            .withProperties(Map.of("Show Crosshair", true, "Show Controls", false, "Title", "Camera"));
+            .withProperties(Map.of("Show Crosshair", true, "Show Controls", false));
 
-        // complexWidgetCam = shuffleboard.add(m_limeLight).withWidget(BuiltInWidgets.kCameraStream)
-        //     .withSize(cam2Height, cam2Width)
-        //     .withPosition(cam2ColumnIndex, cam2RowIndex)
-        //     .withProperties(Map.of("Show Crosshair", true, "Show Controls", false, "Title", "ShootCam"));
+        complexWidgetCam2 = shuffleboard.add( "LimeLight", m_limeLight)
+            .withWidget(BuiltInWidgets.kCameraStream)
+            .withSize(cam2Height, cam2Width)
+            .withProperties(Map.of("Show Crosshair", true, "Show Controls", false));
 
         for( CompDashBoard.Objective o: Objective.values()){
             autonChooser.addOption(o.getName(), o );
@@ -215,14 +212,14 @@ public class CompDashBoard {
             .withWidget(BuiltInWidgets.kBooleanBox)
             .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey"))
             .getEntry();
-        
+
         shooterRPM = shuffleboard.add("ShooterRPM", 0 ) // m_shooter.getShooterRPM())
             .withWidget(BuiltInWidgets.kTextView)
             .withSize( shooterRPMHeight, shooterRPMWidth )
             .withPosition( shooterColumnIndex, shooterRowIndex )
             .getEntry();
 
-        desiredColorDisplay = shuffleboard.add( "DesiredColor", "" )
+        desiredColorDisplay = shuffleboard.add( "DesiredColor", getDesiredColor() )
             .withWidget(BuiltInWidgets.kTextView)
             .withSize( desiredColorHeight, desiredColorWidth )
             .withPosition( desiredColorColumnIndex, desiredColorRowIndex )
@@ -234,6 +231,23 @@ public class CompDashBoard {
         if( m_videoSources[m_currVideoSourceIndex] != null ){
             m_videoSink.setSource(m_videoSources[m_currVideoSourceIndex]);
         }
+    }
+
+    public String getDesiredColor(){
+        String gameMessage = DriverStation.getInstance().getGameSpecificMessage();
+        if( gameMessage.length() > 0 ){
+            switch( gameMessage.charAt(0) ){
+            case 'R':
+                return "Red";
+            case 'B':
+                return "Blue";
+            case 'G':
+                return "Green";
+            case 'Y':
+                return "Yellow";
+            }
+        }
+        return "No game message";
     }
 
     public void setShooterRPMEntry( String value ){
