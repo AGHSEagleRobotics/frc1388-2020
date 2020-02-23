@@ -70,13 +70,18 @@ public class ShooterSubsystem extends SubsystemBase {
   };
 
   // TESTING: Array used for RPM testing, hence the "developer" part of the name
+  // private final double[] developerPresetList = {    // Temporary list for characterizing the shooter
+  //   1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900,
+  //   2000, 2100, 2200, 2300, 2400, 2500, 2600, 2700, 2800, 2900,
+  //   3000, 3100, 3200, 3300, 3400, 3500, 3600, 3700, 3800, 3900,
+  //   4000, 4100, 4200, 4300, 4400, 4500, 4600, 4700, 4800, 4900,
+  //   5000, 5100, 5200, 5300, 5400, 5500, 5600, 5700, 5800, 5900,
+  //   6000, 6100, 6200, 6300, 6400, 6500, 6600, 6700, 6800, 6900,
+  // };
   private final double[] developerPresetList = {    // Temporary list for characterizing the shooter
-    1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900,
-    2000, 2100, 2200, 2300, 2400, 2500, 2600, 2700, 2800, 2900,
-    3000, 3100, 3200, 3300, 3400, 3500, 3600, 3700, 3800, 3900,
     4000, 4100, 4200, 4300, 4400, 4500, 4600, 4700, 4800, 4900,
     5000, 5100, 5200, 5300, 5400, 5500, 5600, 5700, 5800, 5900,
-    6000, 6100, 6200, 6300, 6400, 6500, 6600, 6700, 6800, 6900,
+    6000, 6400
   };
 
   // List of presets available to the operator
@@ -194,11 +199,22 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    // use ticks as a cheap timer
     tickCount++;
-    if (tickCount >25 ) {
+    // if tickCount theshold passed, do the things. 50 ticks is 1 second.
+    if ( tickCount >25 ) {
+      // log RPM
       USBLogging.printLog("Target = " + m_rpm + "||RPM = " + getShooterRPM());
-      tickCount = 0;
-    }
+      
+       // Show current RPM on the Dashboard
+      //  m_compDashBoard.setShooterRPMEntry(m_rpm + " | " + getShooterRPM());
+      //  m_compDashBoard.setShooterRPMEntry(Double.toString(getShooterRPM()));
+      m_compDashBoard.setShooterRPMEntry(Double.toString(m_rpm));
+
+      
+       // reset the counter
+       tickCount = 0;
+      }
 
 
     // Flag used to determine if motor should be running,
@@ -208,8 +224,7 @@ public class ShooterSubsystem extends SubsystemBase {
       m_shootMotor.set(ControlMode.Velocity, speed);
     }
 
-    // Show current RPM on the Dashboard
-    //m_compDashBoard.set
+ 
 
   }
 

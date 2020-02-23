@@ -217,11 +217,12 @@ public class CompDashBoard {
     }
 
     public void setShooterRPMEntry( String value ){
-        shooterRPM.setString(value);
+        USBLogging.printLog("setShooterRPMEntry: " + value);
+        shooterRPM.setString(value);        
     }
 
     public void setMaxCapacity( boolean isFull ){
-        shooterRPM.setBoolean(isFull);
+        maxCapacityBox.setBoolean(isFull);
     }
 
     public void setRed( boolean colorIsPresent ){
