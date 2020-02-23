@@ -32,8 +32,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 public class CompDashBoard {
     private final int visionProcessPipeline = 0;
     private final int visionDrivePipeline = 1;
-    private final int camHeight = 256;
-    private final int camWidth = 256;
+    private final int camHeight = 4;
+    private final int camWidth = 5;
     private final int camColumnIndex = 256;
     private final int camRowIndex = 256;
     private final int colorSpinnerGridHeight = 48;
@@ -133,16 +133,16 @@ public class CompDashBoard {
         // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionProcessPipeline);
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
         
-        // m_videoSources = new VideoSource[] { 
-        //     m_limeLight, 
-        //     m_cameraIntake, 
-        //     m_cameraClimber
-        // };
-
-        m_videoSources = new VideoSource[] {
+        m_videoSources = new VideoSource[] { 
+            m_limeLight, 
             m_cameraIntake, 
             m_cameraClimber
         };
+
+        // m_videoSources = new VideoSource[] {
+        //     m_cameraIntake, 
+        //     m_cameraClimber
+        // };
 
         m_videoSink = CameraServer.getInstance().getServer();
 
@@ -160,10 +160,10 @@ public class CompDashBoard {
             .withPosition(camColumnIndex, camRowIndex)
             .withProperties(Map.of("Show Crosshair", true, "Show Controls", false));
 
-        complexWidgetCam2 = shuffleboard.add( "LimeLight", m_limeLight)
-            .withWidget(BuiltInWidgets.kCameraStream)
-            .withSize(cam2Height, cam2Width)
-            .withProperties(Map.of("Show Crosshair", true, "Show Controls", false));
+        // complexWidgetCam2 = shuffleboard.add( "LimeLight", m_limeLight)
+        //     .withWidget(BuiltInWidgets.kCameraStream)
+        //     .withSize(cam2Height, cam2Width)
+        //     .withProperties(Map.of("Show Crosshair", true, "Show Controls", false));
 
         for( CompDashBoard.Objective o: Objective.values()){
             autonChooser.addOption(o.getName(), o );
@@ -191,7 +191,7 @@ public class CompDashBoard {
 
         colorSpinnerGrid = shuffleboard.getLayout("Color Spinner", BuiltInLayouts.kGrid)
             .withSize(colorSpinnerGridWidth, colorSpinnerGridHeight)
-            .withProperties(Map.of("Number of columns", 4, "Number of Rows", 1));
+            .withProperties(Map.of("Number of columns", 1, "Number of Rows", 4));
 
         colorGridBlue = colorSpinnerGrid.add("Blue", false)
             .withWidget(BuiltInWidgets.kBooleanBox)
@@ -253,9 +253,9 @@ public class CompDashBoard {
     public void setShooterRPMEntry( String value ){
         shooterRPM.setString(value);
     }
-
+ 
     public void setMaxCapacity( boolean isFull ){
-        shooterRPM.setBoolean(isFull);
+        maxCapacityBox.setBoolean(isFull);
     }
 
     public void setRed( boolean colorIsPresent ){
