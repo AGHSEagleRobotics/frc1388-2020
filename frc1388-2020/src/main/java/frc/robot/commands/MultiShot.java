@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -16,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class MultiShot extends CommandBase {
 
   private ShooterSubsystem m_shooterSubsystem;
+  private MagazineSubsystem m_magazineSubsystem;
 
   private final Timer m_spinUpTimer = new Timer();
   private final double k_shooterSpinUpTime = 3; // Arbitrary time required for shooter to spin up
@@ -24,15 +26,17 @@ public class MultiShot extends CommandBase {
   /**
    * Creates a new MultiShot.
    */
-  public MultiShot(ShooterSubsystem subsystem) {
+  public MultiShot(ShooterSubsystem subsystem, MagazineSubsystem magazineSubsystem) {
     m_shooterSubsystem = subsystem;
+    m_magazineSubsystem = magazineSubsystem;
     addRequirements(m_shooterSubsystem);
     m_rpm = -1; // Invalid value used to differentiate constructors
   }
 
   // Second constructor intended for use by autonomous commands
-  public MultiShot(ShooterSubsystem subsystem, double rpm) {
-    m_shooterSubsystem = subsystem;
+  public MultiShot(ShooterSubsystem shooterSubsystem, MagazineSubsystem magazineSubsystem, double rpm) {
+    m_shooterSubsystem = shooterSubsystem;
+    m_magazineSubsystem = magazineSubsystem;
     addRequirements(m_shooterSubsystem);
     m_rpm = rpm;
   }
@@ -48,6 +52,7 @@ public class MultiShot extends CommandBase {
       m_shooterSubsystem.usePresetRPM();
     }
     //Starts the shooter, and a timer to let it get up to speed
+    m_magazineSubsystem.startShooting();
     m_shooterSubsystem.startShooter();
     m_spinUpTimer.start();
   }
@@ -68,13 +73,16 @@ public class MultiShot extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     // Stops the shooter and feeder once bumper is released
+    m_magazineSubsystem.stopShooting();
     m_shooterSubsystem.stopShooter();
     m_shooterSubsystem.stopFeeder();
   }
+  
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+
     return false;
   }
 }

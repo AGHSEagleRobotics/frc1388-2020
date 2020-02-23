@@ -27,6 +27,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private final int pidIdx = 0;
   private final int timeoutMs = 0;
+  private int tickCount = 0;
   
   // Purpose unclear. Put here for convenience
   // private final double nominalPercentOutForward = 0;
@@ -172,6 +173,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // Stops the shooter, RPM will be 0
   public void stopShooter() {
+    m_enabled = false;
     m_shootMotor.set(0);
   }
 
@@ -188,8 +190,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    USBLogging.printLog("Target = " + m_rpm + "||RPM = " + getShooterRPM());
-
+    tickCount++;
+    if (tickCount >25 ) {
+      USBLogging.printLog("Target = " + m_rpm + "||RPM = " + getShooterRPM());
+      tickCount = 0;
+    }
 
 
     // Flag used to determine if motor should be running,
@@ -200,7 +205,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     // Show current RPM on the Dashboard
-    
+    // TODO: 
 
   }
 

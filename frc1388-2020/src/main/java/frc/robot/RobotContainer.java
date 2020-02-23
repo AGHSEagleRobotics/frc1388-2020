@@ -72,7 +72,7 @@ public class RobotContainer {
   private PositionControl m_positionControlCmd = new PositionControl(m_colorSpinner);
   private SpinnerArm m_spinnerArmUp = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kUp);
   private SpinnerArm m_spinnerArmDown = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kDown);
-  private MultiShot m_multiShot = new MultiShot(m_shooterSubsystem);
+  private MultiShot m_multiShot = new MultiShot(m_shooterSubsystem, m_magazineSubsystem);
 
   private CompDashBoard m_compDashboard;
   
@@ -157,9 +157,9 @@ public class RobotContainer {
     new JoystickButton(driveController, XboxController.Button.kBumperRight.value)
         .whenHeld(m_multiShot);
     new JoystickButton(opController, XboxController.Button.kY.value)
-       .whenPressed(() -> m_shooterSubsystem.presetRPMUp(), m_shooterSubsystem);
+       .whenPressed(() -> m_shooterSubsystem.presetRPMUp());
     new JoystickButton(opController, XboxController.Button.kX.value)
-       .whenPressed(() -> m_shooterSubsystem.presetRPMDown(), m_shooterSubsystem);
+       .whenPressed(() -> m_shooterSubsystem.presetRPMDown());
   
     // ========================================
     // Intake
