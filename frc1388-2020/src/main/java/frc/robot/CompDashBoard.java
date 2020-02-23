@@ -35,7 +35,6 @@ import frc.robot.subsystems.ColorSpinner.ColorWheel;
  * Add your docs here.
  */
 public class CompDashBoard {
-    // TODO do all these values
     private final int visionProcessPipeline = 0;
     private final int visionDrivePipeline = 1;
     private final int camHeight = 5;
@@ -52,6 +51,10 @@ public class CompDashBoard {
     private final int shooterRPMWidth = 5;
     private final int shooterColumnIndex = 5;
     private final int shooterRowIndex = 5;
+    private final int desiredColorHeight = 5;
+    private final int desiredColorWidth = 5;
+    private final int desiredColorColumnIndex = 5;
+    private final int desiredColorRowIndex = 5;
 
     private RobotContainer m_robotContainer;
 
@@ -68,6 +71,7 @@ public class CompDashBoard {
     private NetworkTableEntry colorGridGreen;
     private NetworkTableEntry colorGridYellow;
     private NetworkTableEntry colorGridBlue;
+    private NetworkTableEntry desiredColorDisplay;
 
     // Cam
     private UsbCamera m_cameraIntake;
@@ -124,26 +128,32 @@ public class CompDashBoard {
         m_cameraIntake = CameraServer.getInstance().startAutomaticCapture(Constants.USB_cameraIntake);
         m_cameraClimber = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber);
 
-        m_cameraIntake.setConnectVerbose(0);
-
         m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg");
-
+        
+        // sets the pipeline of the limelight
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionDrivePipeline);
+        // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionProcessPipeline);
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
+        
         m_videoSources = new VideoSource[] { 
             m_limeLight, 
             m_cameraIntake, 
             m_cameraClimber
-         };
+        };
+
+        // m_videoSources = new VideoSource[] {
+        //     m_cameraIntake, 
+        //     m_cameraClimber
+        // };
+        // m_videoSink2 = CameraServer.getInstance().getServer();
 
         m_videoSink = CameraServer.getInstance().getServer();
 
         m_videoSink.setSource(m_cameraIntake);
 
-        // sets the pipeline of the limelight
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionDrivePipeline);
-        // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionProcessPipeline);
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
 
     }
+
 
     public void constructShuffleLayout() {
         shuffleboard = Shuffleboard.getTab("Competition");
@@ -152,6 +162,11 @@ public class CompDashBoard {
             .withSize(camHeight, camWidth)
             .withPosition(camColumnIndex, camRowIndex)
             .withProperties(Map.of("Show Crosshair", true, "Show Controls", false, "Title", "Camera"));
+
+        // complexWidgetCam = shuffleboard.add(m_limeLight).withWidget(BuiltInWidgets.kCameraStream)
+        //     .withSize(cam2Height, cam2Width)
+        //     .withPosition(cam2ColumnIndex, cam2RowIndex)
+        //     .withProperties(Map.of("Show Crosshair", true, "Show Controls", false, "Title", "ShootCam"));
 
         for( CompDashBoard.Objective o: Objective.values()){
             autonChooser.addOption(o.getName(), o );
@@ -206,7 +221,12 @@ public class CompDashBoard {
             .withSize( shooterRPMHeight, shooterRPMWidth )
             .withPosition( shooterColumnIndex, shooterRowIndex )
             .getEntry();
-        
+
+        desiredColorDisplay = shuffleboard.add( "DesiredColor", "" )
+            .withWidget(BuiltInWidgets.kTextView)
+            .withSize( desiredColorHeight, desiredColorWidth )
+            .withPosition( desiredColorColumnIndex, desiredColorRowIndex )
+            .getEntry();
     }
 
     public void switchVideoSource() {
