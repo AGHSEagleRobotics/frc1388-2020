@@ -36,7 +36,7 @@ public class ShooterSubsystem extends SubsystemBase {
   
   private final int kPIDLoopIdx = 0;
   private final double kGains_Velocity_kF = 0.05;  // no load motor testing: .056=1000 .05=2000, .048=3000, .047=4000
-  private final double kGains_Velocity_kP = 0.0;
+  private final double kGains_Velocity_kP = 0.25;
   private final double kGains_Velocity_kI = 0;
   private final double kGains_Velocity_kD = 0;
 
@@ -188,7 +188,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    USBLogging.printLog("RPM = " + getShooterRPM());
+    USBLogging.printLog("Target = " + m_rpm + "||RPM = " + getShooterRPM());
+
+
 
     // Flag used to determine if motor should be running,
     //runs motor at the wanted RPM
