@@ -39,7 +39,6 @@ public class MagazineSubsystem extends SubsystemBase {
   private final double k_magazineShootSpeed = 0.5;
   private final double k_magazineEjectSpeed = -0.5;
   private final double k_magazineIntakeSpeed = 0.2;
-  private final double k_magazineDefaultSpeed = 0.2;
 
   // Infrared Proximity Sensor Fields
   private final AnalogInput m_ballSensor;
@@ -149,8 +148,7 @@ public class MagazineSubsystem extends SubsystemBase {
       m_magazineMotor.set(k_magazineIntakeSpeed);
       System.out.println("Intaking");
     } else { // Run the motors at default speed
-      m_magazineMotor.set(k_magazineDefaultSpeed);
-      // System.out.println("Defaulting");
+      m_magazineMotor.set(0);
     }
   }
 }

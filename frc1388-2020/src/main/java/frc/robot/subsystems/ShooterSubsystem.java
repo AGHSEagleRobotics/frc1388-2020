@@ -188,7 +188,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    USBLogging.printLog("RPM = " + getShooterRPM());
+  //  USBLogging.printLog("RPM = " + getShooterRPM());
 
     // Flag used to determine if motor should be running,
     //runs motor at the wanted RPM
