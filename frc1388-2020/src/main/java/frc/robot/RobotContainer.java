@@ -55,50 +55,58 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private AutonMove m_autonMove;
   
+  private CompDashBoard m_compDashboard;
+
   // Subsystems:
   private DriveTrain m_driveTrain; 
-  private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
-  private MagazineSubsystem m_magazineSubsystem = new MagazineSubsystem();
-  private ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
-  private ColorSpinner m_colorSpinner = new ColorSpinner();
+  private ColorSpinner m_colorSpinner;
+  private ShooterSubsystem m_shooterSubsystem;
+  private MagazineSubsystem m_magazineSubsystem;
+  private IntakeSubsystem m_intakeSubsystem;
   private Rumble m_driveRumble = new Rumble(driveController);
   private Rumble m_opRumble = new Rumble(opController);
-  private TrolleySubsystem m_trolleySubsystem = new TrolleySubsystem();
-  private ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
+  private TrolleySubsystem m_trolleySubsystem;
+  private ClimberSubsystem m_climberSubsystem;
 
   // Commands:
-  private Trolley m_trolleyCommand = new Trolley(m_trolleySubsystem);
-  private Climb m_climbCommand = new Climb(m_climberSubsystem);
-  private RotationalControl m_rotationControlCmd = new RotationalControl(m_colorSpinner);
-  private PositionControl m_positionControlCmd = new PositionControl(m_colorSpinner);
-  private SpinnerArm m_spinnerArmUp = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kUp);
-  private SpinnerArm m_spinnerArmDown = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kDown);
-  private MultiShot m_multiShot = new MultiShot(m_shooterSubsystem);
-
-  private CompDashBoard m_compDashboard;
-  
-  // Commands:
-  private Eject m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
-  private DeployIntake m_deployIntake = new DeployIntake(m_intakeSubsystem, m_magazineSubsystem);
-  private RetractIntake m_retractIntake = new RetractIntake(m_intakeSubsystem, m_magazineSubsystem);
+  private Trolley m_trolleyCommand;
+  private Climb m_climbCommand;
+  private RotationalControl m_rotationControlCmd;
+  private PositionControl m_positionControlCmd;
+  private SpinnerArm m_spinnerArmUp;
+  private SpinnerArm m_spinnerArmDown;
+  private MultiShot m_multiShot;
+  private Eject m_eject;
+  private DeployIntake m_deployIntake;
+  private RetractIntake m_retractIntake;
 
   // components 
   public static XboxController driveController = new XboxController(Constants.USB_driveController);
   public static XboxController opController = new XboxController(Constants.USB_opController);
   private ADIS16470_IMU m_gyro;
   
-
+  
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    m_compDashboard = new CompDashBoard();
 
     m_gyro = new ADIS16470_IMU();
     m_gyro.calibrate();
 
+    // construct subsystems
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
+    m_shooterSubsystem = new ShooterSubsystem( m_compDashboard );
+    m_magazineSubsystem = new MagazineSubsystem( m_compDashboard );
+    m_intakeSubsystem = new IntakeSubsystem();
+    m_colorSpinner = new ColorSpinner( m_compDashboard );
+    m_trolleySubsystem = new TrolleySubsystem();
+    m_climberSubsystem = new ClimberSubsystem();
 
+    // construct commands
+    m_multiShot = new MultiShot(m_shooterSubsystem, m_magazineSubsystem);
     m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
     m_deployIntake = new DeployIntake(m_intakeSubsystem, m_magazineSubsystem);
     m_retractIntake = new RetractIntake(m_intakeSubsystem, m_magazineSubsystem);
@@ -110,6 +118,13 @@ public class RobotContainer {
         0,                                // rotation control
         false);                           // quick turn
 
+    m_rotationControlCmd  = new RotationalControl(m_colorSpinner);
+    m_positionControlCmd = new PositionControl(m_colorSpinner);
+    m_spinnerArmUp = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kUp);
+    m_spinnerArmDown = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kDown);
+    m_trolleyCommand = new Trolley(m_trolleySubsystem);
+    m_climbCommand = new Climb(m_climberSubsystem);
+
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
     m_intakeSubsystem.setDefaultCommand(new IntakeDefault(m_intakeSubsystem, m_magazineSubsystem, m_retractIntake));
@@ -120,7 +135,6 @@ public class RobotContainer {
    
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
     
-    m_compDashboard = new CompDashBoard(m_colorSpinner);
 
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
@@ -160,9 +174,9 @@ public class RobotContainer {
     new JoystickButton(driveController, XboxController.Button.kBumperRight.value)
         .whenHeld(m_multiShot);
     new JoystickButton(opController, XboxController.Button.kY.value)
-       .whenPressed(() -> m_shooterSubsystem.presetRPMUp(), m_shooterSubsystem);
+       .whenPressed(() -> m_shooterSubsystem.presetRPMUp());
     new JoystickButton(opController, XboxController.Button.kX.value)
-       .whenPressed(() -> m_shooterSubsystem.presetRPMDown(), m_shooterSubsystem);
+       .whenPressed(() -> m_shooterSubsystem.presetRPMDown());
   
     // ========================================
     // Intake

@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CompDashBoard;
 import frc.robot.Constants;
 import frc.robot.USBLogging;
 
@@ -25,8 +26,11 @@ public class ShooterSubsystem extends SubsystemBase {
   private final WPI_TalonFX m_shootMotor;
   private final WPI_VictorSPX m_feedMotor;
 
+  private CompDashBoard m_compDashBoard;
+
   private final int pidIdx = 0;
   private final int timeoutMs = 0;
+  private int tickCount = 0;
   
   // Purpose unclear. Put here for convenience
   // private final double nominalPercentOutForward = 0;
@@ -36,7 +40,7 @@ public class ShooterSubsystem extends SubsystemBase {
   
   private final int kPIDLoopIdx = 0;
   private final double kGains_Velocity_kF = 0.05;  // no load motor testing: .056=1000 .05=2000, .048=3000, .047=4000
-  private final double kGains_Velocity_kP = 0.0;
+  private final double kGains_Velocity_kP = 0.25;
   private final double kGains_Velocity_kI = 0;
   private final double kGains_Velocity_kD = 0;
 
@@ -66,13 +70,18 @@ public class ShooterSubsystem extends SubsystemBase {
   };
 
   // TESTING: Array used for RPM testing, hence the "developer" part of the name
+  // private final double[] developerPresetList = {    // Temporary list for characterizing the shooter
+  //   1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900,
+  //   2000, 2100, 2200, 2300, 2400, 2500, 2600, 2700, 2800, 2900,
+  //   3000, 3100, 3200, 3300, 3400, 3500, 3600, 3700, 3800, 3900,
+  //   4000, 4100, 4200, 4300, 4400, 4500, 4600, 4700, 4800, 4900,
+  //   5000, 5100, 5200, 5300, 5400, 5500, 5600, 5700, 5800, 5900,
+  //   6000, 6100, 6200, 6300, 6400, 6500, 6600, 6700, 6800, 6900,
+  // };
   private final double[] developerPresetList = {    // Temporary list for characterizing the shooter
-    1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900,
-    2000, 2100, 2200, 2300, 2400, 2500, 2600, 2700, 2800, 2900,
-    3000, 3100, 3200, 3300, 3400, 3500, 3600, 3700, 3800, 3900,
     4000, 4100, 4200, 4300, 4400, 4500, 4600, 4700, 4800, 4900,
     5000, 5100, 5200, 5300, 5400, 5500, 5600, 5700, 5800, 5900,
-    6000, 6100, 6200, 6300, 6400, 6500, 6600, 6700, 6800, 6900,
+    6000, 6400
   };
 
   // List of presets available to the operator
@@ -85,10 +94,11 @@ public class ShooterSubsystem extends SubsystemBase {
   // Constructor: ShooterSubsystem
   // =======================================
 
-  public ShooterSubsystem() {
+  public ShooterSubsystem(CompDashBoard compDashBoard) {
     m_shootMotor = new WPI_TalonFX(Constants.CANID_shootMotor);
     m_feedMotor = new WPI_VictorSPX(Constants.CANID_feedMotor);
-  
+    m_compDashBoard = compDashBoard;
+
     
 
     // Factory Default all hardware to prevent unexpected behaviour
@@ -115,7 +125,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // Used to determine if we are using 3 preset RPM values, or all 60 values
     if (developerMode) {
       m_rpmPresetList = developerPresetList;
-      USBLogging.warning("SHOOTER DEVELOPMENT MODE!");
+     // USBLogging.warning("SHOOTER DEVELOPMENT MODE!");
     }
     else {
       m_rpmPresetList = presetList;
@@ -172,6 +182,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // Stops the shooter, RPM will be 0
   public void stopShooter() {
+    m_enabled = false;
     m_shootMotor.set(0);
   }
 
@@ -188,7 +199,23 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-  //  USBLogging.printLog("RPM = " + getShooterRPM());
+    // use ticks as a cheap timer
+    tickCount++;
+    // if tickCount theshold passed, do the things. 50 ticks is 1 second.
+    if ( tickCount >25 ) {
+      // log RPM
+      // USBLogging.printLog("Target = " + m_rpm + "||RPM = " + getShooterRPM());
+      
+       // Show current RPM on the Dashboard
+      //  m_compDashBoard.setShooterRPMEntry(m_rpm + " | " + getShooterRPM());
+      //  m_compDashBoard.setShooterRPMEntry(Double.toString(getShooterRPM()));
+      m_compDashBoard.setShooterRPMEntry(Double.toString(m_rpm));
+
+      
+       // reset the counter
+       tickCount = 0;
+      }
+
 
     // Flag used to determine if motor should be running,
     //runs motor at the wanted RPM
@@ -197,8 +224,7 @@ public class ShooterSubsystem extends SubsystemBase {
       m_shootMotor.set(ControlMode.Velocity, speed);
     }
 
-    // Show current RPM on the Dashboard
-    
+ 
 
   }
 

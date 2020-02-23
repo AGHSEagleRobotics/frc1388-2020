@@ -75,7 +75,7 @@ public class RetractIntake extends CommandBase {
     m_intakeSubsystem.setIntakeArmMotor(0);
     m_intakeSubsystem.setIntakeShaftMotor(0);
 
-    USBLogging.debug("Retract timer timed out");
+    System.out.println("Retracted");
     
     m_retractIntakeTimer.stop();
     m_retractIntakeTimer.reset();

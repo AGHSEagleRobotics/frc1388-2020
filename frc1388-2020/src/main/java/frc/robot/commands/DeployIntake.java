@@ -59,7 +59,8 @@ public class DeployIntake extends CommandBase {
   @Override
   public void execute() { 
     double intakeArmCurrent = Math.abs(m_intakeSubsystem.getIntakeArmCurrent());
-    USBLogging.debug("Current = " + intakeArmCurrent);
+    System.out.println("Intaking");
+    // USBLogging.debug("Current = " + intakeArmCurrent);
     if (intakeArmCurrent > k_stallAmps && m_stallTimer.get() == 0) {
       m_stallTimer.start();
     //  System.out.println("Starting timer");
@@ -76,7 +77,7 @@ public class DeployIntake extends CommandBase {
   public void end(boolean interrupted) {
     m_intakeSubsystem.setIntakeArmMotor(0);
 
-    USBLogging.debug("Deploy timer timed out");
+    System.out.println("Deployed");
 
     m_deployIntakeTimer.stop();
     m_deployIntakeTimer.reset();
