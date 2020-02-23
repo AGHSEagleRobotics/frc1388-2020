@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CompDashBoard;
 import frc.robot.Constants;
+import frc.robot.USBLogging;
 
 import java.lang.Math;
 
@@ -41,7 +42,6 @@ public class MagazineSubsystem extends SubsystemBase {
   private final double k_magazineShootSpeed = 0.5;
   private final double k_magazineEjectSpeed = -0.5;
   private final double k_magazineIntakeSpeed = 0.2;
-  private final double k_magazineDefaultSpeed = 0.2;
 
   // Infrared Proximity Sensor Fields
   private final AnalogInput m_ballSensor;
@@ -147,12 +147,11 @@ public class MagazineSubsystem extends SubsystemBase {
       System.out.println("Ejecting");
     } else if (m_magazineIsFull) {
       m_magazineMotor.set(0);
+      System.out.println("Magazine is full");
     } else if (m_intake) {
       m_magazineMotor.set(k_magazineIntakeSpeed);
-      System.out.println("Intaking");
     } else { // Run the motors at default speed
-      m_magazineMotor.set(k_magazineDefaultSpeed);
-      // System.out.println("Defaulting");
+      m_magazineMotor.set(0);
     }
 
     m_dashboard.setMaxCapacity(m_magazineIsFull);

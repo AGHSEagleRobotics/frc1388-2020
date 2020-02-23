@@ -9,6 +9,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.USBLogging;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 
@@ -19,8 +20,13 @@ public class DeployIntake extends CommandBase {
   private final double k_intakeArmMotorDown = -1;
   private final double k_intakeShaftMotorForward = 1;
   
-  private final double k_deployIntakeTimeout = 1;
+  private final double k_deployIntakeTimeout = 2;
   private final Timer m_deployIntakeTimer = new Timer();
+
+  // Stall Detection
+  private final double k_stallAmps = 10.0;
+  private final double k_stallTime = 2.0;
+  private final Timer m_stallTimer = new Timer();
 
   // TODO The speed of the intake arm motor and the time it takes for the
   // arm to lower itself to the correct angle
@@ -52,12 +58,26 @@ public class DeployIntake extends CommandBase {
   // Called every time scheduler the runs while the command is scheduled.
   @Override
   public void execute() { 
+    double intakeArmCurrent = Math.abs(m_intakeSubsystem.getIntakeArmCurrent());
+    System.out.println("Intaking");
+    // USBLogging.debug("Current = " + intakeArmCurrent);
+    if (intakeArmCurrent > k_stallAmps && m_stallTimer.get() == 0) {
+      m_stallTimer.start();
+    //  System.out.println("Starting timer");
+    } else if (intakeArmCurrent < k_stallAmps) {
+      m_stallTimer.stop();
+    //  System.out.println("Stopping timer");
+      m_stallTimer.reset();
+    }
+    // System.out.println("Timer = " + m_stallTimer.get());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_intakeSubsystem.setIntakeArmMotor(0);
+
+    System.out.println("Deployed");
 
     m_deployIntakeTimer.stop();
     m_deployIntakeTimer.reset();
@@ -66,7 +86,8 @@ public class DeployIntake extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return // m_intakeSubsystem.getIntakeLimitSwitchBottom() || 
-           m_deployIntakeTimer.hasPeriodPassed(k_deployIntakeTimeout);
+    return m_deployIntakeTimer.hasPeriodPassed(k_deployIntakeTimeout) ||
+           m_stallTimer.hasPeriodPassed(k_stallTime);
+
   }
 }

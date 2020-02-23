@@ -125,7 +125,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // Used to determine if we are using 3 preset RPM values, or all 60 values
     if (developerMode) {
       m_rpmPresetList = developerPresetList;
-      USBLogging.warning("SHOOTER DEVELOPMENT MODE!");
+     // USBLogging.warning("SHOOTER DEVELOPMENT MODE!");
     }
     else {
       m_rpmPresetList = presetList;
@@ -204,7 +204,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // if tickCount theshold passed, do the things. 50 ticks is 1 second.
     if ( tickCount >25 ) {
       // log RPM
-      USBLogging.printLog("Target = " + m_rpm + "||RPM = " + getShooterRPM());
+      // USBLogging.printLog("Target = " + m_rpm + "||RPM = " + getShooterRPM());
       
         // Show current RPM on the Dashboard
         // m_compDashBoard.setShooterRPMEntry(m_rpm + " | " + getShooterRPM());

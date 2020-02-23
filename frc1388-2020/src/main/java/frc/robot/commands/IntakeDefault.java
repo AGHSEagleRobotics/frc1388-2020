@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 
 public class IntakeDefault extends CommandBase {
@@ -16,11 +17,12 @@ public class IntakeDefault extends CommandBase {
   /**
    * Creates a new IntakeDefault.
    */
-  public IntakeDefault(MagazineSubsystem magazineSubsystem, RetractIntake retractIntake) {
+  public IntakeDefault(IntakeSubsystem intakeSubsystem, MagazineSubsystem magazineSubsystem, RetractIntake retractIntake) {
     m_magazineSubsystem = magazineSubsystem;
     m_retractIntake = retractIntake;
+    
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements();
+    addRequirements(intakeSubsystem);
   }
   
   // Called when the command is initially scheduled.
@@ -31,6 +33,9 @@ public class IntakeDefault extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (m_magazineSubsystem.isMagazineFull()) {
+      m_retractIntake.schedule();
+    }
   }
 
   // Called once the command ends or is interrupted.
