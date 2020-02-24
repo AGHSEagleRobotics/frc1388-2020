@@ -220,6 +220,19 @@ public class RobotContainer {
     // Toggle Camera Source (drive)
     new JoystickButton(driveController, XboxController.Button.kBack.value)
         .whenPressed( m_compDashboard::switchVideoSource );
+
+    new JoystickButton(driveController, XboxController.Button.kStart.value)
+        .whenActive( ()-> m_compDashboard.setMaxCapacity(true));
+
+    // new JoystickButton(driveController, XboxController.Button.kB.value)
+    //     .whenActive( ()-> m_compDashboard.setRed(true));
+
+    new JoystickButton(driveController, XboxController.Button.kY.value)
+        .whenActive( ()-> m_compDashboard.setYellow(true));
+
+    new JoystickButton(driveController, XboxController.Button.kX.value)
+        .whenActive( ()-> m_compDashboard.setBlue(true));
+
   }
   
   public static enum Dpad{

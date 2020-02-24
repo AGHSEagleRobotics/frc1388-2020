@@ -17,6 +17,7 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -24,6 +25,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
+import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 /**
@@ -32,27 +35,27 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 public class CompDashBoard {
     private final int visionProcessPipeline = 0;
     private final int visionDrivePipeline = 1;
-    private final int camHeight = 4;
+    private final int camHeight = 5;
     private final int camWidth = 5;
-    private final int camColumnIndex = 256;
-    private final int camRowIndex = 256;
-    private final int colorSpinnerGridHeight = 48;
-    private final int colorSpinnerGridWidth = 128;
-    private final int maxCapacityHeight = 32;
-    private final int maxCapacityWidth = 32;
-    private final int autonChooserHeight = 32;
-    private final int autonChooserWidth = 32;
-    private final int shooterRPMHeight = 32;
-    private final int shooterRPMWidth = 48;
-    private final int shooterColumnIndex = 32;
-    private final int shooterRowIndex = 256;
-    private final int desiredColorHeight = 32;
-    private final int desiredColorWidth = 48;
-    private final int desiredColorColumnIndex = 64;
-    private final int desiredColorRowIndex = 32;
+    private final int colorSpinnerGridHeight = 4;
+    private final int colorSpinnerGridWidth = 2;
+    private final int maxCapacityHeight = 2;
+    private final int maxCapacityWidth = 2;
+    private final int autonChooserHeight = 2;
+    private final int autonChooserWidth = 2;
+    private final int shooterRPMHeight = 2;
+    private final int shooterRPMWidth = 2;
+    private final int desiredColorHeight = 2;
+    private final int desiredColorWidth = 2;
     private final int cam2Height = 256;
     private final int cam2Width = 256;
-    
+    private final int camColumnIndex = 4;
+    private final int camRowIndex = 4;
+    private final int shooterRowIndex = 4;
+    private final int shooterColumnIndex = 5;
+    private final int desiredColorColumnIndex = 4;
+    private final int desiredColorRowIndex = 3;
+
     private RobotContainer m_robotContainer;
 
     private ShuffleboardTab shuffleboard;
@@ -66,7 +69,7 @@ public class CompDashBoard {
     private ShuffleboardLayout colorSpinnerGrid;
     private NetworkTableEntry shooterRPM;
     private NetworkTableEntry colorGridRed;
-    private NetworkTableEntry colorGridGreen;
+    private SuppliedValueWidget<Boolean> colorGridGreen;
     private NetworkTableEntry colorGridYellow;
     private NetworkTableEntry colorGridBlue;
     private NetworkTableEntry desiredColorDisplay;
@@ -208,18 +211,24 @@ public class CompDashBoard {
             .withProperties(Map.of("colorWhenTrue", "red", "colorWhenFalse", "grey"))
             .getEntry();
 
-        colorGridGreen = colorSpinnerGrid.add("Green", false)
-            .withWidget(BuiltInWidgets.kBooleanBox)
-            .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey"))
-            .getEntry();
+        
+        colorGridRed.setBoolean(true);
 
-        shooterRPM = shuffleboard.add("ShooterRPM", 0 ) // m_shooter.getShooterRPM())
+        // colorGridRed.setBoolean(false);
+
+        colorGridGreen = colorSpinnerGrid.addBoolean("Green", () -> getGreen() )
+            .withWidget(BuiltInWidgets.kBooleanBox)
+            .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey"));
+
+        shooterRPM = shuffleboard.add("ShooterRPM", "test2 " + 0 ) // m_shooter.getShooterRPM())
             .withWidget(BuiltInWidgets.kTextView)
             .withSize( shooterRPMHeight, shooterRPMWidth )
             .withPosition( shooterColumnIndex, shooterRowIndex )
             .getEntry();
 
-        desiredColorDisplay = shuffleboard.add( "DesiredColor", getDesiredColor() )
+        shooterRPM.setValue( "Test:" + 5.0 + "/" );
+
+        desiredColorDisplay = shuffleboard.add( "DesiredColor",  getDesiredColor() )
             .withWidget(BuiltInWidgets.kTextView)
             .withSize( desiredColorHeight, desiredColorWidth )
             .withPosition( desiredColorColumnIndex, desiredColorRowIndex )
@@ -251,10 +260,17 @@ public class CompDashBoard {
     }
 
     public void setShooterRPMEntry( String value ){
-        shooterRPM.setString(value);
+        // USBLogging.debug( "Shooter: " + value);
+        shooterRPM.setValue(value);
+    }
+
+    public boolean getGreen(){
+        // USBLogging.debug( "" + RobotContainer.getAButton());
+        return RobotContainer.getAButton();
     }
  
     public void setMaxCapacity( boolean isFull ){
+        // USBLogging.debug("Max:" + isFull);
         maxCapacityBox.setBoolean(isFull);
     }
 
@@ -263,16 +279,19 @@ public class CompDashBoard {
     }
 
     public void setBlue( boolean colorIsPresent ){
+        // USBLogging.debug("Blue: " + colorIsPresent);
         colorGridBlue.setBoolean(colorIsPresent);
     }
 
     public void setYellow( boolean colorIsPresent ){
+        // USBLogging.debug("Yellow: " + colorIsPresent);
         colorGridYellow.setBoolean(colorIsPresent);
     }
 
-    public void setGreen( boolean colorIsPresent ){
-        colorGridGreen.setBoolean(colorIsPresent);
-    }
+    // public void setGreen( boolean colorIsPresent ){
+    //     // USBLogging.debug("Green: " + colorIsPresent);
+    //     colorGridGreen.setBoolean(colorIsPresent);
+    // }
 
     public Objective getSelectedObjective(){
         return autonChooser.getSelected();
