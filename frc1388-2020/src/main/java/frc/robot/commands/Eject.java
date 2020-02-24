@@ -9,7 +9,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.USBLogging;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 
@@ -47,6 +46,8 @@ public class Eject extends CommandBase {
     m_intakeSubsystem.setIntakeShaftMotor(k_intakeShaftEjectSpeed);
 
     m_magazineSubsystem.startEjectMode();
+    m_magazineSubsystem.stopIntakeMode();
+    m_magazineSubsystem.stopShooting();
 
     m_deployIntakeTimer.start();
   }
@@ -72,7 +73,7 @@ public class Eject extends CommandBase {
     
    if (m_deployIntakeTimer.get() >= k_deployIntakeTimeout){
      m_intakeSubsystem.setIntakeArmMotor(0);
-     USBLogging.debug("Intake arm retracted");
+     System.out.println("Intake arm retracted");
    }
   }
       

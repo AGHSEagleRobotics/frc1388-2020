@@ -9,7 +9,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.USBLogging;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 
@@ -59,7 +58,7 @@ public class DeployIntake extends CommandBase {
   @Override
   public void execute() { 
     double intakeArmCurrent = Math.abs(m_intakeSubsystem.getIntakeArmCurrent());
-    System.out.println("Intaking");
+    System.out.println("Deploying");
     // USBLogging.debug("Current = " + intakeArmCurrent);
     if (intakeArmCurrent > k_stallAmps && m_stallTimer.get() == 0) {
       m_stallTimer.start();

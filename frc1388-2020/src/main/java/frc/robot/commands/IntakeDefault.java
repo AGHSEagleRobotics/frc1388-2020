@@ -33,7 +33,7 @@ public class IntakeDefault extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_magazineSubsystem.isMagazineFull()) {
+    if (m_magazineSubsystem.isMagazineFull() && m_magazineSubsystem.isIntakeMode()) {
       m_retractIntake.schedule();
     }
   }
