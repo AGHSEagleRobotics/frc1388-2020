@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CompDashBoard;
 import frc.robot.Constants;
+import frc.robot.USBLogging;
+
 import java.lang.Math;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
@@ -40,14 +42,13 @@ public class MagazineSubsystem extends SubsystemBase {
   private final double k_magazineShootSpeed = 0.5;
   private final double k_magazineEjectSpeed = -0.5;
   private final double k_magazineIntakeSpeed = 0.2;
-  private final double k_magazineDefaultSpeed = 0.2;
 
   // Infrared Proximity Sensor Fields
   private final AnalogInput m_ballSensor;
   
   private final double MIN_VOLTAGE = 0.00001;
-  private final double MAX_DISTANCE = 35; // This is the maximum accurate distace the sensor can read in centimeters
-  private final double MIN_DISTANCE = 4.5; // This is the minimum accurate distace the sensor can read in centimeters
+  private final double MAX_DISTANCE = 35; // This is the maximum accurate distace the sensor can read in inches
+  private final double MIN_DISTANCE = 4.5; // This is the minimum accurate distace the sensor can read in inches
   private final double DISTANCE_MULTIPLIER = 12.84;
   private final double VOLTAGE_EXPONENT = -0.9824;
 
@@ -143,12 +144,14 @@ public class MagazineSubsystem extends SubsystemBase {
       m_magazineMotor.set(k_magazineShootSpeed);
     } else if (m_eject) {
       m_magazineMotor.set(k_magazineEjectSpeed);
+      System.out.println("Ejecting");
     } else if (m_magazineIsFull) {
       m_magazineMotor.set(0);
+      System.out.println("Magazine is full");
     } else if (m_intake) {
       m_magazineMotor.set(k_magazineIntakeSpeed);
     } else { // Run the motors at default speed
-      m_magazineMotor.set(k_magazineDefaultSpeed);
+      m_magazineMotor.set(0);
     }
 
     m_dashboard.setMaxCapacity(m_magazineIsFull);
