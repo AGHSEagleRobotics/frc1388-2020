@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import java.util.List;
 import java.util.Map;
 
 import edu.wpi.cscore.HttpCamera;
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
@@ -35,18 +37,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 public class CompDashBoard {
     private final int visionProcessPipeline = 0;
     private final int visionDrivePipeline = 1;
-    private final int camHeight = 5;
-    private final int camWidth = 5;
+    private final int camHeight = 9;
+    private final int camWidth = 3;
     private final int colorSpinnerGridHeight = 4;
     private final int colorSpinnerGridWidth = 2;
-    private final int maxCapacityHeight = 2;
+    private final int maxCapacityHeight = 9;
     private final int maxCapacityWidth = 2;
     private final int autonChooserHeight = 2;
     private final int autonChooserWidth = 2;
-    private final int shooterRPMHeight = 2;
+    private final int shooterRPMHeight = 1;
     private final int shooterRPMWidth = 2;
     private final int desiredColorHeight = 2;
     private final int desiredColorWidth = 2;
+    private final int escapeWidth = 2;
+    private final int escapeHeight = 2;
     private final int cam2Height = 256;
     private final int cam2Width = 256;
     private final int camColumnIndex = 4;
@@ -55,6 +59,14 @@ public class CompDashBoard {
     private final int shooterColumnIndex = 5;
     private final int desiredColorColumnIndex = 4;
     private final int desiredColorRowIndex = 3;
+    private final int autonChooserColumnIndex = 4;
+    private final int autonChooserRowIndex = 3;
+    private final int escapeColumnIndex = 2;
+    private final int escapeRowIndex = 2;
+    private final int colorSpinnerGridColumnIndex = 2;
+    private final int colorSpinnerGridRowIndex = 2;
+    private final int maxCapacityRowIndex = 2;
+    private final int maxCapacityColumnIndex = 2;
 
     private RobotContainer m_robotContainer;
 
@@ -175,7 +187,8 @@ public class CompDashBoard {
 
         complexWidgetAuton = shuffleboard.add( "AutonChooser", autonChooser)
             .withWidget(BuiltInWidgets.kComboBoxChooser)
-            .withSize(autonChooserWidth, autonChooserHeight);
+            .withSize(autonChooserWidth, autonChooserHeight)
+            .withPosition(autonChooserColumnIndex, autonChooserRowIndex);
 
         for( EscapePlan ep: EscapePlan.values()){
             escapeChooser.addOption(ep.getName(), ep );
@@ -184,16 +197,19 @@ public class CompDashBoard {
 
         complexWidgetEscape = shuffleboard.add( "EscapeOption",escapeChooser)
             .withWidget(BuiltInWidgets.kSplitButtonChooser)
-            .withSize(autonChooserWidth, autonChooserHeight);
-
+            .withSize(escapeWidth, escapeHeight)
+            .withPosition(escapeColumnIndex, escapeRowIndex);
+        
         maxCapacityBox = shuffleboard.add("MaxCapacity", false)
             .withWidget(BuiltInWidgets.kBooleanBox)
             .withSize(maxCapacityWidth, maxCapacityHeight)
+            .withPosition(maxCapacityColumnIndex, maxCapacityRowIndex)
             .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey"))
             .getEntry();
 
         colorSpinnerGrid = shuffleboard.getLayout("Color Spinner", BuiltInLayouts.kGrid)
             .withSize(colorSpinnerGridWidth, colorSpinnerGridHeight)
+            .withPosition(colorSpinnerGridColumnIndex, colorSpinnerGridRowIndex)
             .withProperties(Map.of("Number of columns", 1, "Number of Rows", 4));
 
         colorGridBlue = colorSpinnerGrid.add("Blue", false)
@@ -211,22 +227,15 @@ public class CompDashBoard {
             .withProperties(Map.of("colorWhenTrue", "red", "colorWhenFalse", "grey"))
             .getEntry();
 
-        
-        colorGridRed.setBoolean(true);
-
-        // colorGridRed.setBoolean(false);
-
         colorGridGreen = colorSpinnerGrid.addBoolean("Green", () -> getGreen() )
             .withWidget(BuiltInWidgets.kBooleanBox)
             .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey"));
 
         shooterRPM = shuffleboard.add("ShooterRPM", "test2 " + 0 ) // m_shooter.getShooterRPM())
             .withWidget(BuiltInWidgets.kTextView)
-            .withSize( shooterRPMHeight, shooterRPMWidth )
+            .withSize( shooterRPMWidth, shooterRPMHeight )
             .withPosition( shooterColumnIndex, shooterRowIndex )
             .getEntry();
-
-        shooterRPM.setValue( "Test:" + 5.0 + "/" );
 
         desiredColorDisplay = shuffleboard.add( "DesiredColor",  getDesiredColor() )
             .withWidget(BuiltInWidgets.kTextView)
@@ -234,6 +243,7 @@ public class CompDashBoard {
             .withPosition( desiredColorColumnIndex, desiredColorRowIndex )
             .getEntry();
     }
+
 
     public void switchVideoSource() {
         m_currVideoSourceIndex = (m_currVideoSourceIndex + 1) % m_videoSources.length;

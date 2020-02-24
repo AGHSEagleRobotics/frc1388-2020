@@ -10,25 +10,6 @@
         "hgap": 8.0,
         "vgap": 8.0,
         "tiles": {
-          "12,0": {
-            "size": [
-              13,
-              13
-            ],
-            "content": {
-              "_type": "Camera Stream",
-              "_source0": "camera_server://USB Camera 0",
-              "_title": "Camera Stream",
-              "Crosshair/Show crosshair": true,
-              "Crosshair/Crosshair color": "#FFFFFFFF",
-              "Controls/Show controls": false,
-              "Controls/Rotation": "NONE",
-              "compression": -1.0,
-              "fps": -1,
-              "imageWidth": 0,
-              "imageHeight": 0
-            }
-          },
           "4,0": {
             "size": [
               2,
@@ -71,26 +52,6 @@
               "_type": "Text View",
               "_source0": "network_table:///CameraPublisher/USB Camera 0/Property/backlight_compensation",
               "_title": "CameraPublisher/USB Camera 0/Property/backlight_compensation"
-            }
-          },
-          "0,2": {
-            "size": [
-              6,
-              4
-            ],
-            "content": {
-              "_type": "ComboBox Chooser",
-              "_title": "AutonChooser"
-            }
-          },
-          "26,5": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_title": "Text View"
             }
           }
         }
@@ -312,6 +273,11 @@
                   "_type": "Relay Widget",
                   "_source0": "network_table:///LiveWindow/Ungrouped/Relay[0]",
                   "_title": "Relay[0]"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/Servo[0]/Value",
+                  "_title": "Servo[0]/Value"
                 }
               ]
             }
