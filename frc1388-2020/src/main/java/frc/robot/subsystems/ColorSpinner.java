@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.CompDashBoard;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.USBLogging;
 
 public class ColorSpinner extends SubsystemBase {
@@ -202,7 +203,7 @@ public class ColorSpinner extends SubsystemBase {
     m_dashboard.setBlue(isBlue());
     m_dashboard.setYellow(isYellow());
     m_dashboard.setGreen(isGreen());
-
+    m_dashboard.setDesiredColor();
     
   }
 }
