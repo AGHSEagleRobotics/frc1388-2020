@@ -103,10 +103,10 @@ public class DriveTrain extends SubsystemBase {
     m_rightBack.setNeutralMode( NeutralMode.Coast);
   }
 
-  // public void configFalconFX(){
-  //   m_leftFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-  //   m_rightFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-  // }
+  public void configFalconFX(){
+    m_leftFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    m_rightFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+  }
 
   // Creates Options for drive method
   public void arcadeDrive( double speed, double rotation ) {
@@ -126,50 +126,37 @@ public class DriveTrain extends SubsystemBase {
     m_leftBack.follow( m_leftFront );
     m_rightBack.follow( m_rightFront );
   }
+  public Pose2d getDriveOdemetry(){
+    return m_odometry.getPoseMeters();  
+  }
+  public Pose2d compareTo(Pose2d pose2d){
+    return m_odometry.getPoseMeters().relativeTo(pose2d);
+  }
+  public Rotation2d getAngle(){
+    return m_angleSupplier.get();
+  }
 
-  // public Pose2d getDriveOdemetry(){
-  //   return m_odometry.getPoseMeters(); 
+  public int leftEncoderDistance(){
+    return m_rightFront.getSelectedSensorPosition();
+  }
 
-  // public Pose2d compareTo(Pose2d pose2d){
-  //   return m_odometry.getPoseMeters().relativeTo(pose2d);
-  // }
+  public int rightEncoderDistance(){
+    return m_leftFront.getSelectedSensorPosition();
+  }
 
   public Pose2d getOdometry(){
     return m_odometry.getPoseMeters();
   }
 
-  public Rotation2d getAngle(){
-    return m_angleSupplier.get();
+  public long getRightEncoderInFeet(){
+    return (long)( K_CPR_TO_FT * rightEncoderDistance );
   }
 
-  /**
-   * Gets the distance the right + left encoder has driven in feet
-   * @return The distance in feet
-   */
+  public long getLeftEncoderInFeet(){
+    return (long)( K_CPR_TO_FT * leftEncoderDistance );
+  }
 
-  // public long getRightEncoderInFeet(){
-  //   return (long)( K_CPR_TO_FT * rightEncoderDistance );
-  // }
-
-  // public long getLeftEncoderInFeet(){
-  //   return (long)( K_CPR_TO_FT * leftEncoderDistance );
-  // }
-
- public double getRightEncoderDistance(){
-   return encoderDistanceRatio * m_rightFront.getSelectedSensorPosition();
- }
-
- public double getLeftEncoderDistance(){
- return  encoderDistanceRatio * m_leftFront.getSelectedSensorPosition();
- }
-
-
-  private final double encoderDistanceRatio =
-      2048 * // encoder counts per rev
-      4.67 * // cimple box 
-      5 *    // big bocs(Drive train ratio)  TODO not certain value
-      Math.PI / 2;  // "Rotation to distance by multiplying by the circumference in ft, units are important. " - scottTechau
-
+  
 
   // to be used in the future for uses like checking the gyro
   @Override

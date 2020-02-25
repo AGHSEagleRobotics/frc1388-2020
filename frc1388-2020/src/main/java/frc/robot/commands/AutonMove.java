@@ -72,7 +72,7 @@ public class AutonMove extends CommandBase {
 
     double speed;
     if( m_mode == Mode.kDistanceDrive){
-      speed = m_pidController.calculate(m_driveTrain.getLeftEncoderDistance(), m_cutoff);
+      speed = m_pidController.calculate(m_driveTrain.getLeftEncoderInFeet(), m_cutoff);
       speed = MathUtil.clamp(speed, -m_speed, m_speed);
     } else {
       speed = m_speed;
