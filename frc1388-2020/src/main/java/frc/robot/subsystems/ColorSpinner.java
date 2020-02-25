@@ -199,12 +199,11 @@ public class ColorSpinner extends SubsystemBase {
     // This method will be called once per scheduler run
     tickCount++;
     internalCheckColor();
-    m_dashboard.setRed(RobotContainer.getLeftStickButton());
+    m_dashboard.setRed(isRed());
     m_dashboard.setBlue(isBlue());
     m_dashboard.setYellow(isYellow());
-    // m_dashboard.setGreen(isGreen());
-
-    m_dashboard.setShooterRPMEntry("" + tickCount );
+    m_dashboard.setGreen(isGreen());
+    m_dashboard.setDesiredColor();
     
   }
 }

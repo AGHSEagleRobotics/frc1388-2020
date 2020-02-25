@@ -37,39 +37,47 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 public class CompDashBoard {
     private final int visionProcessPipeline = 0;
     private final int visionDrivePipeline = 1;
-    private final int camHeight = 9;
-    private final int camWidth = 3;
-    private final int colorSpinnerGridHeight = 4;
-    private final int colorSpinnerGridWidth = 2;
-    private final int maxCapacityHeight = 9;
-    private final int maxCapacityWidth = 2;
-    private final int autonChooserHeight = 2;
-    private final int autonChooserWidth = 2;
-    private final int shooterRPMHeight = 1;
-    private final int shooterRPMWidth = 2;
-    private final int desiredColorHeight = 2;
-    private final int desiredColorWidth = 2;
-    private final int escapeWidth = 2;
-    private final int escapeHeight = 2;
     private final int cam2Height = 4;
     private final int cam2Width = 4;
-    private final int camColumnIndex = 4;
-    private final int camRowIndex = 4;
-    private final int shooterRowIndex = 4;
-    private final int shooterColumnIndex = 5;
-    private final int desiredColorColumnIndex = 4;
-    private final int desiredColorRowIndex = 3;
-    private final int autonChooserColumnIndex = 4;
-    private final int autonChooserRowIndex = 3;
-    private final int escapeColumnIndex = 2;
+
+    // auton chooser
+    private final int autonChooserWidth = 8;
+    private final int autonChooserHeight = 2;
+    private final int autonChooserColumnIndex = 0;
+    private final int autonChooserRowIndex = 0;
+    // escape Chooser
+    private final int escapeWidth = 8;
+    private final int escapeHeight = 2;
+    private final int escapeColumnIndex = 0;
     private final int escapeRowIndex = 2;
-    private final int colorSpinnerGridColumnIndex = 2;
-    private final int colorSpinnerGridRowIndex = 2;
-    private final int maxCapacityRowIndex = 2;
-    private final int maxCapacityColumnIndex = 2;
-
+    // shooter RPM
+    private final int shooterRPMWidth = 5;
+    private final int shooterRPMHeight = 2;
+    private final int shooterColumnIndex = 0;
+    private final int shooterRowIndex = 4;
+    // max capacity
+    private final int maxCapacityWidth = 3;
+    private final int maxCapacityHeight = 3;
+    private final int maxCapacityColumnIndex = 0;
+    private final int maxCapacityRowIndex = 6;
+    // cam 
+    private final int camWidth = 10;
+    private final int camHeight = 10;
+    private final int camColumnIndex = 8;
+    private final int camRowIndex = 0;
+    // color spinner grid
+    private final int colorSpinnerGridWidth = 5;
+    private final int colorSpinnerGridHeight = 7;
+    private final int colorSpinnerGridColumnIndex = 21;
+    private final int colorSpinnerGridRowIndex = 0;
+    // desired color
+    private final int desiredColorWidth = 5;
+    private final int desiredColorHeight = 2;
+    private final int desiredColorColumnIndex = 21;
+    private final int desiredColorRowIndex = 6;
+    
     private RobotContainer m_robotContainer;
-
+    
     private ShuffleboardTab shuffleboard;
     private ComplexWidget complexWidgetCam;
     private ComplexWidget complexWidgetCam2;
@@ -81,7 +89,7 @@ public class CompDashBoard {
     private ShuffleboardLayout colorSpinnerGrid;
     private NetworkTableEntry shooterRPM;
     private NetworkTableEntry colorGridRed;
-    private SuppliedValueWidget<Boolean> colorGridGreen;
+    private NetworkTableEntry colorGridGreen;
     private NetworkTableEntry colorGridYellow;
     private NetworkTableEntry colorGridBlue;
     private NetworkTableEntry desiredColorDisplay;
@@ -161,7 +169,9 @@ public class CompDashBoard {
 
         m_videoSink = CameraServer.getInstance().getServer();
 
-        m_videoSink.setSource(m_cameraIntake);
+        if( m_cameraIntake != null ){
+            m_videoSink.setSource(m_cameraIntake);
+        }
 
     }
 
@@ -186,7 +196,7 @@ public class CompDashBoard {
         autonChooser.setDefaultOption(Objective.DEFAULT.getName(), Objective.DEFAULT);
 
         complexWidgetAuton = shuffleboard.add( "AutonChooser", autonChooser)
-            .withWidget(BuiltInWidgets.kComboBoxChooser)
+            .withWidget(BuiltInWidgets.kSplitButtonChooser)
             .withSize(autonChooserWidth, autonChooserHeight)
             .withPosition(autonChooserColumnIndex, autonChooserRowIndex);
 
@@ -227,9 +237,10 @@ public class CompDashBoard {
             .withProperties(Map.of("colorWhenTrue", "red", "colorWhenFalse", "grey"))
             .getEntry();
 
-        colorGridGreen = colorSpinnerGrid.addBoolean("Green", () -> getGreen() )
+        colorGridGreen = colorSpinnerGrid.add("Green", false )
             .withWidget(BuiltInWidgets.kBooleanBox)
-            .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey"));
+            .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey"))
+            .getEntry();
 
         shooterRPM = shuffleboard.add("ShooterRPM", "test2 " + 0 ) // m_shooter.getShooterRPM())
             .withWidget(BuiltInWidgets.kTextView)
@@ -237,7 +248,7 @@ public class CompDashBoard {
             .withPosition( shooterColumnIndex, shooterRowIndex )
             .getEntry();
 
-        desiredColorDisplay = shuffleboard.add( "DesiredColor",  getDesiredColor() )
+        desiredColorDisplay = shuffleboard.add( "DesiredColor",  "No Game Message yet" )
             .withWidget(BuiltInWidgets.kTextView)
             .withSize( desiredColorHeight, desiredColorWidth )
             .withPosition( desiredColorColumnIndex, desiredColorRowIndex )
@@ -252,21 +263,26 @@ public class CompDashBoard {
         }
     }
 
-    public String getDesiredColor(){
+    public void setDesiredColor(){
         String gameMessage = DriverStation.getInstance().getGameSpecificMessage();
         if( gameMessage.length() > 0 ){
             switch( gameMessage.charAt(0) ){
             case 'R':
-                return "Red";
+                desiredColorDisplay.setString( "Red" );
+                break;
             case 'B':
-                return "Blue";
+                desiredColorDisplay.setString( "Blue" );
+                break;
             case 'G':
-                return "Green";
+                desiredColorDisplay.setString( "Green" );
+                break;
             case 'Y':
-                return "Yellow";
+                desiredColorDisplay.setString( "Yellow" );
+                break;
+            default:
+                desiredColorDisplay.setString( "No Game Data" );
             }
         }
-        return "No game message";
     }
 
     public void setShooterRPMEntry( String value ){
@@ -298,10 +314,10 @@ public class CompDashBoard {
         colorGridYellow.setBoolean(colorIsPresent);
     }
 
-    // public void setGreen( boolean colorIsPresent ){
-    //     // USBLogging.debug("Green: " + colorIsPresent);
-    //     colorGridGreen.setBoolean(colorIsPresent);
-    // }
+    public void setGreen( boolean colorIsPresent ){
+        // USBLogging.debug("Green: " + colorIsPresent);
+        colorGridGreen.setBoolean(colorIsPresent);
+    }
 
     public Objective getSelectedObjective(){
         return autonChooser.getSelected();
