@@ -51,8 +51,8 @@ public class CompDashBoard {
     private final int desiredColorWidth = 2;
     private final int escapeWidth = 2;
     private final int escapeHeight = 2;
-    private final int cam2Height = 256;
-    private final int cam2Width = 256;
+    private final int cam2Height = 4;
+    private final int cam2Width = 4;
     private final int camColumnIndex = 4;
     private final int camRowIndex = 4;
     private final int shooterRowIndex = 4;
