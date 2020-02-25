@@ -204,16 +204,14 @@ public class ShooterSubsystem extends SubsystemBase {
     // if tickCount theshold passed, do the things. 50 ticks is 1 second.
     if ( tickCount >25 ) {
       // log RPM
-      // USBLogging.printLog("Target = " + m_rpm + "||RPM = " + getShooterRPM());
-      
-        // Show current RPM on the Dashboard
-        m_compDashBoard.setShooterRPMEntry(m_rpm + " | " + getShooterRPM());
-        // m_compDashBoard.setShooterRPMEntry(Double.toString(getShooterRPM()));
-        // m_compDashBoard.setShooterRPMEntry(Double.toString(m_rpm));
+      USBLogging.printLog("Target = " + m_rpm + "||RPM = " + getShooterRPM());
+    
+      // Show current RPM on the Dashboard
+      m_compDashBoard.setShooterRPMEntry(m_rpm + " | " + getShooterRPM());
 
-        // reset the counter
-        tickCount = 0;
-      }
+      // reset the counter
+      tickCount = 0;
+    }
 
 
     // Flag used to determine if motor should be running,
