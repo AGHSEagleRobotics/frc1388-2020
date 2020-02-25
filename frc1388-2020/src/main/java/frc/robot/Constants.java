@@ -50,37 +50,54 @@ public final class Constants {
     // public static final int CANID_driveLF = 3;
     // public static final int CANID_driveLB = 4;
 
-    // ShooterSubsystem motors
+    // ShooterSubsystem motors        
     public static final int CANID_shootMotor = 13;
 
     /**
      * TalonSRX Can IDs
      */
-    public static final int CANID_intakeArmMotor = 6;
+    public static final int CANID_intakeArmMotor = 8;
+
+    public static final int CANID_spinnerArmMotor = 6;
     
     /**
      * VictorSPX Can IDs
      */
-    public static final int CANID_colorSpinnerMotor = 0;
-    public static final int CANID_spinnerArmMotor = 0;
     
-    public static final int CANID_horizontalMagazineMotor = 0;
-    public static final int CANID_verticalMagazineMotor = 0;
+    public static final int CANID_colorSpinnerMotor = 9;
     
-    public static final int CANID_intakeShaftMotor = 5;
+    public static final int CANID_magazineMotor = 5;
+    
+    public static final int CANID_intakeShaftMotor = 7;
     
     public static final int CANID_feedMotor = 14;
+
+    public static final int CANID_climbMotor = 11;
+    public static final int CANID_trolleyMotor = 12;
+
+    /**
+     * PWM channels
+     */
+    public static final int PWM_climbServo = 0;
 
     /**
      * Digital IO
      */
+
     public static final int DIO_intakeArmTop = 0;
     public static final int DIO_intakeArmBottom = 1;
+
 
     /**
      * Analog Inputs
      */
-    public static final int AIN_ballSensor = 0; // Value known
+    public static final int AIN_ballSensor = 0;
+    
+    /**
+     * Relay Channels
+     */
+    public static final int RELAY_climbSolenoid = 0;
+
 
     /**
      * I2C Ports
@@ -90,8 +107,8 @@ public final class Constants {
     /**
      * USB devices
      */
-     public static final int USB_driveController = 0;
-     public static final int USB_opController = 1; // op Controller not specifically assigned
+    public static final int USB_driveController = 0;
+    public static final int USB_opController = 1; // op Controller not specifically assigned
     public static final int USB_cameraIntake = 0;
     public static final int USB_cameraClimber = 1;
 
