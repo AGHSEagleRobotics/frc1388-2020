@@ -17,6 +17,7 @@ import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.CompDashBoard;
 import frc.robot.Constants;
 import frc.robot.USBLogging;
 
@@ -33,12 +34,19 @@ public class ColorSpinner extends SubsystemBase {
 
   private final double m_armSpeed = 0.5;
 
+  private int tickCount = 0;
+
+  private CompDashBoard m_dashboard;
+
   private static final Color kRedTarget = ColorMatch.makeColor(0.517, 0.343, 0.141);
   private static final Color kBlueTarget = ColorMatch.makeColor(0.123, 0.415, 0.461);
   private static final Color kGreenTarget = ColorMatch.makeColor(0.165, 0.576, 0.258);
   private static final Color kYellowTarget = ColorMatch.makeColor(0.318, 0.557, 0.125);
 
   private final ColorMatch colorMatch = new ColorMatch();
+
+  private ColorWheel m_color = ColorWheel.UNKNOWN;
+  private Color m_tempColor;
 
   public enum ColorWheel {
     UNKNOWN(ColorMatch.makeColor(0, 0, 0), "Unknown"),
@@ -89,7 +97,7 @@ public class ColorSpinner extends SubsystemBase {
   // Constructors
   // ======================================================
 
-  public ColorSpinner() {
+  public ColorSpinner( CompDashBoard compDashBoard ) {
 
     m_colorSensor = new ColorSensorV3(Constants.I2C_Port_ColorSensor);
     m_spinnerMotor = new WPI_VictorSPX(Constants.CANID_colorSpinnerMotor);
@@ -102,6 +110,8 @@ public class ColorSpinner extends SubsystemBase {
     colorMatch.addColorMatch(kGreenTarget);
     colorMatch.addColorMatch(kBlueTarget);
     colorMatch.addColorMatch(kYellowTarget);
+
+    m_dashboard = compDashBoard;
   }
 
   // ======================================================
@@ -109,15 +119,36 @@ public class ColorSpinner extends SubsystemBase {
   // ======================================================
 
   public ColorWheel checkColor() {
-    final Color color = m_colorSensor.getColor();
-    ColorWheel curColor = ColorWheel.UNKNOWN;
-    USBLogging.debug("(R, G, B) = (" + color.red + ", " + color.green + ", " + color.blue + ")");
-    final ColorMatchResult result = colorMatch.matchClosestColor(color);
-    USBLogging.debug("R = " + result.color.red + "  G = " + result.color.green + "  B = " + result.color.blue
-        + " confidence = " + result.confidence);
+    return m_color;
+  }
 
-    curColor = setColor(result);
-    return curColor;
+  public boolean isRed(){
+    return m_color.equals(ColorWheel.RED);
+  }
+
+  public boolean isBlue(){
+    return m_color.equals(ColorWheel.BLUE);
+  }
+
+  public boolean isYellow(){
+    return m_color.equals(ColorWheel.YELLOW);
+  }
+
+  public boolean isGreen(){
+    return m_color.equals(ColorWheel.GREEN);
+  }
+  
+  public void internalCheckColor(){
+    m_tempColor = m_colorSensor.getColor();
+    final ColorMatchResult result = colorMatch.matchClosestColor(m_tempColor);
+    // output debugging once per second
+    if (tickCount > 50) {
+      USBLogging.debug("(R, G, B) = (" + m_tempColor.red + ", " + m_tempColor.green + ", " + m_tempColor.blue + ")");
+      USBLogging.debug("R = " + result.color.red + "  G = " + result.color.green + "  B = " + result.color.blue
+          + " confidence = " + result.confidence);
+      tickCount = 0;
+    }
+    m_color = setColor(result);
   }
 
   private ColorWheel setColor(final ColorMatchResult result) {
@@ -165,5 +196,13 @@ public class ColorSpinner extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    tickCount++;
+    internalCheckColor();
+    m_dashboard.setRed(isRed());
+    m_dashboard.setBlue(isBlue());
+    m_dashboard.setYellow(isYellow());
+    m_dashboard.setGreen(isGreen());
+
+    
   }
 }

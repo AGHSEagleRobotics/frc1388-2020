@@ -30,6 +30,7 @@ public class Robot extends TimedRobot {
   private boolean climberOn = false;
 
   private RobotContainer m_robotContainer;
+  private CompDashBoard m_dashboard;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -39,7 +40,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Start up USB logging
     USBLogging.openLog();
-    USBLogging.setLogLevel(Level.DEBUG);
+    USBLogging.setLogLevel(Level.INFO);
 
 
     // print software version - use printLog so this always, always gets printed
@@ -101,8 +102,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    
     USBLogging.info("########  Autonomous enabled");
-
+    
     // Get match info from FMS
     final DriverStation driverStation = DriverStation.getInstance();
     if (driverStation.isFMSAttached()) {
@@ -117,9 +119,8 @@ public class Robot extends TimedRobot {
     } else {
       USBLogging.info("FMS not connected");
     }
-
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
+    
+    m_autonomousCommand = m_robotContainer.getAutonCommand();
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
