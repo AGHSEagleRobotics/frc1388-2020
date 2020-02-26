@@ -9,7 +9,9 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpiutil.math.MathUtil;
 
 public class AutonMove extends CommandBase {
 
@@ -22,6 +24,8 @@ public class AutonMove extends CommandBase {
   private final boolean m_isQuickTurn;
 
   private final Timer m_timer = new Timer();
+  // FIXME We need to determine the proper constants
+  private final PIDController m_pidController = new PIDController(0.25, 0, 0);
 
   public enum Mode {
 
@@ -41,12 +45,19 @@ public class AutonMove extends CommandBase {
     m_driveTrain = driveTrain;
     m_mode = mode;
     m_cutoff = cutoff;
-    m_speed = speed;
     m_rotation = rotation;
     m_isQuickTurn = isQuickTurn;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_driveTrain);
+
+    if(m_mode == Mode.kDistanceDrive){
+      m_speed = Math.abs(speed);
+    } else {
+      m_speed = speed;
+    }
+
+    m_pidController.setTolerance(0.5);
   }
 
   // Called when the command is initially scheduled.
@@ -59,8 +70,15 @@ public class AutonMove extends CommandBase {
   @Override
   public void execute() {
 
-    m_driveTrain.curvatureDrive(m_speed, m_rotation, m_isQuickTurn);
+    double speed;
+    if( m_mode == Mode.kDistanceDrive){
+      speed = m_pidController.calculate(m_driveTrain.getLeftEncoderDistance(), m_cutoff);
+      speed = MathUtil.clamp(speed, -m_speed, m_speed);
+    } else {
+      speed = m_speed;
+    }
 
+    m_driveTrain.curvatureDrive(speed, m_rotation, m_isQuickTurn);
   }
 
   // Called once the command ends or is interrupted.
@@ -69,6 +87,7 @@ public class AutonMove extends CommandBase {
     m_timer.stop();
     m_timer.reset();
     m_driveTrain.curvatureDrive(0, 0, false);
+    m_pidController.reset();
   }
 
   // Returns true when the command should end.
@@ -79,10 +98,9 @@ public class AutonMove extends CommandBase {
     case kTimeDrive:
       return m_timer.hasPeriodPassed(m_cutoff);
     case kDistanceDrive:
-      return m_driveTrain.leftEncoderDistance() < m_cutoff && m_driveTrain.rightEncoderDistance() < m_cutoff;
+      return m_pidController.atSetpoint();
     default:
       return Timer.getMatchTime() > 15.0;
     }
-
   }
 }

@@ -124,17 +124,14 @@ public class RobotContainer {
     m_spinnerArmDown = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kDown);
     m_trolleyCommand = new Trolley(m_trolleySubsystem);
     m_climbCommand = new Climb(m_climberSubsystem);
+    m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
     m_intakeSubsystem.setDefaultCommand(new IntakeDefault(m_intakeSubsystem, m_magazineSubsystem, m_retractIntake));
     // register subsystems so the scheduler runs periodically
     CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
-
-
-   
-    m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
-    
+    CommandScheduler.getInstance().registerSubsystem(m_colorSpinner);
 
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
@@ -242,6 +239,8 @@ public class RobotContainer {
     // Toggle Camera Source (drive)
     new JoystickButton(driveController, XboxController.Button.kBack.value)
         .whenPressed( m_compDashboard::switchVideoSource );
+
+
   }
 
   public static enum Dpad{
