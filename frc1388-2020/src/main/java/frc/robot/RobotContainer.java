@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 
 import frc.robot.commands.AutonMove;
+import frc.robot.commands.AutonShootMove;
 import frc.robot.commands.DeployIntake;
 import frc.robot.commands.Drive;
 import frc.robot.commands.PositionControl;
@@ -330,9 +331,12 @@ public class RobotContainer {
         0,                                // rotation control
         false);                           // quick turn
       case SHOOT:
-      return null; // return m_multiShot.withTimeout( );
+      return new MultiShot(m_shooterSubsystem, m_magazineSubsystem); // return m_multiShot.withTimeout( );
       case SHOOTMOVE:
-      return null; // return m_shootMove;
+      return new AutonShootMove(
+        m_shooterSubsystem,
+        m_magazineSubsystem,
+        m_driveTrain); // return m_shootMove;
       case NOTHING:
       return null;
       default:
