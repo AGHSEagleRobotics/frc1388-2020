@@ -12,11 +12,9 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CompDashBoard;
 import frc.robot.Constants;
-import frc.robot.USBLogging;
 
 import java.lang.Math;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 /**
@@ -28,7 +26,7 @@ public class MagazineSubsystem extends SubsystemBase {
   private CompDashBoard m_dashboard;
 
   // Method Fields
-  private final WPI_TalonSRX m_magazineMotor;
+  private final WPI_VictorSPX m_magazineMotor;
   
   // Magazine Status Variables
   private final int BALL_STOPPED_VALUE = 100; // TODO change int value after testing
@@ -54,11 +52,11 @@ public class MagazineSubsystem extends SubsystemBase {
   private final double VOLTAGE_EXPONENT = -0.9824;
 
   // TODO: In need of testing to define optimal distance
-  final double BALL_PRESENT_DISTANCE = 10;
+  final double BALL_PRESENT_DISTANCE = 7;
 
   public MagazineSubsystem( CompDashBoard compDashBoard) {
     m_ballSensor = new AnalogInput(Constants.AIN_ballSensor);
-    m_magazineMotor = new WPI_TalonSRX(Constants.CANID_magazineMotor);
+    m_magazineMotor = new WPI_VictorSPX(Constants.CANID_magazineMotor);
     m_dashboard = compDashBoard;
   }
 
@@ -77,8 +75,9 @@ public class MagazineSubsystem extends SubsystemBase {
 
     // Constrain output
     distance = Math.max(Math.min(distance, MAX_DISTANCE), MIN_DISTANCE);
-
-    // System.out.println("distance = " + distance + "   voltage = " + voltage);
+    // System.out.println("Voltage = " + m_ballSensor.getValue());
+    // System.out.println(distance);
+    // System.out.println("distance = " + distance + "   voltage = " + m_ballSensor.getValue());
     return distance;
   }
 
