@@ -247,6 +247,12 @@ public class RobotContainer {
     // Toggle Camera Source (drive)
     new JoystickButton(driveController, XboxController.Button.kBack.value)
         .whenPressed( m_compDashboard::switchVideoSource );
+    // toggle limelight led mode (drive)
+    new JoystickButton(driveController, XboxController.Button.kStart.value)
+        .whenPressed( m_compDashboard::toggleLimelightLED );
+    // toggle limelight led mode (op)
+    new JoystickButton(opController, XboxController.Button.kStart.value)
+        .whenPressed( m_compDashboard::toggleLimelightLED );
 
 
   }
