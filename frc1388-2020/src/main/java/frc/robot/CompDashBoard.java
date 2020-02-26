@@ -76,7 +76,7 @@ public class CompDashBoard {
     private final int desiredColorWidth = 5;
     private final int desiredColorHeight = 2;
     private final int desiredColorColumnIndex = 21;
-    private final int desiredColorRowIndex = 6;
+    private final int desiredColorRowIndex = 7;
     
     private RobotContainer m_robotContainer;
     
@@ -251,9 +251,9 @@ public class CompDashBoard {
             .withPosition( shooterColumnIndex, shooterRowIndex )
             .getEntry();
 
-        desiredColorDisplay = shuffleboard.add( "DesiredColor/FMSColor",  "No Game Message yet" )
+        desiredColorDisplay = shuffleboard.add( "DesiredColor | FMSColor",  "No Game Message yet" )
             .withWidget(BuiltInWidgets.kTextView)
-            .withSize( desiredColorHeight, desiredColorWidth )
+            .withSize( desiredColorWidth, desiredColorHeight )
             .withPosition( desiredColorColumnIndex, desiredColorRowIndex )
             .getEntry();
         
@@ -266,7 +266,6 @@ public class CompDashBoard {
         }else{
             m_currCamMode = 1;
         }
-        USBLogging.debug("" + m_currCamMode);
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(m_currCamMode);
     }
 
@@ -277,10 +276,9 @@ public class CompDashBoard {
         }
     }
 
-    public void setDesiredColor( ColorWheel wheelColor ){
-        desiredColorDisplay.setString( wheelColor.getName() + " / " + getFMSColor());
+    public void setDesiredColor( ColorWheel wheelColor ){ 
+        desiredColorDisplay.setString( wheelColor.getName() + "      |      " + getFMSColor());
     }
-
     
     public String getFMSColor(){
         String gameMessage = DriverStation.getInstance().getGameSpecificMessage();
@@ -304,7 +302,7 @@ public class CompDashBoard {
                 return "Yellow";
             default:
                 // desiredColorDisplay.setString( "No Game Data" );
-                return "NoData";
+                return "DataNotKnown";
             }
             
         }
