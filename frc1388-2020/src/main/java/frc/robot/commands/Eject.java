@@ -73,7 +73,7 @@ public class Eject extends CommandBase {
     
    if (m_deployIntakeTimer.get() >= k_deployIntakeTimeout){
      m_intakeSubsystem.setIntakeArmMotor(0);
-     System.out.println("Intake arm retracted");
+     // System.out.println("Intake arm retracted");
    }
   }
       
@@ -82,6 +82,7 @@ public class Eject extends CommandBase {
   public void end(boolean interrupted) {
     m_magazineSubsystem.stopEjectMode();
     m_intakeSubsystem.setIntakeShaftMotor(0);
+    m_intakeSubsystem.setIntakeArmMotor(0);
   }
 
   // Returns true when the command should end.
