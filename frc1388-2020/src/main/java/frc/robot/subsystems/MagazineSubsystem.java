@@ -144,10 +144,10 @@ public class MagazineSubsystem extends SubsystemBase {
       m_magazineMotor.set(k_magazineShootSpeed);
     } else if (m_eject) {
       m_magazineMotor.set(k_magazineEjectSpeed);
-      System.out.println("Ejecting");
+      // System.out.println("Ejecting");
     } else if (m_magazineIsFull) {
       m_magazineMotor.set(0);
-      System.out.println("Magazine is full");
+      // System.out.println("Magazine is full");
     } else if (m_intake) {
       m_magazineMotor.set(k_magazineIntakeSpeed);
     } else { // Run the motors at default speed
