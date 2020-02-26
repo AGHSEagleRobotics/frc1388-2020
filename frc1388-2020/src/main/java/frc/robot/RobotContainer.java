@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 
 import frc.robot.commands.AutonMove;
+import frc.robot.commands.AutonShootMove;
 import frc.robot.commands.DeployIntake;
 import frc.robot.commands.Drive;
 import frc.robot.commands.PositionControl;
@@ -128,17 +129,14 @@ public class RobotContainer {
     m_trolleyCommand = new Trolley(m_trolleySubsystem);
     m_climbCommand = new Climb(m_climberSubsystem);
     m_developerMode = new DeveloperMode(m_shooterSubsystem);
+    m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
     m_intakeSubsystem.setDefaultCommand(new IntakeDefault(m_intakeSubsystem, m_magazineSubsystem, m_retractIntake));
     // register subsystems so the scheduler runs periodically
     CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
-
-
-   
-    m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
-    
+    CommandScheduler.getInstance().registerSubsystem(m_colorSpinner);
 
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
@@ -249,6 +247,8 @@ public class RobotContainer {
     // Toggle Camera Source (drive)
     new JoystickButton(driveController, XboxController.Button.kBack.value)
         .whenPressed( m_compDashboard::switchVideoSource );
+
+
   }
 
   public static enum Dpad{
@@ -338,9 +338,12 @@ public class RobotContainer {
         0,                                // rotation control
         false);                           // quick turn
       case SHOOT:
-      return null; // return m_multiShot.withTimeout( );
+      return new MultiShot(m_shooterSubsystem, m_magazineSubsystem); // return m_multiShot.withTimeout( );
       case SHOOTMOVE:
-      return null; // return m_shootMove;
+      return new AutonShootMove(
+        m_shooterSubsystem,
+        m_magazineSubsystem,
+        m_driveTrain); // return m_shootMove;
       case NOTHING:
       return null;
       default:

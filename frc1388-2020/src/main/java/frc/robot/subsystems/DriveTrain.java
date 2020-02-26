@@ -12,9 +12,6 @@ import java.util.function.Supplier;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -47,8 +44,6 @@ public class DriveTrain extends SubsystemBase {
   private final DifferentialDriveOdometry m_odometry;
   private Rotation2d angle;
   private final Supplier<Rotation2d> m_angleSupplier;
-
-  private final double K_CPR_TO_FT = 1 / 216; // don't know this value
 
   private Pose2d m_newPosition;
 
@@ -136,27 +131,32 @@ public class DriveTrain extends SubsystemBase {
     return m_angleSupplier.get();
   }
 
-  public int leftEncoderDistance(){
-    return m_rightFront.getSelectedSensorPosition();
-  }
-
-  public int rightEncoderDistance(){
-    return m_leftFront.getSelectedSensorPosition();
-  }
-
   public Pose2d getOdometry(){
     return m_odometry.getPoseMeters();
   }
 
-  public long getRightEncoderInFeet(){
-    return (long)( K_CPR_TO_FT * rightEncoderDistance );
+  /**
+   * Gets the distance the right encoder has driven in feet
+   * @return The distance in feet
+   */
+  public double getRightEncoderDistance(){
+    return encoderDistanceRatio * m_rightFront.getSelectedSensorPosition();
   }
 
-  public long getLeftEncoderInFeet(){
-    return (long)( K_CPR_TO_FT * leftEncoderDistance );
+  /**
+   * Gets the distance the left encoder has driven in feet
+   * @return The distance in feet
+   */
+  public double getLeftEncoderDistance(){
+    return  encoderDistanceRatio * m_leftFront.getSelectedSensorPosition();
   }
 
-  
+  private final double encoderDistanceRatio =
+      2048 * // encoder counts per rev
+      4.67 * // cimple box 
+      5 *    // big bocs(Drive train ratio)  TODO not certain value
+      Math.PI / 2;  // "Rotation to distance by multiplying by the circumference in ft, units are important " - scottTechau
+
 
   // to be used in the future for uses like checking the gyro
   @Override
