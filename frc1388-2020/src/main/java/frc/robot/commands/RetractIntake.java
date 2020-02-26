@@ -55,7 +55,7 @@ public class RetractIntake extends CommandBase {
   // Called every time scheduler the runs while the command is scheduled.
   @Override
   public void execute() { 
-    System.out.println("Retracting");
+    // System.out.println("Retracting");
     double intakeArmCurrent = Math.abs(m_intakeSubsystem.getIntakeArmCurrent());
     // System.out.println("Current = " + intakeArmCurrent);
     if (intakeArmCurrent > k_stallAmps && m_stallTimer.get() == 0) {
