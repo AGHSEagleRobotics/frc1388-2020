@@ -55,7 +55,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private boolean m_enabled = false;
 
   // Developer mode should be removed after the shooter has been characterized.
-  private boolean developerMode = true;   // Make sure this is set to false when not testing code!
+  private boolean m_developerMode = true;   // Make sure this is set to false when not testing code!
 
   // Values for the array of presets used for competition
   private final double shooterRpmFromStartingLine = 1000;   // TODO: determine value wanted
@@ -123,7 +123,7 @@ public class ShooterSubsystem extends SubsystemBase {
     m_shootMotor.config_kD(kPIDLoopIdx, kGains_Velocity_kD, timeoutMs);
 
     // Used to determine if we are using 3 preset RPM values, or all 60 values
-    if (developerMode) {
+    if (m_developerMode) {
       m_rpmPresetList = developerPresetList;
      // USBLogging.warning("SHOOTER DEVELOPMENT MODE!");
     }
@@ -139,18 +139,19 @@ public class ShooterSubsystem extends SubsystemBase {
   // Public Methods: ShooterSubsystem
   // =======================================
 
-  // Sets a flag used in periodic to set the motor to the wanted RPM
+  /** Sets a flag used in periodic to set the motor to the wanted RPM */
   public void startShooter() {
     m_enabled = true;
   }
 
-  // Gives the wanted RPM to a periodic function for non-preset values
+  /** Gives the wanted RPM to a periodic function for non-preset values */
   public void setShooterRPM(double rpm) {
     m_rpm = rpm;
   }
 
-  // Get the actual, current shooter RPM
-  // @return double Current RPM of the shooter
+  /** Get the actual, current shooter RPM
+  * @return double Current RPM of the shooter 
+  */
   public double getShooterRPM() {
 
     double rawVelocity = m_shootMotor.getSelectedSensorVelocity();   // counts per cycle (100 ms)
@@ -159,12 +160,12 @@ public class ShooterSubsystem extends SubsystemBase {
     return rpmActual;
   }
 
-  // Gives the wanted RPM to a periodic function for preset values
+  /** Gives the wanted RPM to a periodic function for preset values */
   public void usePresetRPM() {
     m_rpm = m_rpmPresetList[m_presetIndex];
   }
 
-  // Changes the RPM preset to the next value in the list
+  /** Changes the RPM preset to the next value in the list */
   public void presetRPMUp() {
     if(m_presetIndex < (m_rpmPresetList.length -1)) {
       m_presetIndex++;
@@ -172,7 +173,7 @@ public class ShooterSubsystem extends SubsystemBase {
     usePresetRPM();
   }
 
-  // Changes the RPM preset to the previous value in the list
+  /** Changes the RPM preset to the previous value in the list */
   public void presetRPMDown() {
     if(m_presetIndex > 0) {
       m_presetIndex--;
@@ -180,22 +181,27 @@ public class ShooterSubsystem extends SubsystemBase {
     usePresetRPM();
   }
 
-  // Stops the shooter, RPM will be 0
+  /** Stops the shooter, RPM will be 0 */
   public void stopShooter() {
     m_enabled = false;
     m_shootMotor.set(0);
   }
 
-  // Sets the feeder output speed
+  /** Sets the feeder output speed */
   public void setFeeder(double speed) {
     m_feedMotor.set(speed);
   }
 
-  // Stops the feeder
+  /** Stops the feeder */
   public void stopFeeder() {
     m_feedMotor.set(0);
   }
 
+
+  /** Sets the developer mode */
+  public void setDeveloperMode(boolean mode) {
+    m_developerMode = mode;
+  }
 
   @Override
   public void periodic() {
@@ -203,9 +209,6 @@ public class ShooterSubsystem extends SubsystemBase {
     tickCount++;
     // if tickCount theshold passed, do the things. 50 ticks is 1 second.
     if ( tickCount >25 ) {
-      // log RPM
-      USBLogging.printLog("Target = " + m_rpm + "||RPM = " + getShooterRPM());
-    
       // Show current RPM on the Dashboard
       m_compDashBoard.setShooterRPMEntry(m_rpm + " | " + getShooterRPM());
 
@@ -216,9 +219,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     // Flag used to determine if motor should be running,
     //runs motor at the wanted RPM
-    if(m_enabled == true) {
+    if(m_enabled) {
       double speed = m_rpm * countsPerRev / sensorCyclesPerSecond / secPerMin;
       m_shootMotor.set(ControlMode.Velocity, speed);
+
+      // log RPM
+      USBLogging.debug("Target = " + m_rpm + "||RPM = " + getShooterRPM());
     }
 
  
