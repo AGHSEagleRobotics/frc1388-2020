@@ -92,6 +92,7 @@ public class USBLogging {
      * Print a string to the system console, and to a log file if one has been
      * opened.
      * 
+     * @deprecated Use a logging level method instead, such as debug(), or error()
      * @param str String to be printed
      */
     public static void printLog(String str) {

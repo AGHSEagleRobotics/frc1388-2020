@@ -20,7 +20,7 @@ public class MultiShot extends CommandBase {
   private MagazineSubsystem m_magazineSubsystem;
 
   private final Timer m_spinUpTimer = new Timer();
-  private final double k_shooterSpinUpTime = 3; // Arbitrary time required for shooter to spin up
+  private final double k_shooterSpinUpTime = 1; // Arbitrary time required for shooter to spin up
   private double m_rpm = 0;
 
   /**
@@ -62,9 +62,10 @@ public class MultiShot extends CommandBase {
   public void execute() {
     // Once the time needed for the shooter to get to the RPM is reached,
     //balls will be fed by the feeder into the shooter, timer is stopped
-    if (m_spinUpTimer.hasPeriodPassed(k_shooterSpinUpTime) == true) {
+    if (m_spinUpTimer.get() > k_shooterSpinUpTime) {
       m_shooterSubsystem.setFeeder(1);
       m_spinUpTimer.stop();
+      m_spinUpTimer.reset();
     }
 
   }

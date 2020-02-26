@@ -244,8 +244,8 @@ public class CompDashBoard {
             .withWidget(BuiltInWidgets.kBooleanBox)
             .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey"))
             .getEntry();
-
-        shooterRPM = shuffleboard.add("ShooterRPM", "test2 " + 0 ) // m_shooter.getShooterRPM())
+        
+        shooterRPM = shuffleboard.add("ShooterRPM", "" ) // m_shooter.getShooterRPM())
             .withWidget(BuiltInWidgets.kTextView)
             .withSize( shooterRPMWidth, shooterRPMHeight )
             .withPosition( shooterColumnIndex, shooterRowIndex )

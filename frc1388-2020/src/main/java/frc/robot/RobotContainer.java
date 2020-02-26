@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 
 import frc.robot.commands.AutonMove;
+import frc.robot.commands.AutonShootMove;
 import frc.robot.commands.DeployIntake;
 import frc.robot.commands.Drive;
 import frc.robot.commands.PositionControl;
@@ -26,6 +27,7 @@ import frc.robot.commands.RetractIntake;
 import frc.robot.commands.Climb;
 import frc.robot.commands.MultiShot;
 import frc.robot.commands.Trolley;
+import frc.robot.commands.DeveloperMode;
 
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveTrain;
@@ -37,6 +39,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ColorSpinner;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
@@ -79,6 +82,7 @@ public class RobotContainer {
   private Eject m_eject;
   private DeployIntake m_deployIntake;
   private RetractIntake m_retractIntake;
+  private DeveloperMode m_developerMode;
 
   // components 
   public static XboxController driveController = new XboxController(Constants.USB_driveController);
@@ -124,6 +128,7 @@ public class RobotContainer {
     m_spinnerArmDown = new SpinnerArm(m_colorSpinner, SpinnerArm.Direction.kDown);
     m_trolleyCommand = new Trolley(m_trolleySubsystem);
     m_climbCommand = new Climb(m_climberSubsystem);
+    m_developerMode = new DeveloperMode(m_shooterSubsystem);
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 
     // set default commands here
@@ -167,13 +172,16 @@ public class RobotContainer {
     // Shooter
     // ========================================
     
-        // Multi Shot (drive)
+        // Multi Shot
     new JoystickButton(driveController, XboxController.Button.kBumperRight.value)
         .whenHeld(m_multiShot);
     new JoystickButton(opController, XboxController.Button.kY.value)
        .whenPressed(() -> m_shooterSubsystem.presetRPMUp());
     new JoystickButton(opController, XboxController.Button.kX.value)
        .whenPressed(() -> m_shooterSubsystem.presetRPMDown());
+        // Developer Mode
+    new Button(() -> driveController.getTriggerAxis(Hand.kLeft) > 0)
+       .whenHeld(m_developerMode);
   
     // ========================================
     // Intake
@@ -336,9 +344,12 @@ public class RobotContainer {
         0,                                // rotation control
         false);                           // quick turn
       case SHOOT:
-      return null; // return m_multiShot.withTimeout( );
+      return new MultiShot(m_shooterSubsystem, m_magazineSubsystem); // return m_multiShot.withTimeout( );
       case SHOOTMOVE:
-      return null; // return m_shootMove;
+      return new AutonShootMove(
+        m_shooterSubsystem,
+        m_magazineSubsystem,
+        m_driveTrain); // return m_shootMove;
       case NOTHING:
       return null;
       default:

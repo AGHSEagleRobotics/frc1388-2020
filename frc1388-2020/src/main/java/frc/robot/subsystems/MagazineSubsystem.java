@@ -16,6 +16,7 @@ import frc.robot.USBLogging;
 
 import java.lang.Math;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 /**
@@ -27,10 +28,10 @@ public class MagazineSubsystem extends SubsystemBase {
   private CompDashBoard m_dashboard;
 
   // Method Fields
-  private final WPI_VictorSPX m_magazineMotor;
+  private final WPI_TalonSRX m_magazineMotor;
   
   // Magazine Status Variables
-  private final int BALL_STOPPED_VALUE = 5; // TODO change int value after testing
+  private final int BALL_STOPPED_VALUE = 100; // TODO change int value after testing
   private int m_ballPresentCounter = 0;
 
   private boolean m_shooting = false;
@@ -57,7 +58,7 @@ public class MagazineSubsystem extends SubsystemBase {
 
   public MagazineSubsystem( CompDashBoard compDashBoard) {
     m_ballSensor = new AnalogInput(Constants.AIN_ballSensor);
-    m_magazineMotor = new WPI_VictorSPX(Constants.CANID_magazineMotor);
+    m_magazineMotor = new WPI_TalonSRX(Constants.CANID_magazineMotor);
     m_dashboard = compDashBoard;
   }
 
@@ -82,14 +83,14 @@ public class MagazineSubsystem extends SubsystemBase {
   }
 
   public boolean ballIsPresent() {
-    // boolean ballPresent = false;
-    // if (getDistance() > BALL_PRESENT_DISTANCE){
-    // ballPresent = false;
-    // }
-    // if (getDistance() < BALL_PRESENT_DISTANCE){
-    // ballPresent = true;
-    // }
-    return getDistance() < BALL_PRESENT_DISTANCE;
+    boolean ballPresent = false;
+    if (getDistance() > BALL_PRESENT_DISTANCE){
+    ballPresent = false;
+    }
+    if (getDistance() <= BALL_PRESENT_DISTANCE){
+    ballPresent = true;
+    }
+    return getDistance() <= BALL_PRESENT_DISTANCE;
   }
 
   public void startShooting() {
@@ -108,6 +109,10 @@ public class MagazineSubsystem extends SubsystemBase {
     m_intake = false;
   }
 
+  public boolean isIntakeMode() {
+    return m_intake;
+  }
+
   public void startEjectMode() {
     m_eject = true;
   }
@@ -117,7 +122,7 @@ public class MagazineSubsystem extends SubsystemBase {
   }
 
   public boolean isMagazineFull() {
-    // boolean magazineIsFull = false;
+     boolean magazineIsFull = false;
     if (ballIsPresent()) {
       // increase ball counter by 1
       m_ballPresentCounter++;
@@ -125,13 +130,12 @@ public class MagazineSubsystem extends SubsystemBase {
       // reset ball present counter to zero
       m_ballPresentCounter = 0;
     }
-    // if (m_ballPresentCounter >= BALL_STOPPED_VALUE) {
-    // magazineIsFull = true;
-    // } else {
-    // magazineIsFull = false;
-    // }
-    // return magazineIsFull;
-    return m_ballPresentCounter >= BALL_STOPPED_VALUE;
+     if (m_ballPresentCounter >= BALL_STOPPED_VALUE) {
+     magazineIsFull = true;
+     } else {
+     magazineIsFull = false;
+     }
+     return magazineIsFull;
   }
 
   @Override
@@ -144,10 +148,10 @@ public class MagazineSubsystem extends SubsystemBase {
       m_magazineMotor.set(k_magazineShootSpeed);
     } else if (m_eject) {
       m_magazineMotor.set(k_magazineEjectSpeed);
-      System.out.println("Ejecting");
+      // System.out.println("Ejecting");
     } else if (m_magazineIsFull) {
       m_magazineMotor.set(0);
-      System.out.println("Magazine is full");
+      // System.out.println("Magazine is full");
     } else if (m_intake) {
       m_magazineMotor.set(k_magazineIntakeSpeed);
     } else { // Run the motors at default speed
