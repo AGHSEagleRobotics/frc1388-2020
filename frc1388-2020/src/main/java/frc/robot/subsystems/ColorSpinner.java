@@ -203,7 +203,7 @@ public class ColorSpinner extends SubsystemBase {
     m_dashboard.setBlue(isBlue());
     m_dashboard.setYellow(isYellow());
     m_dashboard.setGreen(isGreen());
-    m_dashboard.setDesiredColor();
+    m_dashboard.setDesiredColor( ColorWheel.fromGameMessage() );
     
   }
 }

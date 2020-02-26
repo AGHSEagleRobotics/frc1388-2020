@@ -30,6 +30,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import frc.robot.subsystems.ColorSpinner;
+import frc.robot.subsystems.ColorSpinner.ColorWheel;
 
 /**
  * Add your docs here.
@@ -99,6 +101,7 @@ public class CompDashBoard {
     private UsbCamera m_cameraClimber;
     private HttpCamera m_limeLight;
     private int m_currVideoSourceIndex = 0;
+    private int m_currCamMode = 1;
     private VideoSink m_videoSink;
     private VideoSource[] m_videoSources;
 
@@ -248,13 +251,24 @@ public class CompDashBoard {
             .withPosition( shooterColumnIndex, shooterRowIndex )
             .getEntry();
 
-        desiredColorDisplay = shuffleboard.add( "DesiredColor",  "No Game Message yet" )
+        desiredColorDisplay = shuffleboard.add( "DesiredColor/FMSColor",  "No Game Message yet" )
             .withWidget(BuiltInWidgets.kTextView)
             .withSize( desiredColorHeight, desiredColorWidth )
             .withPosition( desiredColorColumnIndex, desiredColorRowIndex )
             .getEntry();
+        
+        
     }
 
+    public void toggleLimelightLED(){
+        if( m_currCamMode == 1 ){
+            m_currCamMode = 3;
+        }else{
+            m_currCamMode = 1;
+        }
+        USBLogging.debug("" + m_currCamMode);
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(m_currCamMode);
+    }
 
     public void switchVideoSource() {
         m_currVideoSourceIndex = (m_currVideoSourceIndex + 1) % m_videoSources.length;
@@ -263,26 +277,38 @@ public class CompDashBoard {
         }
     }
 
-    public void setDesiredColor(){
+    public void setDesiredColor( ColorWheel wheelColor ){
+        desiredColorDisplay.setString( wheelColor.getName() + " / " + getFMSColor());
+    }
+
+    
+    public String getFMSColor(){
         String gameMessage = DriverStation.getInstance().getGameSpecificMessage();
         if( gameMessage.length() > 0 ){
             switch( gameMessage.charAt(0) ){
             case 'R':
-                desiredColorDisplay.setString( "Red" );
-                break;
+                // desiredColorDisplay.setString( "Red" );
+                // break;
+                return "Red";
             case 'B':
-                desiredColorDisplay.setString( "Blue" );
-                break;
+                // desiredColorDisplay.setString( "Blue" );
+                // break;
+                return "Blue";
             case 'G':
-                desiredColorDisplay.setString( "Green" );
-                break;
+                // desiredColorDisplay.setString( "Green" );
+                // break;
+                return "Green";
             case 'Y':
-                desiredColorDisplay.setString( "Yellow" );
-                break;
+                // desiredColorDisplay.setString( "Yellow" );
+                // break;
+                return "Yellow";
             default:
-                desiredColorDisplay.setString( "No Game Data" );
+                // desiredColorDisplay.setString( "No Game Data" );
+                return "NoData";
             }
+            
         }
+        return "NoData";
     }
 
     public void setShooterRPMEntry( String value ){
