@@ -181,7 +181,7 @@ public class CompDashBoard {
 
     public void constructShuffleLayout() {
         shuffleboard = Shuffleboard.getTab("Competition");
-
+        Shuffleboard.selectTab("Competition");
         complexWidgetCam = shuffleboard.add( "Cams", m_videoSink.getSource())
             .withWidget(BuiltInWidgets.kCameraStream)
             .withSize(camHeight, camWidth)
