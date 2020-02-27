@@ -51,8 +51,10 @@ public class MagazineSubsystem extends SubsystemBase {
   private final double DISTANCE_MULTIPLIER = 12.84;
   private final double VOLTAGE_EXPONENT = -0.9824;
 
+
   // TODO: In need of testing to define optimal distance
-  final double BALL_PRESENT_DISTANCE = 7;
+  // final double BALL_PRESENT_DISTANCE = 7;
+  private final double BALL_PRESENT_VOLTAGE = 1.9;
 
   public MagazineSubsystem( CompDashBoard compDashBoard) {
     m_ballSensor = new AnalogInput(Constants.AIN_ballSensor);
@@ -75,21 +77,21 @@ public class MagazineSubsystem extends SubsystemBase {
 
     // Constrain output
     distance = Math.max(Math.min(distance, MAX_DISTANCE), MIN_DISTANCE);
-    // System.out.println("Voltage = " + m_ballSensor.getValue());
     // System.out.println(distance);
     // System.out.println("distance = " + distance + "   voltage = " + m_ballSensor.getValue());
     return distance;
   }
 
   public boolean ballIsPresent() {
-    boolean ballPresent = false;
-    if (getDistance() > BALL_PRESENT_DISTANCE){
-    ballPresent = false;
-    }
-    if (getDistance() <= BALL_PRESENT_DISTANCE){
-    ballPresent = true;
-    }
-    return getDistance() <= BALL_PRESENT_DISTANCE;
+    // boolean ballPresent = false;
+    // if (getDistance() > BALL_PRESENT_DISTANCE){
+    // ballPresent = false;
+    // }
+    // if (getDistance() <= BALL_PRESENT_DISTANCE){
+    // ballPresent = true;
+    // }
+    // System.out.println("Voltage = " + m_ballSensor.getVoltage());
+    return m_ballSensor.getVoltage() >= BALL_PRESENT_VOLTAGE;
   }
 
   public void startShooting() {

@@ -78,7 +78,7 @@ public class DeployIntake extends CommandBase {
   public void end(boolean interrupted) {
     m_intakeSubsystem.setIntakeArmMotor(0);
 
-    System.out.println("Deployed");
+    // System.out.println("Deployed");
 
     m_deployIntakeTimer.stop();
     m_deployIntakeTimer.reset();
