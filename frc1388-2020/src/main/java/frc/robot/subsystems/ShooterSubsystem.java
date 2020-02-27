@@ -57,17 +57,77 @@ public class ShooterSubsystem extends SubsystemBase {
   // Developer mode should be removed after the shooter has been characterized.
   private boolean m_developerMode = true;   // Make sure this is set to false when not testing code!
 
-  // Values for the array of presets used for competition
-  private final double shooterRpmFromStartingLine = 1000;   // TODO: determine value wanted
-  private final double shooterRpmFromNearTrench = 2000;     // TODO: determine value wanted
-  private final double shooterRpmFromFarTrench = 3000;      // TODO: determine value wanted
+
+
+  // =======================================
+  // Arrays for Shooter RPM (least to greatest)
+  // =======================================
+
+  // Values for the first array of presets used for competition
+  private final double shooterRpmFromStartingLine1 = 1000;
+  private final double shooterRpmFromNearTrench1 = 2000;
+  private final double shooterRpmFromFarTrench1 = 3000;
  
-  // Array of presets intended for use in competition
-  private final double[] presetList = {   // make sure these values are in increasing order!
-    shooterRpmFromStartingLine,
-    shooterRpmFromNearTrench,
-    shooterRpmFromFarTrench,
+  // First array of presets intended for use in competition
+  private final double[] presetList1 = {
+    shooterRpmFromStartingLine1,
+    shooterRpmFromNearTrench1,
+    shooterRpmFromFarTrench1,
   };
+
+
+  // Values for the second array of presets used for competition
+  private final double shooterRpmFromStartingLine2 = 1000;
+  private final double shooterRpmFromNearTrench2 = 2000;
+  private final double shooterRpmFromFarTrench2 = 3000;
+  
+  // Second array of presets intended for use in competition
+  private final double[] presetList2 = {
+    shooterRpmFromStartingLine2,
+    shooterRpmFromNearTrench2,
+    shooterRpmFromFarTrench2,
+  };
+
+
+  // Values for the third array of presets used for competition
+  private final double shooterRpmFromStartingLine3 = 1000;
+  private final double shooterRpmFromNearTrench3 = 2000;
+  private final double shooterRpmFromFarTrench3 = 3000;
+  
+  // Third array of presets intended for use in competition
+  private final double[] presetList3 = {
+    shooterRpmFromStartingLine3,
+    shooterRpmFromNearTrench3,
+    shooterRpmFromFarTrench3,
+  };
+
+
+  // Values for the fourth array of presets used for competition
+  private final double shooterRpmFromStartingLine4 = 1000;
+  private final double shooterRpmFromNearTrench4 = 2000;
+  private final double shooterRpmFromFarTrench4 = 3000;
+  
+  // Fourth array of presets intended for use in competition
+  private final double[] presetList4 = {
+    shooterRpmFromStartingLine4,
+    shooterRpmFromNearTrench4,
+    shooterRpmFromFarTrench4,
+  };
+
+
+  // Values for the fifth array of presets used for competition
+  private final double shooterRpmFromStartingLine5 = 1000;
+  private final double shooterRpmFromNearTrench5 = 2000;
+  private final double shooterRpmFromFarTrench5 = 3000;
+  
+  // Fifth array of presets intended for use in competition
+  private final double[] presetList5 = {
+    shooterRpmFromStartingLine5,
+    shooterRpmFromNearTrench5,
+    shooterRpmFromFarTrench5,
+  };
+
+
 
   // TESTING: Array used for RPM testing, hence the "developer" part of the name
   // private final double[] developerPresetList = {    // Temporary list for characterizing the shooter
@@ -128,7 +188,7 @@ public class ShooterSubsystem extends SubsystemBase {
      // USBLogging.warning("SHOOTER DEVELOPMENT MODE!");
     }
     else {
-      m_rpmPresetList = presetList;
+      m_rpmPresetList = presetList1; // TODO: Change to reflect current shooter configuration
     }
 
     m_rpm = m_rpmPresetList[m_presetIndex];

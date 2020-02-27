@@ -9,6 +9,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,11 +22,13 @@ public class ClimberSubsystem extends SubsystemBase {
   private WPI_VictorSPX m_climberMotor = new WPI_VictorSPX(Constants.CANID_climbMotor);
   private final double SERVO_LOCK = 90.0;
   private final double SERVO_UNLOCK = 0.0;
+  private final double ENDGAME_START = 30.0;
   
   private Relay m_solenoid = new Relay(Constants.RELAY_climbSolenoid);
   private boolean m_solenoidState = false;
   private boolean m_servoState = false;
   private Servo m_servo = new Servo(Constants.PWM_climbServo);
+  private boolean m_climberEnabled = false;
 
   /**
    * Creates a new ClimberSubsystem.
@@ -38,8 +42,10 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void setClimberMotor(double speed){
-    USBLogging.debug("changing the speed: " + speed);
-    m_climberMotor.set(speed);
+    // USBLogging.debug("changing the speed: " + speed);
+    if( m_climberEnabled ){
+      m_climberMotor.set(speed);
+    }
   }
 
   // public boolean getClimberSolenoidState(){
@@ -88,10 +94,11 @@ public class ClimberSubsystem extends SubsystemBase {
     }
   }
 
-
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if( DriverStation.getInstance().getMatchTime() <= ENDGAME_START && !DriverStation.getInstance().isAutonomous() ){
+      m_climberEnabled = true;
+    }
   }
 }
