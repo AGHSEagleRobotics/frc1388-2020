@@ -99,6 +99,7 @@ public class CompDashBoard {
     // Cam
     private UsbCamera m_cameraIntake;
     private UsbCamera m_cameraClimber;
+    private UsbCamera m_cameraColor;
     private HttpCamera m_limeLight;
     private int m_currVideoSourceIndex = 0;
     private int m_currCamMode = 1;
@@ -151,6 +152,7 @@ public class CompDashBoard {
     private void camStuff() {
         m_cameraIntake = CameraServer.getInstance().startAutomaticCapture(Constants.USB_cameraIntake);
         m_cameraClimber = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber);
+        m_cameraColor = CameraServer.getInstance().startAutomaticCapture( 3 );
 
         m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg");
         
@@ -163,6 +165,7 @@ public class CompDashBoard {
             m_limeLight, 
             m_cameraIntake, 
             m_cameraClimber
+            // m_cameraColor
         };
 
         // m_videoSources = new VideoSource[] {
@@ -181,7 +184,8 @@ public class CompDashBoard {
 
     public void constructShuffleLayout() {
         shuffleboard = Shuffleboard.getTab("Competition");
-
+        
+        Shuffleboard.selectTab("Competition");
         complexWidgetCam = shuffleboard.add( "Cams", m_videoSink.getSource())
             .withWidget(BuiltInWidgets.kCameraStream)
             .withSize(camHeight, camWidth)
@@ -274,6 +278,7 @@ public class CompDashBoard {
         if( m_videoSources[m_currVideoSourceIndex] != null ){
             m_videoSink.setSource(m_videoSources[m_currVideoSourceIndex]);
         }
+            complexWidgetCam.withProperties(Map.of( "Rotation", "None"));
     }
 
     public void setDesiredColor( ColorWheel wheelColor ){ 
