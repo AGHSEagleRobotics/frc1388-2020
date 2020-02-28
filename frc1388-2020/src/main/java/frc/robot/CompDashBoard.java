@@ -119,6 +119,7 @@ public class CompDashBoard {
     private final double MOUNT_ANGLE = 0.0;
     private final double MAX_DISTANCE = 300; // TODO Figure this out
     private boolean ledOn = false;
+    private double distanceFromTargetValue = -1;
 
     public enum Objective{ 
         SHOOTMOVE( "ShootMove" ),
@@ -303,7 +304,7 @@ public class CompDashBoard {
     }
 
     public double calcDistance(){
-        double distanceFromTargetValue = -1;
+        distanceFromTargetValue = -1;
         
         if( ledOn ){
             try{
