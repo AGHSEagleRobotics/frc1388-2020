@@ -77,6 +77,12 @@ public class CompDashBoard {
     private final int desiredColorHeight = 2;
     private final int desiredColorColumnIndex = 21;
     private final int desiredColorRowIndex = 7;
+    // distance calc
+    private final int distanceWidth = 5;
+    private final int distanceHeight = 2;
+    private final int distnaceColIndex = 18;
+    private final int distanceRowIndex = 7;
+
     
     private RobotContainer m_robotContainer;
     
@@ -95,20 +101,28 @@ public class CompDashBoard {
     private NetworkTableEntry colorGridYellow;
     private NetworkTableEntry colorGridBlue;
     private NetworkTableEntry desiredColorDisplay;
+    private NetworkTableEntry distanceFromTarget;
 
     // Cam
     private UsbCamera m_cameraIntake;
     private UsbCamera m_cameraClimber;
     private UsbCamera m_cameraColor;
+    private UsbCamera m_cameraShooter;
     private HttpCamera m_limeLight;
     private int m_currVideoSourceIndex = 0;
     private int m_currCamMode = 1;
     private VideoSink m_videoSink;
     private VideoSource[] m_videoSources;
 
+    private final double TARGET_HEIGHT = 84.0;
+    private final double MOUNT_HEIGHT = 24.0; // TODO find exact once have time
+    private final double MOUNT_ANGLE = 0.0;
+    private final double MAX_DISTANCE = 300; // TODO Figure this out
+    private boolean ledOn = false;
+
     public enum Objective{ 
         SHOOTMOVE( "ShootMove" ),
-        MOVE( "Move" ),
+        MOVE( "Move" ), 
         SHOOT( "Shoot" ),
         NOTHING( "Nothing" );
 
@@ -152,7 +166,8 @@ public class CompDashBoard {
     private void camStuff() {
         m_cameraIntake = CameraServer.getInstance().startAutomaticCapture(Constants.USB_cameraIntake);
         m_cameraClimber = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber);
-        // m_cameraColor = CameraServer.getInstance().startAutomaticCapture( 3 );
+        m_cameraColor = CameraServer.getInstance().startAutomaticCapture( 3 ); // TODO change these to constants after comp
+        m_cameraShooter = CameraServer.getInstance().startAutomaticCapture( 4 );
         
         m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg");
         
@@ -164,8 +179,8 @@ public class CompDashBoard {
         m_videoSources = new VideoSource[] { 
             m_limeLight, 
             m_cameraIntake, 
-            m_cameraClimber
-            // m_cameraColor
+            m_cameraClimber,
+            m_cameraColor
         };
 
         // m_videoSources = new VideoSource[] {
@@ -261,14 +276,20 @@ public class CompDashBoard {
             .withPosition( desiredColorColumnIndex, desiredColorRowIndex )
             .getEntry();
         
-        
+        distanceFromTarget = shuffleboard.add( "Approx. Distance", "-1")
+            .withWidget(BuiltInWidgets.kTextView)
+            .withSize( distanceWidth, distanceHeight)
+            .withPosition( distnaceColIndex, distanceRowIndex )
+            .getEntry();
     }
 
     public void toggleLimelightLED(){
         if( m_currCamMode == 1 ){
             m_currCamMode = 3;
+            ledOn = true;
         }else{
             m_currCamMode = 1;
+            ledOn = false;
         }
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(m_currCamMode);
     }
@@ -278,7 +299,31 @@ public class CompDashBoard {
         if( m_videoSources[m_currVideoSourceIndex] != null ){
             m_videoSink.setSource(m_videoSources[m_currVideoSourceIndex]);
         }
-        // complexWidgetCam.withProperties(Map.of( "Rotation", "None"));
+        // complexWidgetCam.withProperties(Map.of( "Rotation", "None")); 
+    }
+
+    public double calcDistance(){
+        double distanceFromTargetValue = -1;
+        
+        if( ledOn ){
+            try{
+                distanceFromTargetValue = (TARGET_HEIGHT - MOUNT_HEIGHT) / Math.tan(MOUNT_ANGLE + NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0));
+            }catch( Exception e ){
+                USBLogging.info("Calc dsitance error");
+            }
+        }
+
+        if( distanceFromTargetValue > MAX_DISTANCE && distanceFromTargetValue < 0 ){
+            distanceFromTarget.setString( "" + distanceFromTarget);
+            return distanceFromTargetValue;
+        }else{
+            distanceFromTarget.setString( "-1" );
+            return -1;
+        }
+    }
+
+    public boolean getLEDOn(){
+        return ledOn;
     }
 
     public void setDesiredColor( ColorWheel wheelColor ){ 
@@ -319,10 +364,10 @@ public class CompDashBoard {
         shooterRPM.setValue(value);
     }
 
-    public boolean getGreen(){
-        // USBLogging.debug( "" + RobotContainer.getAButton());
-        return RobotContainer.getAButton();
-    }
+    // public boolean getGreen(){
+    //     // USBLogging.debug( "" + RobotContainer.getAButton());
+    //     return RobotContainer.getAButton();
+    // }
  
     public void setMaxCapacity( boolean isFull ){
         // USBLogging.debug("Max:" + isFull);

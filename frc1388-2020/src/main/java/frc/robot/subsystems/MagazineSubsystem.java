@@ -54,7 +54,7 @@ public class MagazineSubsystem extends SubsystemBase {
 
   // TODO: In need of testing to define optimal distance
   // final double BALL_PRESENT_DISTANCE = 7;
-  private final double BALL_PRESENT_VOLTAGE = 1.9;
+  private final double BALL_PRESENT_VOLTAGE = 10.0; // comp change by ryan to avoid errors where it thinks it sees a ball
 
   public MagazineSubsystem( CompDashBoard compDashBoard) {
     m_ballSensor = new AnalogInput(Constants.AIN_ballSensor);

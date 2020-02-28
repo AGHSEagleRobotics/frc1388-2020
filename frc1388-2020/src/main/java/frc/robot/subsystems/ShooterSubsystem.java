@@ -287,7 +287,9 @@ public class ShooterSubsystem extends SubsystemBase {
       USBLogging.debug("Target = " + m_rpm + "||RPM = " + getShooterRPM());
     }
 
- 
+    if(m_compDashBoard.getLEDOn() ){
+      m_compDashBoard.calcDistance();
+    }
 
   }
 
