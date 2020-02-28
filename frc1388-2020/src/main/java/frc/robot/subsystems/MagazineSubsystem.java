@@ -11,6 +11,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CompDashBoard;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import frc.robot.Constants;
 
 import java.lang.Math;
@@ -60,6 +61,7 @@ public class MagazineSubsystem extends SubsystemBase {
     m_ballSensor = new AnalogInput(Constants.AIN_ballSensor);
     m_magazineMotor = new WPI_VictorSPX(Constants.CANID_magazineMotor);
     m_dashboard = compDashBoard;
+    m_magazineMotor.setInverted(InvertType.InvertMotorOutput);
   }
 
   // TODO change number of motors for magazine; number of motors for magazine is TBD

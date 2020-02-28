@@ -15,6 +15,7 @@ import frc.robot.USBLogging;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
@@ -64,9 +65,9 @@ public class ShooterSubsystem extends SubsystemBase {
   // =======================================
 
   // Values for the first array of presets used for competition
-  private final double shooterRpmFromStartingLine1 = 1000;
-  private final double shooterRpmFromNearTrench1 = 2000;
-  private final double shooterRpmFromFarTrench1 = 3000;
+  private final double shooterRpmFromStartingLine1 = 4000;
+  private final double shooterRpmFromNearTrench1 = 5000;
+  private final double shooterRpmFromFarTrench1 = 6000;
  
   // First array of presets intended for use in competition
   private final double[] presetList1 = {
@@ -158,7 +159,8 @@ public class ShooterSubsystem extends SubsystemBase {
     m_shootMotor = new WPI_TalonFX(Constants.CANID_shootMotor);
     m_feedMotor = new WPI_VictorSPX(Constants.CANID_feedMotor);
     m_compDashBoard = compDashBoard;
-
+    
+    m_feedMotor.setInverted(InvertType.InvertMotorOutput);
     
 
     // Factory Default all hardware to prevent unexpected behaviour

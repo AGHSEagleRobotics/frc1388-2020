@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import com.ctre.phoenix.motorcontrol.InvertType;
 
 public class IntakeSubsystem extends SubsystemBase {
 
@@ -22,6 +23,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem() {
     m_intakeShaftMotor = new WPI_VictorSPX(Constants.CANID_intakeShaftMotor); // forward is positive, reverse is negative
     m_intakeArmMotor = new WPI_TalonSRX(Constants.CANID_intakeArmMotor);  // positive is up, negative is down
+    m_intakeShaftMotor.setInverted(InvertType.InvertMotorOutput);
   }
 
   public void setIntakeShaftMotor(double speed){

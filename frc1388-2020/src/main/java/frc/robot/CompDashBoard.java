@@ -78,10 +78,10 @@ public class CompDashBoard {
     private final int desiredColorColumnIndex = 21;
     private final int desiredColorRowIndex = 7;
     // distance calc
-    private final int distanceWidth = 5;
+    private final int distanceWidth = 3;
     private final int distanceHeight = 2;
     private final int distnaceColIndex = 18;
-    private final int distanceRowIndex = 7;
+    private final int distanceRowIndex = 4;
 
     
     private RobotContainer m_robotContainer;

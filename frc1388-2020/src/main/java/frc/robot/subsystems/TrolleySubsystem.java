@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
@@ -33,6 +34,7 @@ public class TrolleySubsystem extends SubsystemBase {
    */
   public TrolleySubsystem() {
     setBrakeMode();
+    trolleyMotor.setInverted(InvertType.InvertMotorOutput);
   }
 
   public void setBrakeMode(){

@@ -114,13 +114,13 @@ public class RobotContainer {
     m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
     m_deployIntake = new DeployIntake(m_intakeSubsystem, m_magazineSubsystem);
     m_retractIntake = new RetractIntake(m_intakeSubsystem, m_magazineSubsystem);
-    m_autonMove = new AutonMove(
-        m_driveTrain,                     // dependecy
-        AutonMove.Mode.kDistanceDrive,    // drive mode
-        1,                                // drive distance (feet)
-        0.5,                              // drive speed (%)
-        0,                                // rotation control
-        false);                           // quick turn
+    // m_autonMove = new AutonMove(
+    //     m_driveTrain,                     // dependecy
+    //     AutonMove.Mode.kDistanceDrive,    // drive mode
+    //     1,                                // drive distance (feet)
+    //     0.5,                              // drive speed (%)
+    //     0,                                // rotation control
+    //     false);                           // quick turn
 
     m_rotationControlCmd  = new RotationalControl(m_colorSpinner);
     m_positionControlCmd = new PositionControl(m_colorSpinner);
@@ -129,7 +129,6 @@ public class RobotContainer {
     m_trolleyCommand = new Trolley(m_trolleySubsystem);
     m_climbCommand = new Climb(m_climberSubsystem);
     m_developerMode = new DeveloperMode(m_shooterSubsystem);
-    m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
 
     // set default commands here
     m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
@@ -179,9 +178,9 @@ public class RobotContainer {
        .whenPressed(() -> m_shooterSubsystem.presetRPMUp());
     new JoystickButton(opController, XboxController.Button.kX.value)
        .whenPressed(() -> m_shooterSubsystem.presetRPMDown());
-        // Developer Mode
-    new Button(() -> driveController.getTriggerAxis(Hand.kLeft) > 0)
-       .whenHeld(m_developerMode);
+    //     // Developer Mode
+    // new Button(() -> driveController.getTriggerAxis(Hand.kLeft) > 0)
+    //    .whenHeld(m_developerMode);
   
     // ========================================
     // Intake
@@ -207,12 +206,12 @@ public class RobotContainer {
 
     // Color Spinner Left
     new JoystickButton(opController, XboxController.Button.kBumperLeft.value)
-        .whileHeld(() -> m_colorSpinner.spinMotor(-.1), m_colorSpinner)
+        .whileHeld(() -> m_colorSpinner.spinMotor(-1.0), m_colorSpinner)
         .whenReleased(() -> m_colorSpinner.spinMotor(0), m_colorSpinner);
 
     // Color Spinner Right (op)
     new JoystickButton(opController, XboxController.Button.kBumperRight.value)
-        .whileHeld(() -> m_colorSpinner.spinMotor(.1), m_colorSpinner)
+        .whileHeld(() -> m_colorSpinner.spinMotor(1.0), m_colorSpinner)
         .whenReleased(() -> m_colorSpinner.spinMotor(0), m_colorSpinner);
 
     // Color Spinner Arm Up (op)
