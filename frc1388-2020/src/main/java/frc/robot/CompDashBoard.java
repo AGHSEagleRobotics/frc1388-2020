@@ -78,7 +78,7 @@ public class CompDashBoard {
     private final int desiredColorColumnIndex = 21;
     private final int desiredColorRowIndex = 7;
     // distance calc
-    private final int distanceWidth = 3;
+    private final int distanceWidth = 2;
     private final int distanceHeight = 2;
     private final int distnaceColIndex = 18;
     private final int distanceRowIndex = 4;
@@ -165,10 +165,9 @@ public class CompDashBoard {
     }
 
     private void camStuff() {
-        m_cameraIntake = CameraServer.getInstance().startAutomaticCapture(Constants.USB_cameraIntake);
+        m_cameraIntake = CameraServer.getInstance().startAutomaticCapture(3);
         m_cameraClimber = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber);
-        m_cameraColor = CameraServer.getInstance().startAutomaticCapture( 3 ); // TODO change these to constants after comp
-        m_cameraShooter = CameraServer.getInstance().startAutomaticCapture( 4 );
+        m_cameraColor = CameraServer.getInstance().startAutomaticCapture( 1 ); // TODO change these to constants after comp
         
         m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg");
         
@@ -178,7 +177,7 @@ public class CompDashBoard {
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
         
         m_videoSources = new VideoSource[] { 
-            m_limeLight, 
+            m_cameraShooter, 
             m_cameraIntake, 
             m_cameraClimber,
             m_cameraColor
