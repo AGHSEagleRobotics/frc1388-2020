@@ -120,6 +120,7 @@ public class CompDashBoard {
     private final double MAX_DISTANCE = 300; // TODO Figure this out
     private boolean ledOn = false;
     private double distanceFromTargetValue = -1;
+    private boolean switchVideoOn = false;
 
     public enum Objective{ 
         SHOOTMOVE( "ShootMove" ),
@@ -165,11 +166,12 @@ public class CompDashBoard {
     }
 
     private void camStuff() {
-        m_cameraIntake = CameraServer.getInstance().startAutomaticCapture(3);
-        m_cameraClimber = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber);
-        m_cameraColor = CameraServer.getInstance().startAutomaticCapture( 1 ); // TODO change these to constants after comp
+        m_cameraShooter = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraShooter ); // intake = 3
+        m_cameraIntake = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber ); // climber 2 
+        m_cameraColor = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraColor ); 
+        m_cameraClimber = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber );
         
-        m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg");
+        m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg"); 
         
         // sets the pipeline of the limelight
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionDrivePipeline);
@@ -193,8 +195,55 @@ public class CompDashBoard {
         if( m_cameraIntake != null ){
             m_videoSink.setSource(m_cameraIntake);
         }
-
+        
+        switchVideoOn = true;
     }
+    
+    private void camStuff2(){
+        m_cameraShooter = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraShooter );
+
+        m_videoSink = CameraServer.getInstance().getServer();
+        m_videoSink.setSource(m_cameraShooter);
+        switchVideoOn = false;
+    }
+    
+    private void camStuff3() {
+        m_cameraShooter = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraShooter ); 
+        m_cameraIntake = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber ); 
+        
+        m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg"); 
+        
+        // sets the pipeline of the limelight
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionDrivePipeline);
+        // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionProcessPipeline);
+        
+        
+        m_videoSources = new VideoSource[] { 
+            m_cameraShooter, 
+            m_cameraIntake, 
+            m_cameraClimber,
+            m_cameraColor
+        };
+
+        // m_videoSources = new VideoSource[] {
+        //     m_cameraIntake, 
+        //     m_cameraClimber
+        // };
+
+        m_videoSink = CameraServer.getInstance().getServer();
+
+        if( m_cameraIntake != null ){
+            m_videoSink.setSource(m_cameraIntake);
+        }
+
+        switchVideoOn = true;
+    }
+
+    public void driveLimelightMode(){
+        // sets the limelight to driver display mode as some issues were appearing about it doing after it ahs been enabled
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
+    }
+
 
 
     public void constructShuffleLayout() {
@@ -236,7 +285,7 @@ public class CompDashBoard {
             .withWidget(BuiltInWidgets.kBooleanBox)
             .withSize(maxCapacityWidth, maxCapacityHeight)
             .withPosition(maxCapacityColumnIndex, maxCapacityRowIndex)
-            .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey"))
+            .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "gray"))
             .getEntry();
 
         colorSpinnerGrid = shuffleboard.getLayout("Color Spinner", BuiltInLayouts.kGrid)
@@ -246,22 +295,22 @@ public class CompDashBoard {
 
         colorGridBlue = colorSpinnerGrid.add("Blue", false)
             .withWidget(BuiltInWidgets.kBooleanBox)
-            .withProperties(Map.of("colorWhenTrue", "blue", "colorWhenFalse", "grey"))
+            .withProperties(Map.of("colorWhenTrue", "blue", "colorWhenFalse", "gray"))
             .getEntry();
 
         colorGridYellow = colorSpinnerGrid.add("Yellow", false)
             .withWidget(BuiltInWidgets.kBooleanBox)
-            .withProperties(Map.of("colorWhenTrue", "yellow", "colorWhenFalse", "grey"))
+            .withProperties(Map.of("colorWhenTrue", "yellow", "colorWhenFalse", "gray"))
             .getEntry();
 
         colorGridRed = colorSpinnerGrid.add("Red" , false)
             .withWidget(BuiltInWidgets.kBooleanBox)
-            .withProperties(Map.of("colorWhenTrue", "red", "colorWhenFalse", "grey"))
+            .withProperties(Map.of("colorWhenTrue", "red", "colorWhenFalse", "gray"))
             .getEntry();
 
         colorGridGreen = colorSpinnerGrid.add("Green", false )
             .withWidget(BuiltInWidgets.kBooleanBox)
-            .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey"))
+            .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "gray"))
             .getEntry();
         
         shooterRPM = shuffleboard.add("ShooterRPM", "" ) // m_shooter.getShooterRPM())
@@ -295,11 +344,13 @@ public class CompDashBoard {
     }
 
     public void switchVideoSource() {
-        m_currVideoSourceIndex = (m_currVideoSourceIndex + 1) % m_videoSources.length;
-        if( m_videoSources[m_currVideoSourceIndex] != null ){
-            m_videoSink.setSource(m_videoSources[m_currVideoSourceIndex]);
+        if( switchVideoOn ){
+            m_currVideoSourceIndex = (m_currVideoSourceIndex + 1) % m_videoSources.length;
+            if( m_videoSources[m_currVideoSourceIndex] != null ){
+                m_videoSink.setSource(m_videoSources[m_currVideoSourceIndex]);
+            }
+            // complexWidgetCam.withProperties(Map.of( "Rotation", "None")); 
         }
-        // complexWidgetCam.withProperties(Map.of( "Rotation", "None")); 
     }
 
     public double calcDistance(){

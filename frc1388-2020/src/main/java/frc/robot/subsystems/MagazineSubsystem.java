@@ -39,9 +39,9 @@ public class MagazineSubsystem extends SubsystemBase {
   private boolean m_magazineIsFull = false;
   
   // Periodic Variables
-  private final double k_magazineShootSpeed = 0.5;
-  private final double k_magazineEjectSpeed = -0.5;
-  private final double k_magazineIntakeSpeed = 0.2;
+  private final double k_magazineShootSpeed = 1.0;
+  private final double k_magazineEjectSpeed = -1.0;
+  private final double k_magazineIntakeSpeed = 0.75;
 
   // Infrared Proximity Sensor Fields
   private final AnalogInput m_ballSensor;
@@ -51,7 +51,6 @@ public class MagazineSubsystem extends SubsystemBase {
   private final double MIN_DISTANCE = 4.5; // This is the minimum accurate distace the sensor can read in inches
   private final double DISTANCE_MULTIPLIER = 12.84;
   private final double VOLTAGE_EXPONENT = -0.9824;
-
 
   // TODO: In need of testing to define optimal distance
   // final double BALL_PRESENT_DISTANCE = 7;

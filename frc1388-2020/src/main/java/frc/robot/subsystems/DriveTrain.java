@@ -25,8 +25,8 @@ import frc.robot.Constants;
 public class DriveTrain extends SubsystemBase {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
-
-
+  
+  
   // Competition Bot motors
   private final WPI_TalonFX m_leftFront;
   private final WPI_TalonFX m_rightFront;
@@ -38,6 +38,22 @@ public class DriveTrain extends SubsystemBase {
   // private final WPI_VictorSPX m_leftBack;
   // private final WPI_VictorSPX m_rightBack;
 
+  private final double WHEEL_DIAMETER = 6.0; // in inches
+  
+  private final int COUNT_PER_REV = 2048;
+  
+  private final double CIM_BOX_GEAR_RATIO = 4.67; 
+  
+  private final double SPROCKETS_RATIO = 3.0; // TODO dont know the exact value
+  
+  private final double encoderDistanceRatio =
+      COUNT_PER_REV * // encoder counts per rev 
+      CIM_BOX_GEAR_RATIO * // cimple box 
+      SPROCKETS_RATIO;    // big bocs(Drive train ratio)  TODO ruff estimate
+  
+  private final double WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER; 
+   // "Rotation to distance by multiplying by the circumference in inches, units are important " - scottTechau
+  
   // need to instantiate the differenetail drive
   private final DifferentialDrive differentialDrive;
 
@@ -140,7 +156,7 @@ public class DriveTrain extends SubsystemBase {
    * @return The distance in feet
    */
   public double getRightEncoderDistance(){
-    return encoderDistanceRatio * m_rightFront.getSelectedSensorPosition();
+    return m_rightFront.getSelectedSensorPosition() / encoderDistanceRatio * WHEEL_CIRCUMFERENCE;
   }
 
   /**
@@ -151,21 +167,6 @@ public class DriveTrain extends SubsystemBase {
     return m_leftFront.getSelectedSensorPosition() / encoderDistanceRatio * WHEEL_CIRCUMFERENCE;
   }
 
-  private final double WHEEL_DIAMETER = 6.0; // in inches
-
-  private final int COUNT_PER_ROT = 2048;
-
-  private final double CIM_BOX_GEAR_RATIO = 4.67; 
-
-  private final double SPROCKETS_RATIO = 3.0;
-
-  private final double encoderDistanceRatio =
-      COUNT_PER_ROT * // encoder counts per rev 
-      CIM_BOX_GEAR_RATIO * // cimple box 
-      SPROCKETS_RATIO;    // big bocs(Drive train ratio)  TODO ruff
-  
-  private final double WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER; 
-   // "Rotation to distance by multiplying by the circumference in inches, units are important " - scottTechau
 
 
   // to be used in the future for uses like checking the gyro
