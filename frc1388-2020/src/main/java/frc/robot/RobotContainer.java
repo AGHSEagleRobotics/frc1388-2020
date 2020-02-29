@@ -338,8 +338,8 @@ public class RobotContainer {
       return new AutonMove(
         m_driveTrain,                     // dependecy
         AutonMove.Mode.kDistanceDrive,    // drive mode
-        1,                                // drive distance (feet)
-        0.5,                              // drive speed (%)
+        36,                                // drive distance (inches) // 
+        0.4,                              // drive speed (%)
         0,                                // rotation control
         false);                           // quick turn
       case SHOOT:

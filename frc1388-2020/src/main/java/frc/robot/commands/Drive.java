@@ -53,11 +53,19 @@ public class Drive extends CommandBase {
       }
     }
     m_lastLeftStickButton = leftStickButton;
+
+    if( m_precisionMode ){
+        rightXAxis = scale( rightXAxis );
+    }
     
     // the deadband is placed in the subsystem
     // adds the curvature differential drive and allows the precision mode to be toggled
     m_subsystem.curvatureDrive( leftYAxis, -rightXAxis, m_precisionMode);
 
+  }
+
+  public double scale( double input ){
+      return Math.copySign(input*input, input);
   }
 
   // Called once the command ends or is interrupted.

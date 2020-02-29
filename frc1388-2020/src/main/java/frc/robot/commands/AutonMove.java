@@ -24,8 +24,9 @@ public class AutonMove extends CommandBase {
   private final boolean m_isQuickTurn;
 
   private final Timer m_timer = new Timer();
+  private final double P_VALUE = 0.03;
   // FIXME We need to determine the proper constants
-  private final PIDController m_pidController = new PIDController(0.25, 0, 0);
+  private final PIDController m_pidController = new PIDController(P_VALUE, 0, 0);
 
   public enum Mode {
 
@@ -38,7 +39,7 @@ public class AutonMove extends CommandBase {
    * 
    * @param driveTrain drive train subsystem
    * @param mode       stop mode
-   * @param cutoff     timed mode cutoff = seconds, distance mode cutoff = feet
+   * @param cutoff     timed mode cutoff = seconds, distance mode cutoff = inches
    */
   public AutonMove(DriveTrain driveTrain, Mode mode, double cutoff, double speed, double rotation,
       boolean isQuickTurn) {

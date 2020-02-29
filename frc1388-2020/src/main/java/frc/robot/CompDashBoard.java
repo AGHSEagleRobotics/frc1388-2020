@@ -127,7 +127,7 @@ public class CompDashBoard {
         SHOOT( "Shoot" ),
         NOTHING( "Nothing" );
 
-        public static final Objective DEFAULT = MOVE;
+        public static final Objective DEFAULT = NOTHING;
 
         private String name;
 

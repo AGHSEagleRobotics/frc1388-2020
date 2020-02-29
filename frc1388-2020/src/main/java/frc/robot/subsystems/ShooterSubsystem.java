@@ -56,7 +56,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private boolean m_enabled = false;
 
   // Developer mode should be removed after the shooter has been characterized.
-  private boolean m_developerMode = true;   // Make sure this is set to false when not testing code!
+  private boolean m_developerMode = false;   // TODO Make sure this is set to false when not testing code!
 
 
 
