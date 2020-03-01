@@ -161,6 +161,7 @@ public class CompDashBoard {
     }
 
     public CompDashBoard() { 
+        // TODO uncomment which one is desirable
         // camStuff();
         camStuff2();
         // camStuff3();
@@ -207,7 +208,6 @@ public class CompDashBoard {
         m_cameraShooter = CameraServer.getInstance().startAutomaticCapture( ); 
         m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg"); 
         driveLimelightMode();
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionDrivePipeline);
         m_videoSink = CameraServer.getInstance().getServer();
         m_videoSink.setSource(m_cameraShooter);
@@ -215,18 +215,19 @@ public class CompDashBoard {
     }
     
     public void camStuff3() {
-        m_cameraShooter = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraShooter ); 
-        m_cameraIntake = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber ); 
+        // m_cameraShooter = CameraServer.getInstance().startAutomaticCapture(); 
+        m_cameraIntake = CameraServer.getInstance().startAutomaticCapture(); 
         
         m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg"); 
         
+        driveLimelightMode();
         // sets the pipeline of the limelight
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionDrivePipeline);
         // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionProcessPipeline);
         
         
         m_videoSources = new VideoSource[] { 
-            m_cameraShooter, 
+            m_limeLight, 
             m_cameraIntake
         };
 
