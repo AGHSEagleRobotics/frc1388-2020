@@ -64,6 +64,7 @@ public class AutonMove extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_driveTrain.resetLeftEncoder();
     m_timer.start();
   }
 

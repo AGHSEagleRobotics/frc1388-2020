@@ -20,7 +20,8 @@ public class MultiShot extends CommandBase {
   private MagazineSubsystem m_magazineSubsystem;
 
   private final Timer m_spinUpTimer = new Timer();
-  private final double k_shooterSpinUpTime = 1; // Arbitrary time required for shooter to spin up
+  
+  private final double k_shooterSpinUpTime = 0.5; // Arbitrary time required for shooter to spin up
   private double m_rpm = 0;
 
   /**
@@ -55,6 +56,7 @@ public class MultiShot extends CommandBase {
     m_magazineSubsystem.startShooting();
     m_shooterSubsystem.startShooter();
     m_spinUpTimer.start();
+    m_shooterSubsystem.startEndDelayTimer();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

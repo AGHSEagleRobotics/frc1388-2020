@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CompDashBoard;
 import frc.robot.Constants;
@@ -29,6 +30,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private CompDashBoard m_compDashBoard;
 
+  private final Timer m_timerShooterEndDelay = new Timer();
   private final int pidIdx = 0;
   private final int timeoutMs = 0;
   private int tickCount = 0;
@@ -161,6 +163,8 @@ public class ShooterSubsystem extends SubsystemBase {
     m_compDashBoard = compDashBoard;
     
     m_feedMotor.setInverted(InvertType.InvertMotorOutput);
+    // m_feedMotor.setInverted(InvertType.None);
+
     
 
     // Factory Default all hardware to prevent unexpected behaviour
@@ -193,8 +197,10 @@ public class ShooterSubsystem extends SubsystemBase {
       m_rpmPresetList = presetList1; // TODO: Change to reflect current shooter configuration
     }
 
-    m_rpm = m_rpmPresetList[m_presetIndex];
+    m_presetIndex = m_rpmPresetList.length - 1;
 
+    m_rpm = m_rpmPresetList[m_presetIndex];
+    USBLogging.info( "ShooterSub: RPM target = " + m_rpm );
   } // End Constructor: ShooterSubsystem
 
   // =======================================
@@ -225,6 +231,7 @@ public class ShooterSubsystem extends SubsystemBase {
   /** Gives the wanted RPM to a periodic function for preset values */
   public void usePresetRPM() {
     m_rpm = m_rpmPresetList[m_presetIndex];
+    USBLogging.info( "ShooterSub: RPM target = " + m_rpm );
   }
 
   /** Changes the RPM preset to the next value in the list */
@@ -245,8 +252,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
   /** Stops the shooter, RPM will be 0 */
   public void stopShooter() {
-    m_enabled = false;
-    m_shootMotor.set(0);
+    m_timerShooterEndDelay.reset();
+    m_shooterEndDelay = true;
+  }
+
+  public void startEndDelayTimer(){
+    m_timerShooterEndDelay.start();
   }
 
   /** Sets the feeder output speed */
@@ -264,6 +275,9 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setDeveloperMode(boolean mode) {
     m_developerMode = mode;
   }
+  private final double DELAY_AFTER_SHOOT_END = 2.0;
+
+  private boolean m_shooterEndDelay = false;
 
   @Override
   public void periodic() {
@@ -278,6 +292,10 @@ public class ShooterSubsystem extends SubsystemBase {
       tickCount = 0;
     }
 
+    if( m_timerShooterEndDelay.hasPeriodPassed(DELAY_AFTER_SHOOT_END) && m_shooterEndDelay ){
+      m_enabled = false;
+      m_shooterEndDelay = false;
+    }
 
     // Flag used to determine if motor should be running,
     //runs motor at the wanted RPM
@@ -287,6 +305,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
       // log RPM
       USBLogging.debug("Target = " + m_rpm + "||RPM = " + getShooterRPM());
+    }else{
+      m_shootMotor.set(0);
     }
 
     if(m_compDashBoard.getLEDOn() ){

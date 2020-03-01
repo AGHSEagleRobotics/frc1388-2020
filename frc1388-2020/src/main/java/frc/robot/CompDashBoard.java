@@ -161,11 +161,15 @@ public class CompDashBoard {
     }
 
     public CompDashBoard() { 
-        camStuff();
+        // camStuff();
+        camStuff2();
+        // camStuff3();
         constructShuffleLayout();
     }
 
-    private void camStuff() {
+    // 
+
+    public void camStuff() {
         m_cameraShooter = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraShooter ); // intake = 3
         m_cameraIntake = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber ); // climber 2 
         m_cameraColor = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraColor ); 
@@ -174,9 +178,9 @@ public class CompDashBoard {
         m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg"); 
         
         // sets the pipeline of the limelight
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionDrivePipeline);
+        
         // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionProcessPipeline);
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
+       driveLimelightMode();
         
         m_videoSources = new VideoSource[] { 
             m_cameraShooter, 
@@ -199,15 +203,18 @@ public class CompDashBoard {
         switchVideoOn = true;
     }
     
-    private void camStuff2(){
-        m_cameraShooter = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraShooter );
-
+    public void camStuff2(){
+        m_cameraShooter = CameraServer.getInstance().startAutomaticCapture( ); 
+        m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg"); 
+        driveLimelightMode();
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionDrivePipeline);
         m_videoSink = CameraServer.getInstance().getServer();
         m_videoSink.setSource(m_cameraShooter);
         switchVideoOn = false;
     }
     
-    private void camStuff3() {
+    public void camStuff3() {
         m_cameraShooter = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraShooter ); 
         m_cameraIntake = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber ); 
         
@@ -220,9 +227,7 @@ public class CompDashBoard {
         
         m_videoSources = new VideoSource[] { 
             m_cameraShooter, 
-            m_cameraIntake, 
-            m_cameraClimber,
-            m_cameraColor
+            m_cameraIntake
         };
 
         // m_videoSources = new VideoSource[] {
@@ -347,7 +352,7 @@ public class CompDashBoard {
         if( switchVideoOn ){
             m_currVideoSourceIndex = (m_currVideoSourceIndex + 1) % m_videoSources.length;
             if( m_videoSources[m_currVideoSourceIndex] != null ){
-                m_videoSink.setSource(m_videoSources[m_currVideoSourceIndex]);
+                m_videoSink.setSource(m_videoSources[m_currVideoSourceIndex]); 
             }
             // complexWidgetCam.withProperties(Map.of( "Rotation", "None")); 
         }

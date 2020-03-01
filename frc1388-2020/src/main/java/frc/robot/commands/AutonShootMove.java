@@ -26,8 +26,8 @@ public class AutonShootMove extends SequentialCommandGroup {
     AutonMove autonMove = new AutonMove(
         driveTrain,                       // dependecy
         AutonMove.Mode.kDistanceDrive,    // drive mode
-        1,                                // drive distance (feet)
-        0.5,                              // drive speed (%)
+        72,                                // drive distance (inches)
+        0.4,                              // drive speed (%)
         0,                                // rotation control
         false);                           // quick turn
     addCommands(multiShot, autonMove);

@@ -119,6 +119,14 @@ public class DriveTrain extends SubsystemBase {
     m_rightFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
   }
 
+  public void resetLeftEncoder(){
+    m_leftFront.setSelectedSensorPosition( 0 );
+  }
+
+  public void resetRightEncoder(){
+    m_leftFront.setSelectedSensorPosition( 0 );
+  }
+
   // Creates Options for drive method
   public void arcadeDrive( double speed, double rotation ) {
     differentialDrive.arcadeDrive( speed, rotation);
