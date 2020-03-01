@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CompDashBoard;
@@ -304,7 +305,9 @@ public class ShooterSubsystem extends SubsystemBase {
       m_shootMotor.set(ControlMode.Velocity, speed);
 
       // log RPM
-      USBLogging.debug("Target = " + m_rpm + "||RPM = " + getShooterRPM());
+      if( DriverStation.getInstance().isAutonomous() ){
+        USBLogging.info("Target = " + m_rpm + "||RPM = " + getShooterRPM());
+      }
     }else{
       m_shootMotor.set(0);
     }
