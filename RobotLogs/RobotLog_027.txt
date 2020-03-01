@@ -1,0 +1,6 @@
+1969-12-31
+16:00:33.869578 [INFO] Git version: 1483578 (branch: master 2 files changed, 41 insertions(+), 38 deletions(-))
+16:00:33.903328 [INFO] Built: Sun 03/01/2020   09:30 AM
+16:00:33.921390 [INFO] Robot.robotInit()
+16:00:40.492823 [INFO] ShooterSub: RPM target = 6000.0
+16:00:41.308801 [INFO] ########  Robot disabled

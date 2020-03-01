@@ -74,13 +74,16 @@ public class AutonMove extends CommandBase {
 
     double speed;
     if( m_mode == Mode.kDistanceDrive){
-      speed = m_pidController.calculate(m_driveTrain.getLeftEncoderDistance(), m_cutoff);
+      speed = m_pidController.calculate(-m_driveTrain.getLeftEncoderDistance(), -m_cutoff);
       speed = MathUtil.clamp(speed, -m_speed, m_speed);
+      // if( m_cutoff < 0 ){
+      //   speed *= -1;
+      // }
     } else {
       speed = m_speed;
     }
 
-    m_driveTrain.curvatureDrive(speed, m_rotation, m_isQuickTurn);
+    m_driveTrain.curvatureDrive(-speed, m_rotation, m_isQuickTurn);
   }
 
   // Called once the command ends or is interrupted.

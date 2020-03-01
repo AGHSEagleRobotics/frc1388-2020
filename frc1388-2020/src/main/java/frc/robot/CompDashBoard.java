@@ -163,8 +163,8 @@ public class CompDashBoard {
     public CompDashBoard() { 
         // TODO uncomment which one is desirable
         // camStuff();
-        camStuff2();
-        // camStuff3();
+        // camStuff2();
+        camStuff3();
         constructShuffleLayout();
     }
 
@@ -237,6 +237,8 @@ public class CompDashBoard {
         // };
 
         m_videoSink = CameraServer.getInstance().getServer();
+
+        
 
         if( m_cameraIntake != null ){
             m_videoSink.setSource(m_cameraIntake);
