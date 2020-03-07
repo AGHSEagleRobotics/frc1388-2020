@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import frc.robot.USBLogging;
 import frc.robot.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
@@ -74,8 +75,10 @@ public class AutonMove extends CommandBase {
 
     double speed;
     if( m_mode == Mode.kDistanceDrive){
-      speed = m_pidController.calculate(-m_driveTrain.getLeftEncoderDistance(), -m_cutoff);
+      double leftEncoderDistance = m_driveTrain.getLeftEncoderDistance();
+      speed = m_pidController.calculate(leftEncoderDistance, m_cutoff);
       speed = MathUtil.clamp(speed, -m_speed, m_speed);
+      USBLogging.info( "Distance: "+ leftEncoderDistance+ "\tSpeed: "+ speed + "\tSetpoint: " + m_pidController.getSetpoint());
       // if( m_cutoff < 0 ){
       //   speed *= -1;
       // }
@@ -83,7 +86,7 @@ public class AutonMove extends CommandBase {
       speed = m_speed;
     }
 
-    m_driveTrain.curvatureDrive(-speed, m_rotation, m_isQuickTurn);
+    m_driveTrain.curvatureDrive(speed, m_rotation, m_isQuickTurn);
   }
 
   // Called once the command ends or is interrupted.

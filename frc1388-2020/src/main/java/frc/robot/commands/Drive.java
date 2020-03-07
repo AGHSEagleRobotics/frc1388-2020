@@ -14,7 +14,7 @@ import frc.robot.subsystems.Rumble;
 
 public class Drive extends CommandBase {
 
-  private boolean m_precisionMode = false;
+  private boolean m_precisionMode = true;
   private boolean m_lastLeftStickButton = false; 
   private DriveTrain m_subsystem;
   private Rumble m_driveRumble;

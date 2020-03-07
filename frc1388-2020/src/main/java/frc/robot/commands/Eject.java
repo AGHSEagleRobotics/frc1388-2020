@@ -16,7 +16,7 @@ public class Eject extends CommandBase {
   private final IntakeSubsystem m_intakeSubsystem;
   private final MagazineSubsystem m_magazineSubsystem;
 
-  private final double k_intakeArmMotorUp = 0.2;
+  private final double k_intakeArmMotorUp = 0.6;
   private final double k_intakeShaftEjectSpeed = -0.5;
   // private final double k_intakeShaftEjectDefaultSpeed = -0.2;
 
