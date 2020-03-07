@@ -199,6 +199,8 @@ public class RobotContainer {
     // Eject
     new JoystickButton(driveController, XboxController.Button.kStickRight.value)
         .whileHeld(m_eject);
+    new JoystickButton(opController, XboxController.Button.kStickRight.value)
+        .whileHeld(m_eject);
     
     // ========================================
     // Color Spinner
