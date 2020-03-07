@@ -12,7 +12,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 
 public class UnjamIntake extends CommandBase {
   private final IntakeSubsystem m_intakeSubsystem;
-  private final double k_intakeShaftRetractSpeed = -1;
+  private final double k_intakeShaftSpeed = -1;
   /**
    * Creates a new UnjamIntake.
    */
@@ -25,7 +25,7 @@ public class UnjamIntake extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intakeSubsystem.setIntakeShaftMotor(k_intakeShaftRetractSpeed);
+    m_intakeSubsystem.setIntakeShaftMotor(k_intakeShaftSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
