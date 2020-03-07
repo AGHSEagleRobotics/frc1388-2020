@@ -43,6 +43,7 @@ public class Eject extends CommandBase {
   @Override
   public void initialize() {
     m_intakeSubsystem.setIntakeArmMotor(k_intakeArmMotorUp);
+    // System.out.println("Intake arm going up");
     m_intakeSubsystem.setIntakeShaftMotor(k_intakeShaftEjectSpeed);
 
     m_magazineSubsystem.startEjectMode();
@@ -73,6 +74,7 @@ public class Eject extends CommandBase {
     
    if (m_deployIntakeTimer.get() >= k_deployIntakeTimeout){
      m_intakeSubsystem.setIntakeArmMotor(0);
+     // System.out.println("Intake Arm Up");
      // System.out.println("Intake arm retracted");
    }
   }
