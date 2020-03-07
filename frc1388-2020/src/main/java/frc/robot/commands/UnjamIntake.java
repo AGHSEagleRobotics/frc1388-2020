@@ -12,7 +12,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 
 public class UnjamIntake extends CommandBase {
   private final IntakeSubsystem m_intakeSubsystem;
-  private final double k_intakeShaftRetractSpeed = -1;
+  private final double k_intakeShaftSpeed = -1;
   /**
    * Creates a new UnjamIntake.
    */
