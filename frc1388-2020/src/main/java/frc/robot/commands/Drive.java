@@ -19,6 +19,8 @@ public class Drive extends CommandBase {
   private DriveTrain m_subsystem;
   private Rumble m_driveRumble;
 
+  private final double FINE_TUNE_TURN = 0.5;
+
   /**
    * Creates a new DriveCommand.
    */
@@ -56,6 +58,11 @@ public class Drive extends CommandBase {
 
     if( m_precisionMode ){
         rightXAxis = scale( rightXAxis );
+    }
+
+    // while held the drive left bumper scaling the rotational speed
+    if( RobotContainer.getDriveLeftBumber() ){
+      rightXAxis *= FINE_TUNE_TURN;
     }
     
     // the deadband is placed in the subsystem

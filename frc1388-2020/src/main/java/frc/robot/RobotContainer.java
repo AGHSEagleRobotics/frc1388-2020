@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-
+import frc.robot.CompDashBoard.EscapePlan;
 import frc.robot.commands.AutonMove;
 import frc.robot.commands.AutonShootMove;
 import frc.robot.commands.DeployIntake;
@@ -322,6 +322,10 @@ public class RobotContainer {
     return opController.getTriggerAxis(Hand.kRight) > 0.9;
   }
 
+  public static boolean getDriveLeftBumber(){
+    return driveController.getBumper(Hand.kLeft);
+  }
+
   public Trolley getTrolley(){
     return m_trolleyCommand;
   }
@@ -332,13 +336,13 @@ public class RobotContainer {
 
 
   public Command getAutonCommand() {
-
+    EscapePlan escapePlan = m_compDashboard.getSelectedEscapePlan();
     switch( m_compDashboard.getSelectedObjective() ){
       case MOVE:
       return new AutonMove(
         m_driveTrain,                     // dependecy
         AutonMove.Mode.kDistanceDrive,    // drive mode
-        72,                                // drive distance (inches) // 
+        escapePlan.getDistance(),         // drive distance (inches)
         0.4,                              // drive speed (%)
         0,                                // rotation control
         false);                           // quick turn
@@ -348,7 +352,9 @@ public class RobotContainer {
       return new AutonShootMove(
         m_shooterSubsystem,
         m_magazineSubsystem,
-        m_driveTrain); // return m_shootMove;
+        m_driveTrain,
+        AutonMove.Mode.kDistanceDrive,    // drive mode
+        escapePlan.getDistance()); // return m_shootMove;
       case NOTHING:
       return null;
       default:

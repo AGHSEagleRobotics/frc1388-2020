@@ -150,9 +150,13 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // List of presets available to the operator
   private double[] m_rpmPresetList;
-
+  
   // Index of the current preset
   private int m_presetIndex = 0;
+  
+  private final double DELAY_AFTER_SHOOT_END = 2.0;
+
+  private boolean m_shooterEndDelay = false;
 
   // =======================================
   // Constructor: ShooterSubsystem
@@ -211,6 +215,7 @@ public class ShooterSubsystem extends SubsystemBase {
   /** Sets a flag used in periodic to set the motor to the wanted RPM */
   public void startShooter() {
     m_enabled = true;
+    m_shooterEndDelay = false;
   }
 
   /** Gives the wanted RPM to a periodic function for non-preset values */
@@ -276,9 +281,6 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setDeveloperMode(boolean mode) {
     m_developerMode = mode;
   }
-  private final double DELAY_AFTER_SHOOT_END = 2.0;
-
-  private boolean m_shooterEndDelay = false;
 
   @Override
   public void periodic() {

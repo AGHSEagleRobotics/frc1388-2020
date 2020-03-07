@@ -142,21 +142,27 @@ public class CompDashBoard {
     }
 
     public enum EscapePlan{
-        FOWARD( "Foward"),
-        REVERSE( "Reverse"),
-        DOUBLEREVERSE( "DoubleReverse"),
-        NONE( "None");
+        FOWARD( "Foward", -72 ),
+        REVERSE( "Reverse", 72),
+        DOUBLEREVERSE( "DoubleReverse", 150 ),
+        NONE( "None", 0);
 
         public static final EscapePlan DEFAULT = REVERSE;
 
         private String name;
+        private double distance;
 
-        private EscapePlan( String setName){
+        private EscapePlan( String setName, double distance){
             name = setName;
+            this.distance = distance;
         }
 
         public String getName(){
-            return name;
+            return name + " (" + Math.abs(distance) +" in)";
+        }
+
+        public double getDistance(){
+            return distance;
         }
     }
 

@@ -22,13 +22,14 @@ public class AutonShootMove extends SequentialCommandGroup {
   /**
    * Creates a new AutonShootMove.
    */
-  public AutonShootMove( ShooterSubsystem shooter, MagazineSubsystem magazineSubsystem, DriveTrain driveTrain ) {
+  public AutonShootMove( ShooterSubsystem shooter, MagazineSubsystem magazineSubsystem, DriveTrain driveTrain, 
+      AutonMove.Mode mode, double cutoff ) {
     
     Command multiShot = new MultiShot( shooter, magazineSubsystem, AUTON_SHOOT_RPM).withTimeout(SHOOTER_TIMEOUT);
     AutonMove autonMove = new AutonMove(
         driveTrain,                       // dependecy
-        AutonMove.Mode.kDistanceDrive,    // drive mode
-        72,                                // drive distance (inches)
+        mode,    // drive mode
+        cutoff,                           // drive distance (inches)
         0.4,                              // drive speed (%)
         0,                                // rotation control
         false);                           // quick turn
