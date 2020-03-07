@@ -49,16 +49,16 @@ public class SpinnerArm extends CommandBase {
   @Override
   public void execute() {
     double spinnerArmCurrent = Math.abs(m_colorSpinner.getSpinnerArmCurrent());
-    System.out.println("Current = " + spinnerArmCurrent);
+    // System.out.println("Current = " + spinnerArmCurrent);
     if (spinnerArmCurrent > k_stallAmps && m_stallTimer.get() == 0) {
       m_stallTimer.start();
-      System.out.println("Starting timer");
+    //  System.out.println("Starting timer");
     } else if (spinnerArmCurrent < k_stallAmps) {
       m_stallTimer.stop();
-      System.out.println("Stopping timer");
+    //  System.out.println("Stopping timer");
       m_stallTimer.reset();
     }
-    System.out.println("Timer = " + m_stallTimer.get());
+    // System.out.println("Timer = " + m_stallTimer.get());
   }
 
   // Called once the command ends or is interrupted.

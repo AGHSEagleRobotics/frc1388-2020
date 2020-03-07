@@ -178,9 +178,9 @@ public class RobotContainer {
         // Multi Shot
     new JoystickButton(driveController, XboxController.Button.kBumperRight.value)
         .whenHeld(m_multiShot);
-    new JoystickButton(opController, XboxController.Button.kY.value)
+    new JoystickButton(driveController, XboxController.Button.kY.value)
        .whenPressed(() -> m_shooterSubsystem.presetRPMUp());
-    new JoystickButton(opController, XboxController.Button.kX.value)
+    new JoystickButton(driveController, XboxController.Button.kX.value)
        .whenPressed(() -> m_shooterSubsystem.presetRPMDown());
     //     // Developer Mode
     // new Button(() -> driveController.getTriggerAxis(Hand.kLeft) > 0)
@@ -206,7 +206,7 @@ public class RobotContainer {
     new JoystickButton(opController, XboxController.Button.kStickRight.value)
         .whileHeld(m_eject);
     // UnjamIntake
-    new JoystickButton(opController, XboxController.Button.kStickLeft.value)
+    new POVButton(driveController, Dpad.kDown.getAngle())
         .whenHeld(m_unjamIntake);
     
     // ========================================
@@ -226,22 +226,16 @@ public class RobotContainer {
     // Color Spinner Arm Up (op)
     new POVButton( opController, Dpad.kUP.getAngle())
         .whenHeld(m_spinnerArmUp);
-    // Color Spinner Arm Up (drive)    
-    new POVButton( driveController, Dpad.kUP.getAngle())
-        .whenHeld(m_spinnerArmUp);
         
-        // Color Spinner Arm Down (op)
+    // Color Spinner Arm Down (op)
     new POVButton( opController, Dpad.kDown.getAngle())
-        .whenHeld(m_spinnerArmDown);
-    // Color Spinner Arm Down (drive)
-    new POVButton( driveController, Dpad.kDown.getAngle())
         .whenHeld(m_spinnerArmDown);
     
     // toggle Rotational Control on/off
-    new JoystickButton(driveController, XboxController.Button.kX.value)
+    new JoystickButton(opController, XboxController.Button.kX.value)
         .toggleWhenPressed(m_rotationControlCmd);
     // toggle Positional Control on/off
-    new JoystickButton(driveController, XboxController.Button.kY.value)
+    new JoystickButton(opController, XboxController.Button.kY.value)
         .toggleWhenPressed(m_positionControlCmd);
 
 
