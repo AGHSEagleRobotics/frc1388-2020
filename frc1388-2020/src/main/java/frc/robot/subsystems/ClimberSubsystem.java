@@ -99,8 +99,11 @@ public class ClimberSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if( DriverStation.getInstance().getMatchTime() <= ENDGAME_START && !DriverStation.getInstance().isAutonomous() ){
+    boolean autonomous = DriverStation.getInstance().isAutonomous();
+    double matchTime = DriverStation.getInstance().getMatchTime();
+    if( matchTime <= ENDGAME_START && !autonomous && matchTime > 0){
       m_climberEnabled = true;
     }
+    System.out.println(matchTime);
   }
 }
