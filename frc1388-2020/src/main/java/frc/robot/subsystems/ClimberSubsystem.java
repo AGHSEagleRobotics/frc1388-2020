@@ -104,6 +104,6 @@ public class ClimberSubsystem extends SubsystemBase {
     if( matchTime <= ENDGAME_START && !autonomous && matchTime > 0){
       m_climberEnabled = true;
     }
-    System.out.println(matchTime);
+    // System.out.println(matchTime);
   }
 }

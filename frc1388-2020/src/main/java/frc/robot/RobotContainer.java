@@ -27,6 +27,7 @@ import frc.robot.commands.RetractIntake;
 import frc.robot.commands.Climb;
 import frc.robot.commands.MultiShot;
 import frc.robot.commands.Trolley;
+import frc.robot.commands.UnjamIntake;
 import frc.robot.commands.DeveloperMode;
 
 import frc.robot.subsystems.ClimberSubsystem;
@@ -83,6 +84,7 @@ public class RobotContainer {
   private DeployIntake m_deployIntake;
   private RetractIntake m_retractIntake;
   private DeveloperMode m_developerMode;
+  private UnjamIntake m_unjamIntake;
 
   // components 
   public static XboxController driveController = new XboxController(Constants.USB_driveController);
@@ -114,6 +116,8 @@ public class RobotContainer {
     m_eject = new Eject(m_intakeSubsystem, m_magazineSubsystem);
     m_deployIntake = new DeployIntake(m_intakeSubsystem, m_magazineSubsystem);
     m_retractIntake = new RetractIntake(m_intakeSubsystem, m_magazineSubsystem);
+    m_unjamIntake = new UnjamIntake(m_intakeSubsystem);
+
     // m_autonMove = new AutonMove(
     //     m_driveTrain,                     // dependecy
     //     AutonMove.Mode.kDistanceDrive,    // drive mode
@@ -201,6 +205,9 @@ public class RobotContainer {
         .whileHeld(m_eject);
     new JoystickButton(opController, XboxController.Button.kStickRight.value)
         .whileHeld(m_eject);
+    // UnjamIntake
+    new JoystickButton(opController, XboxController.Button.kStickLeft.value)
+        .whenHeld(m_unjamIntake);
     
     // ========================================
     // Color Spinner
