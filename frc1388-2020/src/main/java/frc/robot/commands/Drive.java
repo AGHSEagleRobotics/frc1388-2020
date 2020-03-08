@@ -67,6 +67,8 @@ public class Drive extends CommandBase {
     if( RobotContainer.getDriveLeftBumber() ){
       m_compDashboard.setLimeLightLEDOn();
       rightXAxis *= FINE_TUNE_TURN;
+    }else{
+      m_compDashboard.setLimeLightDriveCamMode();
     }
     
     // the deadband is placed in the subsystem
