@@ -134,17 +134,14 @@ public class RobotContainer {
     m_climbCommand = new Climb(m_climberSubsystem);
     m_developerMode = new DeveloperMode(m_shooterSubsystem);
 
-    // set default commands here
-    m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
-    m_intakeSubsystem.setDefaultCommand(new IntakeDefault(m_intakeSubsystem, m_magazineSubsystem, m_retractIntake));
     // register subsystems so the scheduler runs periodically
     CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
     CommandScheduler.getInstance().registerSubsystem(m_colorSpinner);
-
-    // set default commands here
-    m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble ) );
     CommandScheduler.getInstance().registerSubsystem(m_magazineSubsystem);
-
+    
+    // set default commands here
+    m_driveTrain.setDefaultCommand(new Drive(m_driveTrain, m_driveRumble, m_compDashboard ) );
+    m_intakeSubsystem.setDefaultCommand(new IntakeDefault(m_intakeSubsystem, m_magazineSubsystem, m_retractIntake));
     m_climberSubsystem.setDefaultCommand(m_climbCommand);
     m_trolleySubsystem.setDefaultCommand(m_trolleyCommand);
     // Configure the button bindings

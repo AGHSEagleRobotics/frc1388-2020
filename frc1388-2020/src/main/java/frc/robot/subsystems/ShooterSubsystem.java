@@ -308,7 +308,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
       // log RPM
       if( DriverStation.getInstance().isAutonomous() ){
-        USBLogging.info("Target = " + m_rpm + "||RPM = " + getShooterRPM());
+        USBLogging.info("Target = " + m_rpm + "||RPM = " + (int) getShooterRPM());
       }
     }else{
       m_shootMotor.set(0);

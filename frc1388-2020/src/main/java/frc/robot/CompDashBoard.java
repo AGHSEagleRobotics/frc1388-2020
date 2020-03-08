@@ -363,8 +363,23 @@ public class CompDashBoard {
             if( m_videoSources[m_currVideoSourceIndex] != null ){
                 m_videoSink.setSource(m_videoSources[m_currVideoSourceIndex]); 
             }
+            int nextVideoSource = ( m_currVideoSourceIndex + 1 ) % m_videoSources.length;
+            try{
+                if( m_videoSources[m_currVideoSourceIndex].equals(m_limeLight) && m_currCamMode != 3){
+                    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+                    m_currCamMode = 3;
+                }else if(!m_videoSources[nextVideoSource].equals(m_limeLight) && m_currCamMode != 1 ){
+                    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+                    m_currCamMode = 1;
+                }
+            }catch( Exception e){}
             // complexWidgetCam.withProperties(Map.of( "Rotation", "None")); 
         }
+    }
+
+    public void setLimeLightLEDOn(){
+        m_currCamMode = 3;
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(m_currCamMode);
     }
 
     public double calcDistance(){
@@ -372,13 +387,14 @@ public class CompDashBoard {
         
         if( ledOn ){
             try{
-                distanceFromTargetValue = (TARGET_HEIGHT - MOUNT_HEIGHT) / Math.tan(MOUNT_ANGLE + NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0));
+                distanceFromTargetValue = (TARGET_HEIGHT - MOUNT_HEIGHT) / 
+                Math.tan(MOUNT_ANGLE + NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0));
             }catch( Exception e ){
                 USBLogging.info("Calc dsitance error");
             }
         }
 
-        if( distanceFromTargetValue > MAX_DISTANCE && distanceFromTargetValue < 0 ){
+        if( distanceFromTargetValue > MAX_DISTANCE || distanceFromTargetValue < 0 ){
             distanceFromTarget.setString( "" + distanceFromTarget);
             return distanceFromTargetValue;
         }else{
