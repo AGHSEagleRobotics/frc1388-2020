@@ -8,12 +8,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.RobotContainer;
+import frc.robot.USBLogging;
 import frc.robot.subsystems.DriveTrain;
 import edu.wpi.first.networktables.*;
+import edu.wpi.first.wpilibj.controller.PIDController;
 
 public class Targeting extends CommandBase {
-  private DriveTrain m_subsystem;
+  private DriveTrain m_driveTrain;
 
 
   /************* Constants ***************/
@@ -31,6 +34,9 @@ public class Targeting extends CommandBase {
 
   // saw some examples of a max speed on the targeting function some pros some cons
   private final double MAX_SPEED = 0.7; // TODO undecided value
+
+  // saw some examples of a max speed on the targeting function some pros some cons
+  private final double MAX_ROTATION = 0.7; // TODO undecided value
 
   // seeking turn rate
   private final double TURN_ROTATION = 0.3; // TODO undecided value
@@ -52,6 +58,17 @@ public class Targeting extends CommandBase {
 
   // Minimum distance to shoot the ball
   private final double MIN_DISTANCE = 3.0;
+  
+  private final double P_ROTATION_VALUE = 0.05;
+  private final double I_ROTATION_VALUE = 0.05;
+
+  private final double P_DRIVE_VALUE = 0.05;
+  private final double I_DRIVE_VALUE = 0.05;
+
+  private final double DRIVE_TOLERANCE = 0.05;
+  private final double ROTATION_TOLERANCE = 0.05;
+
+  private final double k_rotationalSetpoint = 0.0;
 
   /************* Changing Variables  ***************/
 
@@ -103,21 +120,29 @@ public class Targeting extends CommandBase {
 
   // flag for targeting to be running or not
   private boolean targetingOn = false;
+  
+  private PIDController m_rotationalController = new PIDController(P_ROTATION_VALUE, I_ROTATION_VALUE, 0.0);
+  private PIDController m_driveController = new PIDController(P_DRIVE_VALUE, I_DRIVE_VALUE, 0.0);
 
   private int ctr = 0;
+
   /**
    * Creates a new Targeting.
    */
   public Targeting( DriveTrain subsystem ) {
-    m_subsystem = subsystem;
+    m_driveTrain = subsystem;
     addRequirements(subsystem);
     // Use addRequirements() here to declare subsystem dependencies.
+    
+    m_rotationalController.setTolerance(ROTATION_TOLERANCE);
+    m_driveController.setTolerance(DRIVE_TOLERANCE);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
   }
+
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -126,62 +151,68 @@ public class Targeting extends CommandBase {
     distanceMath();
 
     if( ctr%200 == 0 ){
-      System.out.println( "Vlaid Target" + validTarget );
-      System.out.println( "Horizontal Offset" + horizontalOffset );
-      System.out.println( "vertical Offset" + verticalOffset );
-      System.out.println( "area" + area );
-      System.out.println( "Distance Flag" + distanceFlag );
-      System.out.println( "angle flag" + angleFlag );
+      USBLogging.debug( "Vlaid Target" + validTarget );
+      USBLogging.debug( "Horizontal Offset" + horizontalOffset );
+      USBLogging.debug( "vertical Offset" + verticalOffset );
+      USBLogging.debug( "area" + area );
+      USBLogging.debug( "Distance Flag" + distanceFlag );
+      USBLogging.debug( "angle flag" + angleFlag );
     }
     ctr++;
     // area where we can add values to shuffle board as the if will exit the execute
     
-    // retreives the full drive function button cue
-    boolean fullDriveFunction = RobotContainer.getXButton(); // TODO change this to a toggle function
+    // // retreives the full drive function button cue
+    // boolean fullDriveFunction = RobotContainer.getXButton(); 
     // checks to see if targeting is enabled if not then will exit execute but not close the command
-    targetingOn = RobotContainer.getBButton(); // TODO change this to toggle function
+    targetingOn = RobotContainer.getDriveLeftBumber();
     if( !targetingOn ){
       return;
     }
 
-    // if no target is seen it will turn in place till target found
-    if( !hasValidTarget ){
+    // // if no target is seen it will turn in place till target found
+    // if( !hasValidTarget ){
 
-      // if a valid target is seen then will turn towards the suspected target
-      // else then will spin in a clockwise direction
-      if( validTarget < MIN_VALID_TARGET ) {
-        m_subsystem.arcadeDrive( TURN_ROTATION, 0.0 );
-      }else{
-        double seekRotation;
-        if( horizontalOffset < 0.0 ) {
-          seekRotation = -TURN_ROTATION;
-        }else {
-          seekRotation = TURN_ROTATION;
-        }
+    //   // if a valid target is seen then will turn towards the suspected target
+    //   // else then will spin in a clockwise direction
+    //   if( validTarget < MIN_VALID_TARGET ) {
+    //     m_subsystem.arcadeDrive( TURN_ROTATION, 0.0 );
+    //   }else{
+    //     double seekRotation;
+    //     if( horizontalOffset < 0.0 ) {
+    //       seekRotation = -TURN_ROTATION;
+    //     }else {
+    //       seekRotation = TURN_ROTATION;
+    //     }
 
-        if(previousValidTarget > validTarget){
-          seekRotation *= -1;
-        }
+    //     if(previousValidTarget > validTarget){
+    //       seekRotation *= -1;
+    //     }
         
-        previousValidTarget = validTarget;
-        m_subsystem.arcadeDrive( seekRotation, 0.0 );
-      }
-    }
+    //     previousValidTarget = validTarget;
+    //     m_subsystem.arcadeDrive( seekRotation, 0.0 );
+    //   }
+    // }
 
-    // this checks to make sure that a change in position is needed
-    // not sold on the idea but thought it added to reenforcing the tolerances
-    if( !distanceFlag || !angleFlag ){
+    // // this checks to make sure that a change in position is needed
+    // // not sold on the idea but thought it added to reenforcing the tolerances
+    // if( !distanceFlag || !angleFlag ){
 
-      // if statement checking whether to turn or to drive or full drive function
-      // I personally think is advantageous because it will be a beeline and have faster momentum towards the target
-      if( fullDriveFunction ){
-        m_subsystem.arcadeDrive( driveSpeed, driveRotation);
-      }else if( !angleFlag ){
-        m_subsystem.arcadeDrive( 0.0, driveRotation );
-      }else{
-        m_subsystem.arcadeDrive( driveSpeed, 0.0);
-      }
+    //   // if statement checking whether to turn or to drive or full drive function
+    //   // I personally think is advantageous because it will be a beeline and have faster momentum towards the target
+    //   if( fullDriveFunction ){
+    //     m_subsystem.arcadeDrive( driveSpeed, driveRotation);
+    //   }else if( !angleFlag ){
+    //     m_subsystem.arcadeDrive( 0.0, driveRotation );
+    //   }else{
+    //     m_subsystem.arcadeDrive( driveSpeed, 0.0);
+    //   }
       
+    // }
+
+    driveRotation = m_rotationalController.calculate(horizontalOffset, k_rotationalSetpoint);
+    driveRotation = MathUtil.clamp(driveRotation, -MAX_SPEED, MAX_SPEED);
+    if( !angleFlag ){
+      m_driveTrain.curvatureDrive(0.0, driveRotation, true);
     }
 
   }
@@ -190,7 +221,7 @@ public class Targeting extends CommandBase {
     // place to put math for computing distance from the target so that the distance flag can be triggered 
     // also a good place for calculating velocity to change for the shooter
     distanceFromTarget = (TARGET_HEIGHT - MOUNT_HEIGHT ) / Math.tan( MOUNT_ANGLE + verticalOffset );
-    distanceFlag = distanceFromTarget < MAX_DISTANCE || distanceFromTarget > MIN_DISTANCE;
+    distanceFlag = distanceFromTarget < MAX_DISTANCE && distanceFromTarget > MIN_DISTANCE;
 
     // to calculate the positition editting the following formula is needed
     // other factors like air resistance, mass and degree angle of launch, gravity, Spin
@@ -213,16 +244,13 @@ public class Targeting extends CommandBase {
     hasValidTarget = true;
 
     // TODO decide the tolerance of the horizontal offset
-    angleFlag =  horizontalOffset > .05 || horizontalOffset < .05;
+    angleFlag =  horizontalOffset < 0.05 && horizontalOffset > -0.05;
 
-    driveRotation = horizontalOffset* K_ROTATION;
+    // driveRotation = horizontalOffset * K_ROTATION;
+    // driveRotation = MathUtil.clamp(driveRotation, -MAX_ROTATION, MAX_ROTATION);
+    // driveSpeed = (TARGET_AREA - area ) * K_DRIVE;
+    // driveSpeed = MathUtil.clamp(driveSpeed, -MAX_SPEED, MAX_SPEED);
 
-    driveSpeed = (TARGET_AREA - area )*K_DRIVE;
-
-    if( driveSpeed > MAX_SPEED){
-      driveSpeed = MAX_SPEED;
-    }
-    
   }
 
   // Called once the command ends or is interrupted.
