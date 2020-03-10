@@ -114,6 +114,7 @@ public class CompDashBoard {
     private HttpCamera m_limeLight;
     private int m_currVideoSourceIndex = 0;
     private int m_currCamMode = 1;
+    private int m_currProcessMode = 1;
     private VideoSink m_videoSink;
     private VideoSource[] m_videoSources;
 
@@ -365,11 +366,14 @@ public class CompDashBoard {
     public void toggleLimelightLED(){
         if( m_currCamMode == 1 ){
             m_currCamMode = 3;
+            m_currProcessMode = 1;
             ledOn = true;
         }else{
             m_currCamMode = 1;
+            m_currProcessMode = 0;
             ledOn = false;
         }
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(m_currCamMode);
     }
 
@@ -396,7 +400,14 @@ public class CompDashBoard {
 
     public void setLimeLightLEDOn(){
         m_currCamMode = 3;
+        m_currProcessMode = 0;
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(m_currProcessMode);
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(m_currCamMode);
+    }
+
+    public void setLimeLightDriveCamMode(){
+        m_currProcessMode = 1;
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(m_currProcessMode);
     }
 
     public double calcDistance(){
