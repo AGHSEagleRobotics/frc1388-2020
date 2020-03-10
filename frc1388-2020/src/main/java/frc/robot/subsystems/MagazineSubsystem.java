@@ -11,12 +11,11 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CompDashBoard;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import frc.robot.Constants;
-import frc.robot.USBLogging;
 
 import java.lang.Math;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 /**
@@ -28,7 +27,7 @@ public class MagazineSubsystem extends SubsystemBase {
   private CompDashBoard m_dashboard;
 
   // Method Fields
-  private final WPI_TalonSRX m_magazineMotor;
+  private final WPI_VictorSPX m_magazineMotor;
   
   // Magazine Status Variables
   private final int BALL_STOPPED_VALUE = 100; // TODO change int value after testing
@@ -40,9 +39,9 @@ public class MagazineSubsystem extends SubsystemBase {
   private boolean m_magazineIsFull = false;
   
   // Periodic Variables
-  private final double k_magazineShootSpeed = 0.5;
-  private final double k_magazineEjectSpeed = -0.5;
-  private final double k_magazineIntakeSpeed = 0.2;
+  private final double k_magazineShootSpeed = 1.0;
+  private final double k_magazineEjectSpeed = -1.0;
+  private final double k_magazineIntakeSpeed = 0.75;
 
   // Infrared Proximity Sensor Fields
   private final AnalogInput m_ballSensor;
@@ -54,12 +53,14 @@ public class MagazineSubsystem extends SubsystemBase {
   private final double VOLTAGE_EXPONENT = -0.9824;
 
   // TODO: In need of testing to define optimal distance
-  final double BALL_PRESENT_DISTANCE = 10;
+  // final double BALL_PRESENT_DISTANCE = 7;
+  private final double BALL_PRESENT_VOLTAGE = 10.0; // comp change by ryan to avoid errors where it thinks it sees a ball
 
   public MagazineSubsystem( CompDashBoard compDashBoard) {
     m_ballSensor = new AnalogInput(Constants.AIN_ballSensor);
-    m_magazineMotor = new WPI_TalonSRX(Constants.CANID_magazineMotor);
+    m_magazineMotor = new WPI_VictorSPX(Constants.CANID_magazineMotor);
     m_dashboard = compDashBoard;
+    m_magazineMotor.setInverted(InvertType.InvertMotorOutput);
   }
 
   // TODO change number of motors for magazine; number of motors for magazine is TBD
@@ -77,20 +78,21 @@ public class MagazineSubsystem extends SubsystemBase {
 
     // Constrain output
     distance = Math.max(Math.min(distance, MAX_DISTANCE), MIN_DISTANCE);
-
-    // System.out.println("distance = " + distance + "   voltage = " + voltage);
+    // System.out.println(distance);
+    // System.out.println("distance = " + distance + "   voltage = " + m_ballSensor.getValue());
     return distance;
   }
 
   public boolean ballIsPresent() {
-    boolean ballPresent = false;
-    if (getDistance() > BALL_PRESENT_DISTANCE){
-    ballPresent = false;
-    }
-    if (getDistance() <= BALL_PRESENT_DISTANCE){
-    ballPresent = true;
-    }
-    return getDistance() <= BALL_PRESENT_DISTANCE;
+    // boolean ballPresent = false;
+    // if (getDistance() > BALL_PRESENT_DISTANCE){
+    // ballPresent = false;
+    // }
+    // if (getDistance() <= BALL_PRESENT_DISTANCE){
+    // ballPresent = true;
+    // }
+    // System.out.println("Voltage = " + m_ballSensor.getVoltage());
+    return m_ballSensor.getVoltage() >= BALL_PRESENT_VOLTAGE;
   }
 
   public void startShooting() {

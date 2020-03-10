@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import frc.robot.USBLogging;
 import frc.robot.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
@@ -24,8 +25,9 @@ public class AutonMove extends CommandBase {
   private final boolean m_isQuickTurn;
 
   private final Timer m_timer = new Timer();
+  private final double P_VALUE = 0.03;
   // FIXME We need to determine the proper constants
-  private final PIDController m_pidController = new PIDController(0.25, 0, 0);
+  private final PIDController m_pidController = new PIDController(P_VALUE, 0, 0);
 
   public enum Mode {
 
@@ -38,7 +40,7 @@ public class AutonMove extends CommandBase {
    * 
    * @param driveTrain drive train subsystem
    * @param mode       stop mode
-   * @param cutoff     timed mode cutoff = seconds, distance mode cutoff = feet
+   * @param cutoff     timed mode cutoff = seconds, distance mode cutoff = inches
    */
   public AutonMove(DriveTrain driveTrain, Mode mode, double cutoff, double speed, double rotation,
       boolean isQuickTurn) {
@@ -63,6 +65,7 @@ public class AutonMove extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_driveTrain.resetLeftEncoder();
     m_timer.start();
   }
 
@@ -72,8 +75,13 @@ public class AutonMove extends CommandBase {
 
     double speed;
     if( m_mode == Mode.kDistanceDrive){
-      speed = m_pidController.calculate(m_driveTrain.getLeftEncoderDistance(), m_cutoff);
+      double leftEncoderDistance = m_driveTrain.getLeftEncoderDistance();
+      speed = m_pidController.calculate(leftEncoderDistance, m_cutoff);
       speed = MathUtil.clamp(speed, -m_speed, m_speed);
+      USBLogging.info( "Distance: "+ leftEncoderDistance+ "\tSpeed: "+ speed + "\tSetpoint: " + m_pidController.getSetpoint());
+      // if( m_cutoff < 0 ){
+      //   speed *= -1;
+      // }
     } else {
       speed = m_speed;
     }

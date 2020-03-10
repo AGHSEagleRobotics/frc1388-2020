@@ -1,0 +1,26 @@
+2020-03-01
+09:30:27.639891 [INFO] Git version: 1483578 (branch: master 2 files changed, 41 insertions(+), 38 deletions(-))
+09:30:27.662476 [INFO] Built: Sun 03/01/2020   09:30 AM
+09:30:27.679989 [INFO] Robot.robotInit()
+09:30:33.254148 [INFO] ShooterSub: RPM target = 6000.0
+09:30:33.616317 [INFO] ########  Robot disabled
+09:32:18.816644 [INFO] Drive initialized
+09:32:18.830197 [INFO] IntakeDefault initialized
+09:32:18.845938 [INFO] Trolley initialized
+09:32:18.861533 [INFO] Climb initialized
+09:32:18.891269 [INFO] ########  Teleop enabled
+09:32:27.571888 [INFO] Drive Interrupted
+09:32:27.584643 [INFO] IntakeDefault Interrupted
+09:32:27.605917 [INFO] Trolley Interrupted
+09:32:27.619551 [INFO] Climb Interrupted
+09:32:27.644873 [INFO] ########  Robot disabled
+09:35:42.878178 [INFO] ########  Teleop enabled
+09:35:42.892248 [INFO] Drive initialized
+09:35:42.906977 [INFO] IntakeDefault initialized
+09:35:42.925616 [INFO] Trolley initialized
+09:35:42.939566 [INFO] Climb initialized
+09:37:10.818385 [INFO] ########  Robot disabled
+09:37:10.832784 [INFO] Drive Interrupted
+09:37:10.847353 [INFO] IntakeDefault Interrupted
+09:37:10.860504 [INFO] Trolley Interrupted
+09:37:10.873696 [INFO] Climb Interrupted

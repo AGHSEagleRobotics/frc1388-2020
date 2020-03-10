@@ -16,7 +16,7 @@ public class DeployIntake extends CommandBase {
   private final IntakeSubsystem m_intakeSubsystem;
   private final MagazineSubsystem m_magazineSubsystem;
   
-  private final double k_intakeArmMotorDown = -1;
+  private final double k_intakeArmMotorDown = -0.5;
   private final double k_intakeShaftMotorForward = 1;
   
   private final double k_deployIntakeTimeout = 2;
@@ -50,15 +50,17 @@ public class DeployIntake extends CommandBase {
     m_intakeSubsystem.setIntakeShaftMotor(k_intakeShaftMotorForward);
 
     m_deployIntakeTimer.start();
-
-    m_magazineSubsystem.startIntakeMode();
+    
+    if (!m_magazineSubsystem.isMagazineFull()) {
+      m_magazineSubsystem.startIntakeMode();
+    }
   }
 
   // Called every time scheduler the runs while the command is scheduled.
   @Override
   public void execute() { 
     double intakeArmCurrent = Math.abs(m_intakeSubsystem.getIntakeArmCurrent());
-    System.out.println("Deploying");
+    // System.out.println("Deploying");
     // USBLogging.debug("Current = " + intakeArmCurrent);
     if (intakeArmCurrent > k_stallAmps && m_stallTimer.get() == 0) {
       m_stallTimer.start();
@@ -76,7 +78,7 @@ public class DeployIntake extends CommandBase {
   public void end(boolean interrupted) {
     m_intakeSubsystem.setIntakeArmMotor(0);
 
-    System.out.println("Deployed");
+    // System.out.println("Deployed");
 
     m_deployIntakeTimer.stop();
     m_deployIntakeTimer.reset();
@@ -86,7 +88,7 @@ public class DeployIntake extends CommandBase {
   @Override
   public boolean isFinished() {
     return m_deployIntakeTimer.hasPeriodPassed(k_deployIntakeTimeout) ||
-           m_stallTimer.hasPeriodPassed(k_stallTime);
-
+           m_stallTimer.hasPeriodPassed(k_stallTime) ||
+           m_magazineSubsystem.isMagazineFull();
   }
 }

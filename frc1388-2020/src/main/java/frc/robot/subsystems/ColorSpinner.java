@@ -15,6 +15,8 @@ import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.CompDashBoard;
@@ -106,6 +108,7 @@ public class ColorSpinner extends SubsystemBase {
 
     m_spinnerMotor.setInverted(true);
     m_spinnerArmMotor.setInverted(true);
+    m_spinnerMotor.setNeutralMode(NeutralMode.Brake);
 
     colorMatch.addColorMatch(kRedTarget);
     colorMatch.addColorMatch(kGreenTarget);

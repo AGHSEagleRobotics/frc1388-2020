@@ -77,6 +77,12 @@ public class CompDashBoard {
     private final int desiredColorHeight = 2;
     private final int desiredColorColumnIndex = 21;
     private final int desiredColorRowIndex = 7;
+    // distance calc
+    private final int distanceWidth = 2;
+    private final int distanceHeight = 2;
+    private final int distnaceColIndex = 18;
+    private final int distanceRowIndex = 4;
+
     
     private RobotContainer m_robotContainer;
     
@@ -95,24 +101,37 @@ public class CompDashBoard {
     private NetworkTableEntry colorGridYellow;
     private NetworkTableEntry colorGridBlue;
     private NetworkTableEntry desiredColorDisplay;
+    private NetworkTableEntry distanceFromTarget;
 
     // Cam
     private UsbCamera m_cameraIntake;
     private UsbCamera m_cameraClimber;
     private UsbCamera m_cameraColor;
+<<<<<<< HEAD
+=======
+    private UsbCamera m_cameraShooter;
+>>>>>>> 8c4c795718e6937b971b95e73a8837616c1811d0
     private HttpCamera m_limeLight;
     private int m_currVideoSourceIndex = 0;
     private int m_currCamMode = 1;
     private VideoSink m_videoSink;
     private VideoSource[] m_videoSources;
 
+    private final double TARGET_HEIGHT = 84.0;
+    private final double MOUNT_HEIGHT = 24.0; // TODO find exact once have time
+    private final double MOUNT_ANGLE = 0.0;
+    private final double MAX_DISTANCE = 300; // TODO Figure this out
+    private boolean ledOn = false;
+    private double distanceFromTargetValue = -1;
+    private boolean switchVideoOn = false;
+
     public enum Objective{ 
         SHOOTMOVE( "ShootMove" ),
-        MOVE( "Move" ),
+        MOVE( "Move" ), 
         SHOOT( "Shoot" ),
         NOTHING( "Nothing" );
 
-        public static final Objective DEFAULT = MOVE;
+        public static final Objective DEFAULT = NOTHING;
 
         private String name;
 
@@ -126,47 +145,66 @@ public class CompDashBoard {
     }
 
     public enum EscapePlan{
-        FOWARD( "Foward"),
-        REVERSE( "Reverse"),
-        DOUBLEREVERSE( "DoubleReverse"),
-        NONE( "None");
+        FOWARD( "Foward", -72 ),
+        REVERSE( "Reverse", 72),
+        DOUBLEREVERSE( "DoubleReverse", 150 ),
+        NONE( "None", 0);
 
         public static final EscapePlan DEFAULT = REVERSE;
 
         private String name;
+        private double distance;
 
-        private EscapePlan( String setName){
+        private EscapePlan( String setName, double distance){
             name = setName;
+            this.distance = distance;
         }
 
         public String getName(){
-            return name;
+            return name + " (" + Math.abs(distance) +" in)";
+        }
+
+        public double getDistance(){
+            return distance;
         }
     }
 
     public CompDashBoard() { 
-        camStuff();
+        // TODO uncomment which one is desirable
+        // camStuff();
+        // camStuff2();
+        camStuff3();
         constructShuffleLayout();
     }
 
+<<<<<<< HEAD
     private void camStuff() {
         m_cameraIntake = CameraServer.getInstance().startAutomaticCapture(Constants.USB_cameraIntake);
         m_cameraClimber = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber);
         m_cameraColor = CameraServer.getInstance().startAutomaticCapture( 3 );
+=======
+    // 
 
-        m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg");
+    public void camStuff() {
+        m_cameraShooter = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraShooter ); // intake = 3
+        m_cameraIntake = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber ); // climber 2 
+        m_cameraColor = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraColor ); 
+        m_cameraClimber = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber );
+        
+        m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg"); 
         
         // sets the pipeline of the limelight
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionDrivePipeline);
+        
         // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionProcessPipeline);
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
+       driveLimelightMode();
         
         m_videoSources = new VideoSource[] { 
-            m_limeLight, 
+            m_cameraShooter, 
             m_cameraIntake, 
-            m_cameraClimber
-            // m_cameraColor
+            m_cameraClimber,
+            m_cameraColor
         };
+>>>>>>> 8c4c795718e6937b971b95e73a8837616c1811d0
 
         // m_videoSources = new VideoSource[] {
         //     m_cameraIntake, 
@@ -178,8 +216,64 @@ public class CompDashBoard {
         if( m_cameraIntake != null ){
             m_videoSink.setSource(m_cameraIntake);
         }
-
+        
+        switchVideoOn = true;
     }
+    
+    public void camStuff2(){
+        m_cameraShooter = CameraServer.getInstance().startAutomaticCapture( ); 
+        m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg"); 
+        driveLimelightMode();
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionDrivePipeline);
+        m_videoSink = CameraServer.getInstance().getServer();
+        m_videoSink.setSource(m_cameraShooter);
+        switchVideoOn = false;
+    }
+    
+    public void camStuff3() {
+        // m_cameraShooter = CameraServer.getInstance().startAutomaticCapture(); 
+        m_cameraIntake = CameraServer.getInstance().startAutomaticCapture(); 
+        
+        m_limeLight = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg"); 
+        
+        driveLimelightMode();
+        // sets the pipeline of the limelight
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionDrivePipeline);
+        // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(visionProcessPipeline);
+        
+        
+        m_videoSources = new VideoSource[] { 
+            m_limeLight, 
+<<<<<<< HEAD
+            m_cameraIntake, 
+            m_cameraClimber
+            // m_cameraColor
+=======
+            m_cameraIntake
+>>>>>>> 8c4c795718e6937b971b95e73a8837616c1811d0
+        };
+
+        // m_videoSources = new VideoSource[] {
+        //     m_cameraIntake, 
+        //     m_cameraClimber
+        // };
+
+        m_videoSink = CameraServer.getInstance().getServer();
+
+        
+
+        if( m_cameraIntake != null ){
+            m_videoSink.setSource(m_cameraIntake);
+        }
+
+        switchVideoOn = true;
+    }
+
+    public void driveLimelightMode(){
+        // sets the limelight to driver display mode as some issues were appearing about it doing after it ahs been enabled
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
+    }
+
 
 
     public void constructShuffleLayout() {
@@ -221,7 +315,7 @@ public class CompDashBoard {
             .withWidget(BuiltInWidgets.kBooleanBox)
             .withSize(maxCapacityWidth, maxCapacityHeight)
             .withPosition(maxCapacityColumnIndex, maxCapacityRowIndex)
-            .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey"))
+            .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "gray"))
             .getEntry();
 
         colorSpinnerGrid = shuffleboard.getLayout("Color Spinner", BuiltInLayouts.kGrid)
@@ -231,22 +325,22 @@ public class CompDashBoard {
 
         colorGridBlue = colorSpinnerGrid.add("Blue", false)
             .withWidget(BuiltInWidgets.kBooleanBox)
-            .withProperties(Map.of("colorWhenTrue", "blue", "colorWhenFalse", "grey"))
+            .withProperties(Map.of("colorWhenTrue", "blue", "colorWhenFalse", "gray"))
             .getEntry();
 
         colorGridYellow = colorSpinnerGrid.add("Yellow", false)
             .withWidget(BuiltInWidgets.kBooleanBox)
-            .withProperties(Map.of("colorWhenTrue", "yellow", "colorWhenFalse", "grey"))
+            .withProperties(Map.of("colorWhenTrue", "yellow", "colorWhenFalse", "gray"))
             .getEntry();
 
         colorGridRed = colorSpinnerGrid.add("Red" , false)
             .withWidget(BuiltInWidgets.kBooleanBox)
-            .withProperties(Map.of("colorWhenTrue", "red", "colorWhenFalse", "grey"))
+            .withProperties(Map.of("colorWhenTrue", "red", "colorWhenFalse", "gray"))
             .getEntry();
 
         colorGridGreen = colorSpinnerGrid.add("Green", false )
             .withWidget(BuiltInWidgets.kBooleanBox)
-            .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "grey"))
+            .withProperties(Map.of("colorWhenTrue", "green", "colorWhenFalse", "gray"))
             .getEntry();
         
         shooterRPM = shuffleboard.add("ShooterRPM", "" ) // m_shooter.getShooterRPM())
@@ -261,24 +355,73 @@ public class CompDashBoard {
             .withPosition( desiredColorColumnIndex, desiredColorRowIndex )
             .getEntry();
         
-        
+        distanceFromTarget = shuffleboard.add( "Approx. Distance", "-1")
+            .withWidget(BuiltInWidgets.kTextView)
+            .withSize( distanceWidth, distanceHeight)
+            .withPosition( distnaceColIndex, distanceRowIndex )
+            .getEntry();
     }
 
     public void toggleLimelightLED(){
         if( m_currCamMode == 1 ){
             m_currCamMode = 3;
+            ledOn = true;
         }else{
             m_currCamMode = 1;
+            ledOn = false;
         }
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(m_currCamMode);
     }
 
     public void switchVideoSource() {
-        m_currVideoSourceIndex = (m_currVideoSourceIndex + 1) % m_videoSources.length;
-        if( m_videoSources[m_currVideoSourceIndex] != null ){
-            m_videoSink.setSource(m_videoSources[m_currVideoSourceIndex]);
+        if( switchVideoOn ){
+            m_currVideoSourceIndex = (m_currVideoSourceIndex + 1) % m_videoSources.length;
+            if( m_videoSources[m_currVideoSourceIndex] != null ){
+                m_videoSink.setSource(m_videoSources[m_currVideoSourceIndex]); 
+            }
+            int nextVideoSource = ( m_currVideoSourceIndex + 1 ) % m_videoSources.length;
+            try{
+                if( m_videoSources[m_currVideoSourceIndex].equals(m_limeLight) && m_currCamMode != 3){
+                    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+                    m_currCamMode = 3;
+                }else if(!m_videoSources[nextVideoSource].equals(m_limeLight) && m_currCamMode != 1 ){
+                    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+                    m_currCamMode = 1;
+                }
+            }catch( Exception e){}
+            // complexWidgetCam.withProperties(Map.of( "Rotation", "None")); 
         }
             complexWidgetCam.withProperties(Map.of( "Rotation", "None"));
+    }
+
+    public void setLimeLightLEDOn(){
+        m_currCamMode = 3;
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(m_currCamMode);
+    }
+
+    public double calcDistance(){
+        distanceFromTargetValue = -1;
+        
+        if( ledOn ){
+            try{
+                distanceFromTargetValue = (TARGET_HEIGHT - MOUNT_HEIGHT) / 
+                Math.tan(MOUNT_ANGLE + NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0));
+            }catch( Exception e ){
+                USBLogging.info("Calc dsitance error");
+            }
+        }
+
+        if( distanceFromTargetValue > MAX_DISTANCE || distanceFromTargetValue < 0 ){
+            distanceFromTarget.setString( "" + distanceFromTarget);
+            return distanceFromTargetValue;
+        }else{
+            distanceFromTarget.setString( "-1" );
+            return -1;
+        }
+    }
+
+    public boolean getLEDOn(){
+        return ledOn;
     }
 
     public void setDesiredColor( ColorWheel wheelColor ){ 
@@ -319,10 +462,10 @@ public class CompDashBoard {
         shooterRPM.setValue(value);
     }
 
-    public boolean getGreen(){
-        // USBLogging.debug( "" + RobotContainer.getAButton());
-        return RobotContainer.getAButton();
-    }
+    // public boolean getGreen(){
+    //     // USBLogging.debug( "" + RobotContainer.getAButton());
+    //     return RobotContainer.getAButton();
+    // }
  
     public void setMaxCapacity( boolean isFull ){
         // USBLogging.debug("Max:" + isFull);

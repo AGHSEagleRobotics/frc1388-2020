@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CompDashBoard;
 import frc.robot.Constants;
@@ -15,6 +17,7 @@ import frc.robot.USBLogging;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
@@ -28,6 +31,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private CompDashBoard m_compDashBoard;
 
+  private final Timer m_timerShooterEndDelay = new Timer();
   private final int pidIdx = 0;
   private final int timeoutMs = 0;
   private int tickCount = 0;
@@ -55,19 +59,79 @@ public class ShooterSubsystem extends SubsystemBase {
   private boolean m_enabled = false;
 
   // Developer mode should be removed after the shooter has been characterized.
-  private boolean m_developerMode = true;   // Make sure this is set to false when not testing code!
+  private boolean m_developerMode = false;   // TODO Make sure this is set to false when not testing code!
 
-  // Values for the array of presets used for competition
-  private final double shooterRpmFromStartingLine = 1000;   // TODO: determine value wanted
-  private final double shooterRpmFromNearTrench = 2000;     // TODO: determine value wanted
-  private final double shooterRpmFromFarTrench = 3000;      // TODO: determine value wanted
+
+
+  // =======================================
+  // Arrays for Shooter RPM (least to greatest)
+  // =======================================
+
+  // Values for the first array of presets used for competition
+  private final double shooterRpmFromStartingLine1 = 4000;
+  private final double shooterRpmFromNearTrench1 = 5000;
+  private final double shooterRpmFromFarTrench1 = 6000;
  
-  // Array of presets intended for use in competition
-  private final double[] presetList = {   // make sure these values are in increasing order!
-    shooterRpmFromStartingLine,
-    shooterRpmFromNearTrench,
-    shooterRpmFromFarTrench,
+  // First array of presets intended for use in competition
+  private final double[] presetList1 = {
+    shooterRpmFromStartingLine1,
+    shooterRpmFromNearTrench1,
+    shooterRpmFromFarTrench1,
   };
+
+
+  // Values for the second array of presets used for competition
+  private final double shooterRpmFromStartingLine2 = 1000;
+  private final double shooterRpmFromNearTrench2 = 2000;
+  private final double shooterRpmFromFarTrench2 = 3000;
+  
+  // Second array of presets intended for use in competition
+  private final double[] presetList2 = {
+    shooterRpmFromStartingLine2,
+    shooterRpmFromNearTrench2,
+    shooterRpmFromFarTrench2,
+  };
+
+
+  // Values for the third array of presets used for competition
+  private final double shooterRpmFromStartingLine3 = 1000;
+  private final double shooterRpmFromNearTrench3 = 2000;
+  private final double shooterRpmFromFarTrench3 = 3000;
+  
+  // Third array of presets intended for use in competition
+  private final double[] presetList3 = {
+    shooterRpmFromStartingLine3,
+    shooterRpmFromNearTrench3,
+    shooterRpmFromFarTrench3,
+  };
+
+
+  // Values for the fourth array of presets used for competition
+  private final double shooterRpmFromStartingLine4 = 1000;
+  private final double shooterRpmFromNearTrench4 = 2000;
+  private final double shooterRpmFromFarTrench4 = 3000;
+  
+  // Fourth array of presets intended for use in competition
+  private final double[] presetList4 = {
+    shooterRpmFromStartingLine4,
+    shooterRpmFromNearTrench4,
+    shooterRpmFromFarTrench4,
+  };
+
+
+  // Values for the fifth array of presets used for competition
+  private final double shooterRpmFromStartingLine5 = 1000;
+  private final double shooterRpmFromNearTrench5 = 2000;
+  private final double shooterRpmFromFarTrench5 = 3000;
+  
+  // Fifth array of presets intended for use in competition
+  private final double[] presetList5 = {
+    shooterRpmFromStartingLine5,
+    shooterRpmFromNearTrench5,
+    shooterRpmFromFarTrench5,
+  };
+
+
 
   // TESTING: Array used for RPM testing, hence the "developer" part of the name
   // private final double[] developerPresetList = {    // Temporary list for characterizing the shooter
@@ -86,9 +150,13 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // List of presets available to the operator
   private double[] m_rpmPresetList;
-
+  
   // Index of the current preset
   private int m_presetIndex = 0;
+  
+  private final double DELAY_AFTER_SHOOT_END = 2.0;
+
+  private boolean m_shooterEndDelay = false;
 
   // =======================================
   // Constructor: ShooterSubsystem
@@ -98,6 +166,9 @@ public class ShooterSubsystem extends SubsystemBase {
     m_shootMotor = new WPI_TalonFX(Constants.CANID_shootMotor);
     m_feedMotor = new WPI_VictorSPX(Constants.CANID_feedMotor);
     m_compDashBoard = compDashBoard;
+    
+    m_feedMotor.setInverted(InvertType.InvertMotorOutput);
+    // m_feedMotor.setInverted(InvertType.None);
 
     
 
@@ -128,11 +199,13 @@ public class ShooterSubsystem extends SubsystemBase {
      // USBLogging.warning("SHOOTER DEVELOPMENT MODE!");
     }
     else {
-      m_rpmPresetList = presetList;
+      m_rpmPresetList = presetList1; // TODO: Change to reflect current shooter configuration
     }
 
-    m_rpm = m_rpmPresetList[m_presetIndex];
+    m_presetIndex = m_rpmPresetList.length - 1;
 
+    m_rpm = m_rpmPresetList[m_presetIndex];
+    USBLogging.info( "ShooterSub: RPM target = " + m_rpm );
   } // End Constructor: ShooterSubsystem
 
   // =======================================
@@ -142,6 +215,7 @@ public class ShooterSubsystem extends SubsystemBase {
   /** Sets a flag used in periodic to set the motor to the wanted RPM */
   public void startShooter() {
     m_enabled = true;
+    m_shooterEndDelay = false;
   }
 
   /** Gives the wanted RPM to a periodic function for non-preset values */
@@ -163,6 +237,7 @@ public class ShooterSubsystem extends SubsystemBase {
   /** Gives the wanted RPM to a periodic function for preset values */
   public void usePresetRPM() {
     m_rpm = m_rpmPresetList[m_presetIndex];
+    USBLogging.info( "ShooterSub: RPM target = " + m_rpm );
   }
 
   /** Changes the RPM preset to the next value in the list */
@@ -183,8 +258,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
   /** Stops the shooter, RPM will be 0 */
   public void stopShooter() {
-    m_enabled = false;
-    m_shootMotor.set(0);
+    m_timerShooterEndDelay.reset();
+    m_shooterEndDelay = true;
+  }
+
+  public void startEndDelayTimer(){
+    m_timerShooterEndDelay.start();
   }
 
   /** Sets the feeder output speed */
@@ -216,6 +295,10 @@ public class ShooterSubsystem extends SubsystemBase {
       tickCount = 0;
     }
 
+    if( m_timerShooterEndDelay.hasPeriodPassed(DELAY_AFTER_SHOOT_END) && m_shooterEndDelay ){
+      m_enabled = false;
+      m_shooterEndDelay = false;
+    }
 
     // Flag used to determine if motor should be running,
     //runs motor at the wanted RPM
@@ -224,10 +307,16 @@ public class ShooterSubsystem extends SubsystemBase {
       m_shootMotor.set(ControlMode.Velocity, speed);
 
       // log RPM
-      USBLogging.debug("Target = " + m_rpm + "||RPM = " + getShooterRPM());
+      if( DriverStation.getInstance().isAutonomous() ){
+        USBLogging.info("Target = " + m_rpm + "||RPM = " + (int) getShooterRPM());
+      }
+    }else{
+      m_shootMotor.set(0);
     }
 
- 
+    if(m_compDashBoard.getLEDOn() ){
+      m_compDashBoard.calcDistance();
+    }
 
   }
 

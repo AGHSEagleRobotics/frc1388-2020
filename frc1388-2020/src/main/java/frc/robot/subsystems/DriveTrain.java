@@ -25,8 +25,8 @@ import frc.robot.Constants;
 public class DriveTrain extends SubsystemBase {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
-
-
+  
+  
   // Competition Bot motors
   private final WPI_TalonFX m_leftFront;
   private final WPI_TalonFX m_rightFront;
@@ -38,6 +38,22 @@ public class DriveTrain extends SubsystemBase {
   // private final WPI_VictorSPX m_leftBack;
   // private final WPI_VictorSPX m_rightBack;
 
+  private final double WHEEL_DIAMETER = 6.0; // in inches
+  
+  private final int COUNT_PER_REV = 2048;
+  
+  private final double CIM_BOX_GEAR_RATIO = 4.67; 
+  
+  private final double SPROCKETS_RATIO = 3.0; // TODO dont know the exact value
+  
+  private final double encoderDistanceRatio =
+      COUNT_PER_REV * // encoder counts per rev 
+      CIM_BOX_GEAR_RATIO * // cimple box 
+      SPROCKETS_RATIO;    // big bocs(Drive train ratio)  TODO ruff estimate
+  
+  private final double WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER; 
+   // "Rotation to distance by multiplying by the circumference in inches, units are important " - scottTechau
+  
   // need to instantiate the differenetail drive
   private final DifferentialDrive differentialDrive;
 
@@ -103,6 +119,14 @@ public class DriveTrain extends SubsystemBase {
     m_rightFront.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
   }
 
+  public void resetLeftEncoder(){
+    m_leftFront.setSelectedSensorPosition( 0 );
+  }
+
+  public void resetRightEncoder(){
+    m_leftFront.setSelectedSensorPosition( 0 );
+  }
+
   // Creates Options for drive method
   public void arcadeDrive( double speed, double rotation ) {
     differentialDrive.arcadeDrive( speed, rotation);
@@ -140,22 +164,17 @@ public class DriveTrain extends SubsystemBase {
    * @return The distance in feet
    */
   public double getRightEncoderDistance(){
-    return encoderDistanceRatio * m_rightFront.getSelectedSensorPosition();
+    return m_rightFront.getSelectedSensorPosition() / encoderDistanceRatio * WHEEL_CIRCUMFERENCE;
   }
 
   /**
-   * Gets the distance the left encoder has driven in feet
-   * @return The distance in feet
+   * Gets the distance the left encoder has driven in inches
+   * @return The distance in inches
    */
   public double getLeftEncoderDistance(){
-    return  encoderDistanceRatio * m_leftFront.getSelectedSensorPosition();
+    return m_leftFront.getSelectedSensorPosition() / encoderDistanceRatio * WHEEL_CIRCUMFERENCE;
   }
 
-  private final double encoderDistanceRatio =
-      2048 * // encoder counts per rev
-      4.67 * // cimple box 
-      5 *    // big bocs(Drive train ratio)  TODO not certain value
-      Math.PI / 2;  // "Rotation to distance by multiplying by the circumference in ft, units are important " - scottTechau
 
 
   // to be used in the future for uses like checking the gyro

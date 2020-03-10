@@ -1,0 +1,56 @@
+1969-12-31
+16:00:34.937393 [INFO] Git version: 2e7e247 (branch: master)
+16:00:37.758465 [INFO] Built: Sat 02/29/2020   03:53 PM
+16:00:37.774793 [INFO] Robot.robotInit()
+16:00:44.674076 [INFO] ShooterSub: RPM target = 6000.0
+2020-02-29
+17:18:24.046666 [INFO] ########  Robot disabled
+17:20:42.347898 [INFO] ########  Autonomous enabled
+17:20:42.398783 [INFO] FMS info:  CALN Qualification match 47 replay 1;  Blue alliance,  Driver Station 1
+17:20:42.450843 [INFO] ShooterSub: RPM target = 6000.0
+17:20:42.470742 [INFO] AutonShootMove initialized
+17:20:42.492754 [INFO] IntakeDefault initialized
+17:20:42.508724 [INFO] Trolley initialized
+17:20:42.523018 [INFO] Climb initialized
+17:20:57.747807 [INFO] ########  Robot disabled
+17:20:57.763732 [INFO] AutonShootMove Interrupted
+17:20:57.783325 [INFO] IntakeDefault Interrupted
+17:20:57.796906 [INFO] Trolley Interrupted
+17:20:57.814279 [INFO] Climb Interrupted
+17:20:57.968455 [INFO] ########  Teleop enabled
+17:20:57.983572 [INFO] Drive initialized
+17:20:57.998604 [INFO] IntakeDefault initialized
+17:20:58.012956 [INFO] Trolley initialized
+17:20:58.028986 [INFO] Climb initialized
+17:20:59.630846 [INFO] IntakeDefault Interrupted
+17:20:59.644583 [INFO] DeployIntake initialized
+17:21:01.649841 [INFO] DeployIntake Finished
+17:21:01.662396 [INFO] IntakeDefault initialized
+17:21:04.068946 [INFO] IntakeDefault Interrupted
+17:21:04.082494 [INFO] RetractIntake initialized
+17:21:04.709733 [INFO] RetractIntake Interrupted
+17:21:04.722316 [INFO] DeployIntake initialized
+17:21:06.729388 [INFO] DeployIntake Finished
+17:21:06.741725 [INFO] IntakeDefault initialized
+17:21:38.989815 [INFO] ShooterSub: RPM target = 6000.0
+17:21:39.002549 [INFO] MultiShot initialized
+17:21:39.929577 [INFO] MultiShot Interrupted
+17:21:51.988886 [INFO] ShooterSub: RPM target = 6000.0
+17:21:52.048874 [INFO] MultiShot initialized
+17:21:53.009122 [INFO] MultiShot Interrupted
+17:21:53.229070 [INFO] ShooterSub: RPM target = 6000.0
+17:21:53.242687 [INFO] MultiShot initialized
+17:21:55.909299 [INFO] MultiShot Interrupted
+17:21:57.688827 [INFO] IntakeDefault Interrupted
+17:21:57.702503 [INFO] DeployIntake initialized
+17:21:59.709390 [INFO] DeployIntake Finished
+17:21:59.721779 [INFO] IntakeDefault initialized
+17:22:09.749028 [INFO] IntakeDefault Interrupted
+17:22:09.761667 [INFO] RetractIntake initialized
+17:22:11.769542 [INFO] RetractIntake Finished
+17:22:11.785153 [INFO] IntakeDefault initialized
+17:23:13.288144 [INFO] ########  Robot disabled
+17:23:13.303206 [INFO] Drive Interrupted
+17:23:13.317716 [INFO] Trolley Interrupted
+17:23:13.332629 [INFO] Climb Interrupted
+17:23:13.346301 [INFO] IntakeDefault Interrupted

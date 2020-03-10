@@ -37,7 +37,7 @@ public class RotationalControl extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_colorSpinner.spinMotor(0.1);
+    m_colorSpinner.spinMotor(1.0); // TODO stop magic number
 
     ColorWheel curColor = m_colorSpinner.checkColor();
 

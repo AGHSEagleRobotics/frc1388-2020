@@ -1,0 +1,37 @@
+1969-12-31
+16:00:33.525330 [INFO] Git version: 1483578 (branch: master 2 files changed, 41 insertions(+), 38 deletions(-))
+16:00:33.559049 [INFO] Built: Sun 03/01/2020   09:30 AM
+16:00:33.577475 [INFO] Robot.robotInit()
+16:00:40.196915 [INFO] ShooterSub: RPM target = 6000.0
+16:00:41.036179 [INFO] ########  Robot disabled
+2020-03-01
+09:47:23.368537 [INFO] Drive initialized
+09:47:23.409546 [INFO] IntakeDefault initialized
+09:47:23.423534 [INFO] Trolley initialized
+09:47:23.441046 [INFO] Climb initialized
+09:47:23.471230 [INFO] ########  Teleop enabled
+09:47:34.118354 [INFO] Drive Interrupted
+09:47:34.131847 [INFO] IntakeDefault Interrupted
+09:47:34.145907 [INFO] Trolley Interrupted
+09:47:34.159345 [INFO] Climb Interrupted
+09:47:34.189086 [INFO] ########  Robot disabled
+09:48:35.715381 [INFO] ########  Teleop enabled
+09:48:35.733540 [INFO] Drive initialized
+09:48:35.746561 [INFO] IntakeDefault initialized
+09:48:35.759743 [INFO] Trolley initialized
+09:48:35.774636 [INFO] Climb initialized
+09:48:42.775392 [INFO] ########  Robot disabled
+09:48:42.790395 [INFO] Drive Interrupted
+09:48:42.809188 [INFO] IntakeDefault Interrupted
+09:48:42.823627 [INFO] Trolley Interrupted
+09:48:42.841379 [INFO] Climb Interrupted
+09:49:04.555587 [INFO] ########  Teleop enabled
+09:49:04.569974 [INFO] Drive initialized
+09:49:04.584516 [INFO] IntakeDefault initialized
+09:49:04.598091 [INFO] Trolley initialized
+09:49:04.611700 [INFO] Climb initialized
+09:49:38.335785 [INFO] ########  Robot disabled
+09:49:38.350998 [INFO] Drive Interrupted
+09:49:38.368593 [INFO] IntakeDefault Interrupted
+09:49:38.383062 [INFO] Trolley Interrupted
+09:49:38.397060 [INFO] Climb Interrupted

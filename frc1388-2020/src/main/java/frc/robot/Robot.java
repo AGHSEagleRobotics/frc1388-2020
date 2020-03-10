@@ -44,9 +44,9 @@ public class Robot extends TimedRobot {
 
 
     // print software version - use printLog so this always, always gets printed
-    USBLogging.printLog(
+    USBLogging.info(
         "Git version: " + BuildInfo.GIT_VERSION + " (branch: " + BuildInfo.GIT_BRANCH + BuildInfo.GIT_STATUS + ")");
-    USBLogging.printLog("Built: " + BuildInfo.BUILD_DATE + "  " + BuildInfo.BUILD_TIME);
+    USBLogging.info("Built: " + BuildInfo.BUILD_DATE + "  " + BuildInfo.BUILD_TIME);
 
     USBLogging.info("Robot.robotInit()");
     

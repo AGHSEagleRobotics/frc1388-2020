@@ -1,0 +1,28 @@
+1969-12-31
+16:00:35.208062 [INFO] Git version: 1483578 (branch: master)
+16:00:35.257941 [INFO] Built: Sun 03/01/2020   08:12 AM
+16:00:35.274194 [INFO] Robot.robotInit()
+16:00:41.972214 [INFO] ShooterSub: RPM target = 6000.0
+16:00:42.879311 [INFO] ########  Robot disabled
+2020-03-01
+08:55:52.428069 [INFO] ########  Autonomous enabled
+08:55:52.499990 [INFO] FMS info:  CALN Qualification match 53 replay 1;  Blue alliance,  Driver Station 3
+08:55:52.558091 [INFO] AutonShootMove initialized
+08:55:52.580729 [INFO] IntakeDefault initialized
+08:55:52.594249 [INFO] Trolley initialized
+08:55:52.607898 [INFO] Climb initialized
+08:56:07.767809 [INFO] ########  Robot disabled
+08:56:07.783394 [INFO] AutonShootMove Interrupted
+08:56:07.798366 [INFO] IntakeDefault Interrupted
+08:56:07.817337 [INFO] Trolley Interrupted
+08:56:07.831026 [INFO] Climb Interrupted
+08:56:08.008058 [INFO] ########  Teleop enabled
+08:56:08.024432 [INFO] Drive initialized
+08:56:08.039179 [INFO] IntakeDefault initialized
+08:56:08.054072 [INFO] Trolley initialized
+08:56:08.067878 [INFO] Climb initialized
+08:58:23.367957 [INFO] ########  Robot disabled
+08:58:23.382895 [INFO] Drive Interrupted
+08:58:23.397444 [INFO] IntakeDefault Interrupted
+08:58:23.414855 [INFO] Trolley Interrupted
+08:58:23.427870 [INFO] Climb Interrupted

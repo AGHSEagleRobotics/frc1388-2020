@@ -1,0 +1,54 @@
+1969-12-31
+16:00:35.192371 [INFO] Git version: 2e7e247 (branch: master)
+16:00:35.222334 [INFO] Built: Sat 02/29/2020   03:53 PM
+16:00:35.238395 [INFO] Robot.robotInit()
+16:00:41.881044 [INFO] ShooterSub: RPM target = 6000.0
+16:00:42.847800 [INFO] ########  Robot disabled
+2020-02-29
+16:13:22.698996 [INFO] ########  Teleop enabled
+16:13:22.756728 [INFO] Drive initialized
+16:13:22.770480 [INFO] IntakeDefault initialized
+16:13:22.787248 [INFO] Trolley initialized
+16:13:22.802 [INFO] Climb initialized
+16:15:57.900121 [INFO] ########  Robot disabled
+16:15:57.915156 [INFO] Drive Interrupted
+16:15:57.929803 [INFO] IntakeDefault Interrupted
+16:15:57.944086 [INFO] Trolley Interrupted
+16:15:57.962607 [INFO] Climb Interrupted
+16:16:03.838652 [INFO] ########  Teleop enabled
+16:16:03.856302 [INFO] Drive initialized
+16:16:03.869495 [INFO] IntakeDefault initialized
+16:16:03.883885 [INFO] Trolley initialized
+16:16:03.897332 [INFO] Climb initialized
+16:16:04.881940 [INFO] ShooterSub: RPM target = 6000.0
+16:16:05.319893 [INFO] ShooterSub: RPM target = 6000.0
+16:16:06.320170 [INFO] ShooterSub: RPM target = 6000.0
+16:16:07.521738 [INFO] IntakeDefault Interrupted
+16:16:07.538444 [INFO] RetractIntake initialized
+16:16:09.540426 [INFO] RetractIntake Finished
+16:16:09.552701 [INFO] IntakeDefault initialized
+16:16:10.978712 [INFO] ########  Robot disabled
+16:16:10.992765 [INFO] Drive Interrupted
+16:16:11.008152 [INFO] Trolley Interrupted
+16:16:11.025878 [INFO] Climb Interrupted
+16:16:11.038769 [INFO] IntakeDefault Interrupted
+16:16:25.998794 [INFO] ########  Teleop enabled
+16:16:26.014184 [INFO] Drive initialized
+16:16:26.027944 [INFO] IntakeDefault initialized
+16:16:26.041973 [INFO] Trolley initialized
+16:16:26.085490 [INFO] Climb initialized
+16:16:39.858882 [INFO] ########  Robot disabled
+16:16:39.873863 [INFO] Drive Interrupted
+16:16:39.888314 [INFO] IntakeDefault Interrupted
+16:16:39.904873 [INFO] Trolley Interrupted
+16:16:39.918213 [INFO] Climb Interrupted
+16:16:46.758912 [INFO] ########  Teleop enabled
+16:16:46.774964 [INFO] Drive initialized
+16:16:46.789224 [INFO] IntakeDefault initialized
+16:16:46.803959 [INFO] Trolley initialized
+16:16:46.822561 [INFO] Climb initialized
+16:17:21.119351 [INFO] ########  Robot disabled
+16:17:21.136728 [INFO] Drive Interrupted
+16:17:21.155416 [INFO] IntakeDefault Interrupted
+16:17:21.169471 [INFO] Trolley Interrupted
+16:17:21.182707 [INFO] Climb Interrupted

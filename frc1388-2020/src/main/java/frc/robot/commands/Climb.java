@@ -43,44 +43,45 @@ public class Climb extends CommandBase {
   public void execute() {
 
     m_climbingSpeed = RobotContainer.getOpLeftYAxis();
-    
-    if( m_climbingSpeed != 0.0 ){
-      pendLocking = false;
-      m_climberSubsystem.setClimberServoUnlock();
-      if( !unlockedForTime && timer.get() == 0.0 ){
-        timer.start();
-      }
-    }
+    m_climberSubsystem.setClimberMotor(m_climbingSpeed);
 
-    // if( !m_climberSubsystem.getClimberSolenoidState() ){
-    //   m_climberSubsystem.setClimberMotor(m_climbingSpeed);
+    // if( m_climbingSpeed != 0.0 ){
+    //   pendLocking = false;
+    //   m_climberSubsystem.setClimberServoUnlock();
+    //   if( !unlockedForTime && timer.get() == 0.0 ){
+    //     timer.start();
+    //   }
     // }
 
-    if( timer.hasPeriodPassed(timeTillMotorReady) && !unlockedForTime ){
-      unlockedForTime = true;
-      timer.stop();
-      timer.reset();
-    }
+    // // if( !m_climberSubsystem.getClimberSolenoidState() ){
+    // //   m_climberSubsystem.setClimberMotor(m_climbingSpeed);
+    // // }
 
-    if( unlockedForTime ){
-      if( !m_climberSubsystem.getClimberServoState() ){
-        m_climberSubsystem.setClimberMotor(m_climbingSpeed);
-      }else if( m_climbingSpeed < 0.0 ){
-        m_climberSubsystem.setClimberMotor(m_climbingSpeed);
-      }
-    }
+    // if( timer.hasPeriodPassed(timeTillMotorReady) && !unlockedForTime ){
+    //   unlockedForTime = true;
+    //   timer.stop();
+    //   timer.reset();
+    // }
 
-    if( m_climbingSpeed == 0.0 && !pendLocking ){
-      pendLocking = true;
-      timerElasp.start();
-    }
+    // if( unlockedForTime ){
+    //   if( !m_climberSubsystem.getClimberServoState() ){
+    //     m_climberSubsystem.setClimberMotor(m_climbingSpeed);
+    //   }else if( m_climbingSpeed < 0.0 ){
+    //     m_climberSubsystem.setClimberMotor(m_climbingSpeed);
+    //   }
+    // }
 
-    if(pendLocking && timerElasp.hasPeriodPassed(timeTillLockReady)){
-      m_climberSubsystem.setClimberServoLock();
-      unlockedForTime = false;
-      timerElasp.stop();
-      timerElasp.reset();
-    }
+    // if( m_climbingSpeed == 0.0 && !pendLocking ){
+    //   pendLocking = true;
+    //   timerElasp.start();
+    // }
+
+    // if(pendLocking && timerElasp.hasPeriodPassed(timeTillLockReady)){
+    //   m_climberSubsystem.setClimberServoLock();
+    //   unlockedForTime = false;
+    //   timerElasp.stop();
+    //   timerElasp.reset();
+    // }
 
   }
 

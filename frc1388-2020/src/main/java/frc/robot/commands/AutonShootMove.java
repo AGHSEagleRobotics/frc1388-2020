@@ -17,17 +17,20 @@ import frc.robot.subsystems.ShooterSubsystem;
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
 public class AutonShootMove extends SequentialCommandGroup {
+  private final double AUTON_SHOOT_RPM = 5400;
+  private final double SHOOTER_TIMEOUT = 6.0;
   /**
    * Creates a new AutonShootMove.
    */
-  public AutonShootMove( ShooterSubsystem shooter, MagazineSubsystem magazineSubsystem, DriveTrain driveTrain ) {
+  public AutonShootMove( ShooterSubsystem shooter, MagazineSubsystem magazineSubsystem, DriveTrain driveTrain, 
+      AutonMove.Mode mode, double cutoff ) {
     
-    Command multiShot = new MultiShot( shooter, magazineSubsystem ).withTimeout(5);
+    Command multiShot = new MultiShot( shooter, magazineSubsystem, AUTON_SHOOT_RPM).withTimeout(SHOOTER_TIMEOUT);
     AutonMove autonMove = new AutonMove(
         driveTrain,                       // dependecy
-        AutonMove.Mode.kDistanceDrive,    // drive mode
-        1,                                // drive distance (feet)
-        0.5,                              // drive speed (%)
+        mode,    // drive mode
+        cutoff,                           // drive distance (inches)
+        0.4,                              // drive speed (%)
         0,                                // rotation control
         false);                           // quick turn
     addCommands(multiShot, autonMove);
