@@ -12,9 +12,13 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CompDashBoard;
 import frc.robot.Constants;
+import frc.robot.DataLogging;
 import frc.robot.USBLogging;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+
+import java.time.LocalTime;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
@@ -231,6 +235,8 @@ public class ShooterSubsystem extends SubsystemBase {
     double rawVelocity = m_shootMotor.getSelectedSensorVelocity();   // counts per cycle (100 ms)
     // calculate actual velocity in rpm based on raw velocity data
     double rpmActual = rawVelocity * sensorCyclesPerSecond * secPerMin / countsPerRev;
+
+    rpmActual = LocalTime.now().getSecond() + m_rpm - 30;
     return rpmActual;
   }
 
@@ -284,6 +290,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    int lastLoggedShooterRpm = -1;
+
     // use ticks as a cheap timer
     tickCount++;
     // if tickCount theshold passed, do the things. 50 ticks is 1 second.
@@ -313,6 +321,13 @@ public class ShooterSubsystem extends SubsystemBase {
     }else{
       m_shootMotor.set(0);
     }
+
+    int loggedShooterRpm = (int) getShooterRPM();
+    if (loggedShooterRpm != lastLoggedShooterRpm) {
+      DataLogging.logNumber("ShooterTarget", m_rpm);
+      DataLogging.logNumber("ShooterRPM", loggedShooterRpm);
+    }
+    lastLoggedShooterRpm = loggedShooterRpm;
 
     if(m_compDashBoard.getLEDOn() ){
       m_compDashBoard.calcDistance();
