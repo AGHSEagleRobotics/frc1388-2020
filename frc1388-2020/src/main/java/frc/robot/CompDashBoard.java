@@ -107,10 +107,7 @@ public class CompDashBoard {
     private UsbCamera m_cameraIntake;
     private UsbCamera m_cameraClimber;
     private UsbCamera m_cameraColor;
-<<<<<<< HEAD
-=======
     private UsbCamera m_cameraShooter;
->>>>>>> 8c4c795718e6937b971b95e73a8837616c1811d0
     private HttpCamera m_limeLight;
     private int m_currVideoSourceIndex = 0;
     private int m_currCamMode = 1;
@@ -178,12 +175,6 @@ public class CompDashBoard {
         constructShuffleLayout();
     }
 
-<<<<<<< HEAD
-    private void camStuff() {
-        m_cameraIntake = CameraServer.getInstance().startAutomaticCapture(Constants.USB_cameraIntake);
-        m_cameraClimber = CameraServer.getInstance().startAutomaticCapture( Constants.USB_cameraClimber);
-        m_cameraColor = CameraServer.getInstance().startAutomaticCapture( 3 );
-=======
     // 
 
     public void camStuff() {
@@ -205,7 +196,6 @@ public class CompDashBoard {
             m_cameraClimber,
             m_cameraColor
         };
->>>>>>> 8c4c795718e6937b971b95e73a8837616c1811d0
 
         // m_videoSources = new VideoSource[] {
         //     m_cameraIntake, 
@@ -245,13 +235,7 @@ public class CompDashBoard {
         
         m_videoSources = new VideoSource[] { 
             m_limeLight, 
-<<<<<<< HEAD
-            m_cameraIntake, 
-            m_cameraClimber
-            // m_cameraColor
-=======
             m_cameraIntake
->>>>>>> 8c4c795718e6937b971b95e73a8837616c1811d0
         };
 
         // m_videoSources = new VideoSource[] {
