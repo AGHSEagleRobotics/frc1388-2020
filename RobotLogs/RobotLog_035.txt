@@ -1,0 +1,92 @@
+2020-03-01
+10:48:48.058054 [INFO] Git version: 1483578 (branch: master 4 files changed, 47 insertions(+), 41 deletions(-))
+10:48:48.082220 [INFO] Built: Sun 03/01/2020   10:48 AM
+10:48:48.096041 [INFO] Robot.robotInit()
+10:48:53.757076 [INFO] ShooterSub: RPM target = 6000.0
+10:48:54.092660 [INFO] ########  Robot disabled
+10:48:57.167383 [INFO] ########  Teleop enabled
+10:48:57.191041 [INFO] Drive initialized
+10:48:57.208275 [INFO] IntakeDefault initialized
+10:48:57.226608 [INFO] Trolley initialized
+10:48:57.242584 [INFO] Climb initialized
+10:49:00.927202 [INFO] ########  Robot disabled
+10:49:00.945616 [INFO] Drive Interrupted
+10:49:00.960698 [INFO] IntakeDefault Interrupted
+10:49:00.975514 [INFO] Trolley Interrupted
+10:49:00.995318 [INFO] Climb Interrupted
+10:50:43.008007 [INFO] ########  Teleop enabled
+10:50:43.027310 [INFO] Drive initialized
+10:50:43.044996 [INFO] IntakeDefault initialized
+10:50:43.058602 [INFO] Trolley initialized
+10:50:43.072543 [INFO] Climb initialized
+10:51:51.708064 [INFO] ########  Robot disabled
+10:51:51.723148 [INFO] Drive Interrupted
+10:51:51.741331 [INFO] IntakeDefault Interrupted
+10:51:51.757224 [INFO] Trolley Interrupted
+10:51:51.774402 [INFO] Climb Interrupted
+10:52:01.967856 [INFO] ########  Teleop enabled
+10:52:01.982119 [INFO] Drive initialized
+10:52:01.997032 [INFO] IntakeDefault initialized
+10:52:02.012308 [INFO] Trolley initialized
+10:52:02.026421 [INFO] Climb initialized
+10:52:09.290791 [INFO] IntakeDefault Interrupted
+10:52:09.304794 [INFO] DeployIntake initialized
+10:52:11.310576 [INFO] DeployIntake Finished
+10:52:11.324550 [INFO] IntakeDefault initialized
+10:52:16.870370 [INFO] IntakeDefault Interrupted
+10:52:16.883116 [INFO] RetractIntake initialized
+10:52:18.889789 [INFO] RetractIntake Finished
+10:52:18.903693 [INFO] IntakeDefault initialized
+10:52:22.749538 [INFO] IntakeDefault Interrupted
+10:52:22.763306 [INFO] DeployIntake initialized
+10:52:24.769821 [INFO] DeployIntake Finished
+10:52:24.782940 [INFO] IntakeDefault initialized
+10:52:27.649880 [INFO] IntakeDefault Interrupted
+10:52:27.692138 [INFO] RetractIntake initialized
+10:52:29.710495 [INFO] RetractIntake Finished
+10:52:29.723927 [INFO] IntakeDefault initialized
+10:53:24.008453 [INFO] ########  Robot disabled
+10:53:24.023935 [INFO] Drive Interrupted
+10:53:24.041546 [INFO] Trolley Interrupted
+10:53:24.056617 [INFO] Climb Interrupted
+10:53:24.070281 [INFO] IntakeDefault Interrupted
+10:57:30.209987 [INFO] ########  Teleop enabled
+10:57:30.225218 [INFO] Drive initialized
+10:57:30.239987 [INFO] IntakeDefault initialized
+10:57:30.259107 [INFO] Trolley initialized
+10:57:30.273142 [INFO] Climb initialized
+10:57:32.291135 [INFO] IntakeDefault Interrupted
+10:57:32.305402 [INFO] DeployIntake initialized
+10:57:34.311269 [INFO] DeployIntake Finished
+10:57:34.325473 [INFO] IntakeDefault initialized
+10:57:50.591868 [INFO] IntakeDefault Interrupted
+10:57:50.605864 [INFO] RetractIntake initialized
+10:57:52.611596 [INFO] RetractIntake Finished
+10:57:52.624574 [INFO] IntakeDefault initialized
+10:58:01.333458 [INFO] ShooterSub: RPM target = 6000.0
+10:58:01.347499 [INFO] MultiShot initialized
+10:58:01.472237 [INFO] MultiShot Interrupted
+10:58:06.110008 [INFO] ########  Robot disabled
+10:58:06.124127 [INFO] Drive Interrupted
+10:58:06.139440 [INFO] Trolley Interrupted
+10:58:06.157477 [INFO] Climb Interrupted
+10:58:06.172762 [INFO] IntakeDefault Interrupted
+10:58:26.650086 [INFO] ########  Teleop enabled
+10:58:26.664107 [INFO] Drive initialized
+10:58:26.681180 [INFO] IntakeDefault initialized
+10:58:26.694253 [INFO] Trolley initialized
+10:58:26.708352 [INFO] Climb initialized
+10:58:50.251780 [INFO] ShooterSub: RPM target = 6000.0
+10:58:50.264945 [INFO] MultiShot initialized
+10:58:50.451926 [INFO] MultiShot Interrupted
+10:58:56.691785 [INFO] ShooterSub: RPM target = 6000.0
+10:58:56.706555 [INFO] MultiShot initialized
+10:58:58.452143 [INFO] MultiShot Interrupted
+10:59:11.011568 [INFO] ShooterSub: RPM target = 6000.0
+10:59:11.023831 [INFO] MultiShot initialized
+10:59:13.912086 [INFO] MultiShot Interrupted
+10:59:22.910548 [INFO] ########  Robot disabled
+10:59:22.925518 [INFO] Drive Interrupted
+10:59:22.944549 [INFO] IntakeDefault Interrupted
+10:59:22.959211 [INFO] Trolley Interrupted
+10:59:22.977073 [INFO] Climb Interrupted

@@ -1,0 +1,17 @@
+2020-03-01
+10:39:09.308506 [INFO] Git version: 1483578 (branch: master 4 files changed, 45 insertions(+), 39 deletions(-))
+10:39:09.330755 [INFO] Built: Sun 03/01/2020   10:38 AM
+10:39:09.343887 [INFO] Robot.robotInit()
+10:39:15.032606 [INFO] ShooterSub: RPM target = 6000.0
+10:39:15.373505 [INFO] ########  Robot disabled
+10:39:23.270074 [INFO] ########  Autonomous enabled
+10:39:23.284468 [INFO] FMS not connected
+10:39:23.371547 [INFO] AutonShootMove initialized
+10:39:23.391784 [INFO] IntakeDefault initialized
+10:39:23.409810 [INFO] Trolley initialized
+10:39:23.423709 [INFO] Climb initialized
+10:39:33.249206 [INFO] ########  Robot disabled
+10:39:33.271357 [INFO] AutonShootMove Interrupted
+10:39:33.292108 [INFO] IntakeDefault Interrupted
+10:39:33.306071 [INFO] Trolley Interrupted
+10:39:33.323190 [INFO] Climb Interrupted

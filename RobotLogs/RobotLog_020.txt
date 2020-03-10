@@ -1,0 +1,167 @@
+2020-03-01
+08:12:51.562049 [INFO] Git version: 1483578 (branch: master)
+08:12:51.584532 [INFO] Built: Sun 03/01/2020   08:12 AM
+08:12:51.602662 [INFO] Robot.robotInit()
+08:12:57.173074 [INFO] ShooterSub: RPM target = 6000.0
+08:12:57.536317 [INFO] ########  Robot disabled
+08:13:59.530871 [INFO] ########  Teleop enabled
+08:13:59.556447 [INFO] Drive initialized
+08:13:59.572372 [INFO] IntakeDefault initialized
+08:13:59.590342 [INFO] Trolley initialized
+08:13:59.605577 [INFO] Climb initialized
+08:14:03.292451 [INFO] SpinnerArm initialized
+08:14:04.372068 [INFO] SpinnerArm Interrupted
+08:14:14.711767 [INFO] SpinnerArm initialized
+08:14:15.551935 [INFO] SpinnerArm Interrupted
+08:14:16.974625 [INFO] Desired Color is Blue
+08:14:16.988529 [INFO] PositionControl initialized
+08:14:17.612681 [INFO] PositionControl Finished
+08:14:19.191575 [INFO] Desired Color is Blue
+08:14:19.203710 [INFO] PositionControl initialized
+08:14:19.219527 [INFO] PositionControl Finished
+08:14:20.291922 [INFO] Desired Color is Blue
+08:14:20.305336 [INFO] PositionControl initialized
+08:14:20.319552 [INFO] PositionControl Finished
+08:14:24.712115 [INFO] RotationalControl initialized
+08:14:24.730114 [INFO] Color Counter: 0
+Blue
+08:14:25.293392 [INFO] Color Counter: 1
+Green
+08:14:25.792196 [INFO] Color Counter: 2
+Red
+08:14:26.312111 [INFO] Color Counter: 3
+Yellow
+08:14:26.811851 [INFO] Color Counter: 4
+Blue
+08:14:27.311740 [INFO] Color Counter: 5
+Green
+08:14:27.811725 [INFO] Color Counter: 6
+Red
+08:14:28.231854 [INFO] Color Counter: 7
+Yellow
+08:14:28.731929 [INFO] Color Counter: 8
+Blue
+08:14:29.232052 [INFO] Color Counter: 9
+Green
+08:14:29.731873 [INFO] Color Counter: 10
+Red
+08:14:30.251948 [INFO] Color Counter: 11
+Yellow
+08:14:30.751896 [INFO] Color Counter: 12
+Blue
+08:14:31.151807 [INFO] Color Counter: 13
+Green
+08:14:31.651731 [INFO] Color Counter: 14
+Red
+08:14:32.171818 [INFO] Color Counter: 15
+Yellow
+08:14:32.671921 [INFO] Color Counter: 16
+Blue
+08:14:33.171680 [INFO] Color Counter: 17
+Green
+08:14:33.572165 [INFO] Color Counter: 18
+Red
+08:14:34.091797 [INFO] Color Counter: 19
+Yellow
+08:14:34.591890 [INFO] Color Counter: 20
+Blue
+08:14:35.091574 [INFO] Color Counter: 21
+Green
+08:14:35.611711 [INFO] Color Counter: 22
+Red
+08:14:36.011749 [INFO] Color Counter: 23
+Yellow
+08:14:36.511760 [INFO] Color Counter: 24
+Blue
+08:14:37.011501 [INFO] Color Counter: 25
+Green
+08:14:37.531707 [INFO] Color Counter: 26
+Red
+08:14:38.031827 [INFO] Color Counter: 27
+Yellow
+08:14:38.531581 [INFO] Color Counter: 28
+Blue
+08:14:38.545431 [INFO] RotationalControl Finished
+08:14:42.911519 [INFO] RotationalControl initialized
+08:14:43.491887 [INFO] Color Counter: 1
+Green
+08:14:43.991646 [INFO] Color Counter: 2
+Red
+08:14:44.491783 [INFO] Color Counter: 3
+Yellow
+08:14:45.011644 [INFO] Color Counter: 4
+Blue
+08:14:45.511661 [INFO] Color Counter: 5
+Green
+08:14:46.011561 [INFO] Color Counter: 6
+Red
+08:14:46.411526 [INFO] Color Counter: 7
+Yellow
+08:14:46.931738 [INFO] Color Counter: 8
+Blue
+08:14:47.431741 [INFO] Color Counter: 9
+Green
+08:14:47.931758 [INFO] Color Counter: 10
+Red
+08:14:48.431573 [INFO] Color Counter: 11
+Yellow
+08:14:48.951952 [INFO] Color Counter: 12
+Blue
+08:14:49.353940 [INFO] Color Counter: 13
+Green
+08:14:49.852099 [INFO] Color Counter: 14
+Red
+08:14:50.355492 [INFO] Color Counter: 15
+Yellow
+08:14:50.871913 [INFO] Color Counter: 16
+Blue
+08:14:51.373187 [INFO] Color Counter: 17
+Green
+08:14:51.871824 [INFO] Color Counter: 18
+Red
+08:14:52.271641 [INFO] Color Counter: 19
+Yellow
+08:14:52.791742 [INFO] Color Counter: 20
+Blue
+08:14:53.291947 [INFO] Color Counter: 21
+Green
+08:14:53.792564 [INFO] Color Counter: 22
+Red
+08:14:54.191864 [INFO] Color Counter: 23
+Yellow
+08:14:54.812382 [INFO] Color Counter: 24
+Blue
+08:14:55.211731 [INFO] Color Counter: 25
+Green
+08:14:55.711716 [INFO] Color Counter: 26
+Red
+08:14:56.231995 [INFO] Color Counter: 27
+Yellow
+08:14:56.731836 [INFO] Color Counter: 28
+Blue
+08:14:56.745316 [INFO] RotationalControl Finished
+08:15:06.191908 [INFO] SpinnerArm initialized
+08:15:06.871604 [INFO] SpinnerArm Interrupted
+08:15:07.671624 [INFO] SpinnerArm initialized
+08:15:08.011574 [INFO] SpinnerArm Interrupted
+08:15:08.513360 [INFO] SpinnerArm initialized
+08:15:09.011892 [INFO] SpinnerArm Interrupted
+08:15:10.652240 [INFO] SpinnerArm initialized
+08:15:10.971624 [INFO] SpinnerArm Interrupted
+08:15:11.171695 [INFO] SpinnerArm initialized
+08:15:12.372002 [INFO] SpinnerArm Interrupted
+08:15:15.751600 [INFO] ########  Robot disabled
+08:15:15.767954 [INFO] Drive Interrupted
+08:15:15.781921 [INFO] IntakeDefault Interrupted
+08:15:15.795227 [INFO] Trolley Interrupted
+08:15:15.808573 [INFO] Climb Interrupted
+08:16:21.568791 [INFO] ########  Teleop enabled
+08:16:21.582844 [INFO] Drive initialized
+08:16:21.596525 [INFO] IntakeDefault initialized
+08:16:21.614676 [INFO] Trolley initialized
+08:16:21.628048 [INFO] Climb initialized
+08:16:51.049087 [INFO] ########  Robot disabled
+08:16:51.063470 [INFO] Drive Interrupted
+08:16:51.077861 [INFO] IntakeDefault Interrupted
+08:16:51.091537 [INFO] Trolley Interrupted
+08:16:51.110466 [INFO] Climb Interrupted

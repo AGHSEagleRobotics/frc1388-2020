@@ -11,6 +11,7 @@ import java.io.*;
 import java.time.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class USBLogging {
     private static PrintStream m_logStream = null;
@@ -91,6 +92,8 @@ public class USBLogging {
      * Print a string to the system console, and to a log file if one has been
      * opened.
      * 
+     * deprecated Use a logging level method instead, such as debug(), or error() 
+     * // got rid of the javadoc deprecated to avoid the warning while building
      * @param str String to be printed
      */
     public static void printLog(String str) {
@@ -202,12 +205,9 @@ public class USBLogging {
         printLogAtLevel(msg, Level.DEBUG);
     }
 
-    public static void printCommandInitialize(Command coman) {
-
-        info(coman.getName() + " initialized");
-    }
-
     public static void printCommandStatus(Command coman, String status) {
-        info(coman.getName() + " " + status);
+        if (!(coman instanceof InstantCommand)) {
+            info(coman.getName() + " " + status);
+        }
     }
 }

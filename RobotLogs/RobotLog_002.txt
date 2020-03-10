@@ -1,0 +1,101 @@
+1969-12-31
+16:00:33.082022 [INFO] Git version: 365ac75 (branch: master 2 files changed, 11 insertions(+), 6 deletions(-))
+16:00:33.106883 [INFO] Built: Sat 02/29/2020   12:32 PM
+16:00:33.122954 [INFO] Robot.robotInit()
+16:00:39.816630 [INFO] ShooterSub: RPM target = 6000.0
+16:00:40.743793 [INFO] ########  Robot disabled
+2020-02-29
+13:03:27.013461 [INFO] ########  Autonomous enabled
+13:03:27.072298 [INFO] FMS info:  CALN Qualification match 20 replay 1;  Blue alliance,  Driver Station 3
+13:03:27.589215 [INFO] ShooterSub: RPM target = 6000.0
+13:03:27.610556 [INFO] AutonShootMove initialized
+13:03:27.630190 [INFO] IntakeDefault initialized
+13:03:27.645007 [INFO] Trolley initialized
+13:03:27.659942 [INFO] Climb initialized
+13:03:42.335408 [INFO] AutonShootMove Interrupted
+13:03:42.348700 [INFO] IntakeDefault Interrupted
+13:03:42.367449 [INFO] Trolley Interrupted
+13:03:42.382200 [INFO] Climb Interrupted
+13:03:42.416362 [INFO] ########  Robot disabled
+13:03:42.636394 [INFO] Drive initialized
+13:03:42.648691 [INFO] IntakeDefault initialized
+13:03:42.664623 [INFO] Trolley initialized
+13:03:42.678498 [INFO] Climb initialized
+13:03:42.698292 [INFO] ########  Teleop enabled
+13:03:45.576945 [INFO] IntakeDefault Interrupted
+13:03:45.591109 [INFO] DeployIntake initialized
+13:03:47.596497 [INFO] DeployIntake Finished
+13:03:47.609727 [INFO] IntakeDefault initialized
+13:04:10.375964 [INFO] ShooterSub: RPM target = 6000.0
+13:04:10.535754 [INFO] ShooterSub: RPM target = 6000.0
+13:04:10.775318 [INFO] ShooterSub: RPM target = 6000.0
+13:04:10.914588 [INFO] ShooterSub: RPM target = 6000.0
+13:04:11.095414 [INFO] ShooterSub: RPM target = 6000.0
+13:04:11.255526 [INFO] ShooterSub: RPM target = 6000.0
+13:04:11.435277 [INFO] ShooterSub: RPM target = 6000.0
+13:04:11.594951 [INFO] ShooterSub: RPM target = 6000.0
+13:04:11.755023 [INFO] ShooterSub: RPM target = 6000.0
+13:04:12.074696 [INFO] IntakeDefault Interrupted
+13:04:12.087054 [INFO] RetractIntake initialized
+13:04:14.096876 [INFO] RetractIntake Finished
+13:04:14.109728 [INFO] IntakeDefault initialized
+13:04:19.196101 [INFO] ShooterSub: RPM target = 6000.0
+13:04:19.214551 [INFO] MultiShot initialized
+13:04:24.715419 [INFO] MultiShot Interrupted
+13:04:26.816755 [INFO] IntakeDefault Interrupted
+13:04:26.829833 [INFO] DeployIntake initialized
+13:04:28.835543 [INFO] DeployIntake Finished
+13:04:28.849258 [INFO] IntakeDefault initialized
+13:05:00.014890 [INFO] IntakeDefault Interrupted
+13:05:00.028839 [INFO] RetractIntake initialized
+13:05:01.155493 [INFO] ShooterSub: RPM target = 6000.0
+13:05:01.336811 [INFO] ShooterSub: RPM target = 6000.0
+13:05:01.535030 [INFO] ShooterSub: RPM target = 6000.0
+13:05:01.699420 [INFO] ShooterSub: RPM target = 6000.0
+13:05:02.035678 [INFO] RetractIntake Finished
+13:05:02.048807 [INFO] IntakeDefault initialized
+13:05:02.436198 [INFO] ShooterSub: RPM target = 6000.0
+13:05:02.449207 [INFO] MultiShot initialized
+13:05:07.675442 [INFO] MultiShot Interrupted
+13:05:07.856080 [INFO] ShooterSub: RPM target = 6000.0
+13:05:07.869322 [INFO] MultiShot initialized
+13:05:08.836136 [INFO] ShooterSub: RPM target = 6000.0
+13:05:09.016089 [INFO] ShooterSub: RPM target = 6000.0
+13:05:09.176962 [INFO] ShooterSub: RPM target = 6000.0
+13:05:09.356132 [INFO] ShooterSub: RPM target = 6000.0
+13:05:09.516119 [INFO] ShooterSub: RPM target = 6000.0
+13:05:09.695483 [INFO] ShooterSub: RPM target = 6000.0
+13:05:09.975860 [INFO] MultiShot Interrupted
+13:05:11.237732 [INFO] ShooterSub: RPM target = 6000.0
+13:05:11.250793 [INFO] MultiShot initialized
+13:05:13.316127 [INFO] MultiShot Interrupted
+13:05:14.895051 [INFO] IntakeDefault Interrupted
+13:05:14.907876 [INFO] RetractIntake initialized
+13:05:15.417132 [INFO] RetractIntake Interrupted
+13:05:15.435516 [INFO] Eject initialized
+13:05:16.736445 [INFO] Eject Interrupted
+13:05:16.748911 [INFO] IntakeDefault initialized
+13:05:17.715953 [INFO] IntakeDefault Interrupted
+13:05:17.728878 [INFO] DeployIntake initialized
+13:05:18.416153 [INFO] DeployIntake Interrupted
+13:05:18.429055 [INFO] RetractIntake initialized
+13:05:18.796217 [INFO] RetractIntake Interrupted
+13:05:18.808511 [INFO] DeployIntake initialized
+13:05:20.336793 [INFO] ShooterSub: RPM target = 6000.0
+13:05:20.517397 [INFO] ShooterSub: RPM target = 6000.0
+13:05:20.796261 [INFO] ShooterSub: RPM target = 6000.0
+13:05:20.816554 [INFO] DeployIntake Finished
+13:05:20.831763 [INFO] IntakeDefault initialized
+13:05:20.995923 [INFO] ShooterSub: RPM target = 6000.0
+13:05:28.716316 [INFO] ShooterSub: RPM target = 6000.0
+13:05:28.729057 [INFO] MultiShot initialized
+13:05:31.461176 [INFO] MultiShot Interrupted
+13:05:36.895651 [INFO] IntakeDefault Interrupted
+13:05:36.908601 [INFO] RetractIntake initialized
+13:05:38.915823 [INFO] RetractIntake Finished
+13:05:38.928933 [INFO] IntakeDefault initialized
+13:05:57.975138 [INFO] ########  Robot disabled
+13:05:57.989619 [INFO] Drive Interrupted
+13:05:58.008216 [INFO] Trolley Interrupted
+13:05:58.022157 [INFO] Climb Interrupted
+13:05:58.038570 [INFO] IntakeDefault Interrupted

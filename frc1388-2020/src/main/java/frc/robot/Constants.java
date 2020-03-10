@@ -4,9 +4,9 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
 package frc.robot;
 
+import edu.wpi.first.wpilibj.I2C.Port;
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants.  This class should not be used for any other purpose.  All constants should be
@@ -38,42 +38,83 @@ public final class Constants {
      * TalonFX Can IDs
      */
 
+    // competetition constants
     public static final int CANID_driveRB = 1;
     public static final int CANID_driveRF = 2;
     public static final int CANID_driveLF = 3;
     public static final int CANID_driveLB = 4;
-    
+
+    // // test constants knightmare // FIXME: do not check in with the following uncommented. test only!
+    // public static final int CANID_driveRB = 1;
+    // public static final int CANID_driveRF = 2;
+    // public static final int CANID_driveLF = 3;
+    // public static final int CANID_driveLB = 4;
+
+    // ShooterSubsystem motors        
+    public static final int CANID_shootMotor = 13;
+
     /**
      * TalonSRX Can IDs
      */
+    public static final int CANID_intakeArmMotor = 8;
 
-    public static final int CANID_intakeShaftMotor = 0;
-    public static final int CANID_intakeArmMotor = 0;
+    public static final int CANID_spinnerArmMotor = 6;
     
     /**
      * VictorSPX Can IDs
      */
 
+     
+    
+    public static final int CANID_colorSpinnerMotor = 9;
+    
+    public static final int CANID_magazineMotor = 5;
+    
+    public static final int CANID_intakeShaftMotor = 7;
+    
+    public static final int CANID_feedMotor = 14;
+
+    public static final int CANID_climbMotor = 11;
+    public static final int CANID_trolleyMotor = 12;
+
+    /**
+     * PWM channels
+     */
+    public static final int PWM_climbServo = 0;
+
     /**
      * Digital IO
      */
-    
-         public static final int DIO_intakeShaftTop = 0;
-         public static final int DIO_intakeShaftBottom = 0;
+
+    public static final int DIO_intakeArmTop = 0;
+    public static final int DIO_intakeArmBottom = 1;
+
 
     /**
      * Analog Inputs
      */
+    public static final int AIN_ballSensor = 0;
+    
+    /**
+     * Relay Channels
+     */
+    public static final int RELAY_climbSolenoid = 0;
+
 
     /**
      * I2C Ports
      */
+    public static final Port I2C_Port_ColorSensor = Port.kOnboard;
 
     /**
      * USB devices
      */
-     public static final int USB_driveController = 0;
-     public static final int USB_opController = 1; // op Controller not specifically assigned
+    public static final int USB_driveController = 0;
+    public static final int USB_opController = 1; // op Controller not specifically assigned
+    public static final int USB_cameraIntake = 3;
+    public static final int USB_cameraClimber = 2;
+    public static final int USB_cameraColor = 0;
+    public static final int USB_cameraShooter = 1;
 
 
 }

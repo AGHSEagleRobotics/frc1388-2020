@@ -10,22 +10,22 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class IntakeShaftCommand extends CommandBase {
+public class UnjamIntake extends CommandBase {
+  private final IntakeSubsystem m_intakeSubsystem;
+  private final double k_intakeShaftSpeed = -1;
   /**
-   * Creates a new IntakeShaftCommand.
+   * Creates a new UnjamIntake.
    */
-  private IntakeSubsystem m_intakeSubsystem;
-
-  public IntakeShaftCommand(IntakeSubsystem intakeSubsystem) {
-    // Use addRequirements() here to declare subsystem dependencies.
+  public UnjamIntake(IntakeSubsystem intakeSubsystem) {
     m_intakeSubsystem = intakeSubsystem;
+    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_intakeSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intakeSubsystem.setIntakeShaftMotor(true);
+    m_intakeSubsystem.setIntakeShaftMotor(k_intakeShaftSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -36,7 +36,7 @@ public class IntakeShaftCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intakeSubsystem.setIntakeShaftMotor(false);
+    m_intakeSubsystem.setIntakeShaftMotor(0);
   }
 
   // Returns true when the command should end.

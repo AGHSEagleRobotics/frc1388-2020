@@ -1,0 +1,7 @@
+1969-12-31
+16:00:31.753748 [INFO] Git version: 2e7e247 (branch: master)
+16:00:31.800704 [INFO] Built: Sat 02/29/2020   03:53 PM
+16:00:31.818745 [INFO] Robot.robotInit()
+2020-02-29
+16:04:45.218335 [INFO] ShooterSub: RPM target = 6000.0
+16:04:45.900924 [INFO] ########  Robot disabled
