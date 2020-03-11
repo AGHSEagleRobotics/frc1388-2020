@@ -102,8 +102,6 @@ public class RobotContainer {
     m_gyro = new ADIS16470_IMU();
     m_gyro.calibrate();
 
-    DataLogging.initialize();
-
     // construct subsystems
     m_driveTrain = new DriveTrain( ()-> Rotation2d.fromDegrees( m_gyro.getAngle() )  );
     m_shooterSubsystem = new ShooterSubsystem( m_compDashboard );

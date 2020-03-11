@@ -22,20 +22,13 @@ public class DataLogging {
     private static NetworkTable m_table = NetworkTableInstance.getDefault().getTable(tableName);
     
     /**
-     * Initialize the logging system.
-     * This really just starts recording on the Shuffleboard, so the user doesn't have to start it manually.
-     */
-    public static void initialize() {
-        Shuffleboard.startRecording();
-    }
-
-    /**
      * Log a number to the DataLog.
      * @param key       Name of the data
      * @param value     The data
      * @return          True if the operation succeeded
      */
     public static boolean logNumber(String key, Number value) {
+        Shuffleboard.startRecording();      // Make sure Shuffleboard is recording
         logTimestamp();
         return m_table.getEntry(key).setNumber(value);
     }
@@ -47,6 +40,7 @@ public class DataLogging {
      * @return          True if the operation succeeded
      */
     public static boolean logBoolean(String key, boolean value) {
+        Shuffleboard.startRecording();      // Make sure Shuffleboard is recording
         logTimestamp();
         return m_table.getEntry(key).setBoolean(value);
     }
@@ -58,6 +52,7 @@ public class DataLogging {
      * @return          True if the operation succeeded
      */
     public static boolean logString(String key, String value) {
+        Shuffleboard.startRecording();      // Make sure Shuffleboard is recording
         logTimestamp();
         return m_table.getEntry(key).setString(value);
     }

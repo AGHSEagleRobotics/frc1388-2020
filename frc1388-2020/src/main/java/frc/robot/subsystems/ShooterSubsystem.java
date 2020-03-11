@@ -236,7 +236,10 @@ public class ShooterSubsystem extends SubsystemBase {
     // calculate actual velocity in rpm based on raw velocity data
     double rpmActual = rawVelocity * sensorCyclesPerSecond * secPerMin / countsPerRev;
 
-    rpmActual = LocalTime.now().getSecond() + m_rpm - 30;
+    // LocalTime now = LocalTime.now();        // TODO: This is an example
+    // rpmActual = now.getSecond()             // TODO: This is an example
+    //   + (now.getNano() / 1000000000.0)      // TODO: This is an example
+    //   + m_rpm - 30;                         // TODO: This is an example
     return rpmActual;
   }
 
@@ -290,7 +293,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    int lastLoggedShooterRpm = -1;
+    // double lastLoggedShooterRpm = -1;        // TODO: This is an example
 
     // use ticks as a cheap timer
     tickCount++;
@@ -322,12 +325,12 @@ public class ShooterSubsystem extends SubsystemBase {
       m_shootMotor.set(0);
     }
 
-    int loggedShooterRpm = (int) getShooterRPM();
-    if (loggedShooterRpm != lastLoggedShooterRpm) {
-      DataLogging.logNumber("ShooterTarget", m_rpm);
-      DataLogging.logNumber("ShooterRPM", loggedShooterRpm);
-    }
-    lastLoggedShooterRpm = loggedShooterRpm;
+    // double shooterRpm = getShooterRPM();                    // TODO: This is an example
+    // if ((int)shooterRpm != (int)lastLoggedShooterRpm) {     // TODO: This is an example
+    //   DataLogging.logNumber("ShooterTarget", m_rpm);        // TODO: This is an example
+    //   DataLogging.logNumber("ShooterRPM", shooterRpm);      // TODO: This is an example
+    // }                                                       // TODO: This is an example
+    // lastLoggedShooterRpm = shooterRpm;                      // TODO: This is an example
 
     if(m_compDashBoard.getLEDOn() ){
       m_compDashBoard.calcDistance();
